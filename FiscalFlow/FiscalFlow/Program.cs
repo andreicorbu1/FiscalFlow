@@ -24,6 +24,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddIdentityCore<AppUser>(options =>
 {
@@ -49,6 +51,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]!)),
             ValidIssuer = config["JWT:Issuer"],
+            ValidAudience = config["JWT:Audience"],
             ValidateIssuer = true,
             ValidateAudience = true
         };
@@ -79,7 +82,7 @@ app.UseCors(options =>
     options.AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
-        .WithOrigins(config["JWT:Audience"]);
+        .WithOrigins(config["JWT:Audience"]!);
 });
 
 // Configure the HTTP request pipeline.
