@@ -1,3 +1,4 @@
+<script src="https://accounts.google.com/gsi/client" async></script>
 <div class="d-flex justify-content-center">
   <div class="col-12 col-lg-5">
     <main class="form-signin">
@@ -58,10 +59,16 @@
       </form>
 
       <div class="mt-4 text-center">
-        <a class="btn btn-link" routerLink="/account/send-email/forgot-password">
+        <a
+          class="btn btn-link"
+          routerLink="/account/send-email/forgot-password"
+        >
           <h6>Forgot email or password?</h6>
         </a>
       </div>
     </main>
   </div>
+  <asl-google-signin-button type="standard" size="medium">
+  </asl-google-signin-button>
+  <button (click)="testAuthorize()">Test authorize</button>
 </div>

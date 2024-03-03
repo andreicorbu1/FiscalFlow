@@ -3,7 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/shared/models/account/user';
-import { take } from 'rxjs';
+import { of, take } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import {
+  GoogleSigninButtonModule,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
+import { ExternalAuth } from 'src/app/shared/models/account/externalAuth';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +26,8 @@ export class LoginComponent implements OnInit {
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private socialAuthService: SocialAuthService
   ) {
     this.accountService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
@@ -41,6 +48,19 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.socialAuthService.authState.subscribe((user) => {
+      const externalUser: ExternalAuth = {
+        provider: user.provider,
+        idToken: user.idToken,
+      };
+      console.log(user);
+      console.log(externalUser);
+      this.accountService.externalLogin(externalUser);
+    });
+  }
+
+  testAuthorize() {
+    this.accountService.checkAuthorized();
   }
 
   initializeForm() {

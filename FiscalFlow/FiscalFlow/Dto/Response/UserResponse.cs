@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using FiscalFlow.Model;
-using FiscalFlow.Services.Interfaces;
+﻿using FiscalFlow.Model;
 
 namespace FiscalFlow.Dto.Response;
 

@@ -1,5 +1,4 @@
-﻿using FiscalFlow.Dto.Request;
-using FiscalFlow.Model;
+﻿using FiscalFlow.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 

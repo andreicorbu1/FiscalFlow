@@ -1,4 +1,3 @@
-using System.Text;
 using FiscalFlow.Infrastructure;
 using FiscalFlow.Model;
 using FiscalFlow.Services;
@@ -6,9 +5,10 @@ using FiscalFlow.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -27,6 +27,27 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]!)),
+            ValidIssuer = config["JWT:Issuer"],
+            ValidAudience = config["JWT:Audience"],
+            ValidateIssuer = true,
+            ValidateAudience = true
+        };
+    })
+    .AddGoogle(opts =>
+    {
+        opts.ClientId = config["Google:ClientId"]!;
+        opts.ClientSecret = config["Google:SecretId"]!;
+        opts.SignInScheme = IdentityConstants.ExternalScheme;
+
+    });
+
 builder.Services.AddIdentityCore<AppUser>(options =>
 {
     options.Password.RequireDigit = true;
@@ -42,20 +63,6 @@ builder.Services.AddIdentityCore<AppUser>(options =>
     .AddSignInManager<SignInManager<AppUser>>()
     .AddUserManager<UserManager<AppUser>>()
     .AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]!)),
-            ValidIssuer = config["JWT:Issuer"],
-            ValidAudience = config["JWT:Audience"],
-            ValidateIssuer = true,
-            ValidateAudience = true
-        };
-    });
 
 builder.Services.AddCors();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -91,8 +98,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

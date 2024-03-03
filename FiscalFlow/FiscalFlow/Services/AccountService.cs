@@ -4,11 +4,8 @@ using FiscalFlow.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
-using FiscalFlow.Dto.Request;
-using Mailjet.Client.Resources;
 using Microsoft.EntityFrameworkCore;
-using RegisterRequest = FiscalFlow.Dto.Request.RegisterRequest;
+using System.Text;
 
 namespace FiscalFlow.Services;
 
@@ -20,10 +17,10 @@ public class AccountService : IAccountService
     private readonly IEmailService _emailService;
     private readonly IConfiguration _config;
 
-    public AccountService(IJwtService jwtService, 
-        SignInManager<AppUser> signInManager, 
-        UserManager<AppUser> userManager, 
-        IEmailService emailService, 
+    public AccountService(IJwtService jwtService,
+        SignInManager<AppUser> signInManager,
+        UserManager<AppUser> userManager,
+        IEmailService emailService,
         IConfiguration config)
     {
         _jwtService = jwtService;
@@ -54,13 +51,13 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> ResetPasswordAsync(AppUser user, ResetPasswordRequest resetPasswordRequest)
     {
-            var decodedTokenBytes = WebEncoders.Base64UrlDecode(resetPasswordRequest.ResetCode);
-            var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
+        var decodedTokenBytes = WebEncoders.Base64UrlDecode(resetPasswordRequest.ResetCode);
+        var decodedToken = Encoding.UTF8.GetString(decodedTokenBytes);
 
-            var result =
-                await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordRequest.NewPassword);
+        var result =
+            await _userManager.ResetPasswordAsync(user, decodedToken, resetPasswordRequest.NewPassword);
 
-            return result;
+        return result;
     }
 
     public async Task<bool> CheckEmailExistsAlready(string email)

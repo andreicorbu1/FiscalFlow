@@ -1,9 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using FiscalFlow.Model;
+﻿using FiscalFlow.Model;
 using FiscalFlow.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using FiscalFlow.Dto.Request;
+using Google.Apis.Auth;
 
 namespace FiscalFlow.Services;
 
@@ -37,11 +39,28 @@ public class JwtService : IJwtService
             Issuer = _config["JWT:Issuer"],
             Audience = _config["JWT:Audience"]
         };
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwt = tokenHandler.CreateToken(tokenDescriptor);
-        
+
         return tokenHandler.WriteToken(jwt);
 
+    }
+
+    public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(ExternalAuthRequest externalAuthRequest)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string>() { _config["Google:ClientId"]! }
+            };
+            var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuthRequest.IdToken, settings);
+            return payload;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 }

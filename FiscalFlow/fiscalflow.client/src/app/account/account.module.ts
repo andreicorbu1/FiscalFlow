@@ -7,6 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { SendEmailComponent } from './send-email/send-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 
 
@@ -20,6 +21,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
   ],
   imports: [
     CommonModule,
+    GoogleSigninButtonModule,
     AccountRoutingModule,
     SharedModule
   ]

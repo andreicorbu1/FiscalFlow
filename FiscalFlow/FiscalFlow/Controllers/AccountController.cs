@@ -1,17 +1,13 @@
-﻿using System.Security.Claims;
-using System.Text;
-using FiscalFlow.Dto.Dto;
-using FiscalFlow.Dto.Request;
+﻿using FiscalFlow.Dto.Request;
 using FiscalFlow.Dto.Response;
 using FiscalFlow.Model;
 using FiscalFlow.Services.Interfaces;
-using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using FiscalFlow.Settings;
 using RegisterRequest = FiscalFlow.Dto.Request.RegisterRequest;
 
 namespace FiscalFlow.Controllers;
@@ -25,6 +21,7 @@ public class AccountController : ControllerBase
     private readonly IEmailService _emailService;
     private readonly IConfiguration _config;
     private readonly IAccountService _accountService;
+    private readonly HttpClient _facebookHttpClient;
 
     public AccountController(IJwtService jwtService,
         UserManager<AppUser> userManager,
@@ -37,6 +34,10 @@ public class AccountController : ControllerBase
         _emailService = emailService;
         _config = config;
         _accountService = accountService;
+        _facebookHttpClient = new HttpClient
+        {
+            BaseAddress = new Uri("https://graph.facebook.com")
+        };
     }
 
     [Authorize]
@@ -157,7 +158,7 @@ public class AccountController : ControllerBase
 
             return BadRequest("Failed to send email. Please contact admin!");
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest("Failed to send email. Please contact admin!");
         }
@@ -180,7 +181,7 @@ public class AccountController : ControllerBase
                 message = "Your password has been reset"
             });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest("Invalid token! Please try again!");
         }
@@ -217,11 +218,58 @@ public class AccountController : ControllerBase
             {
                 return Created();
             }
+
             return BadRequest("Failed to send email. Please contact admin!");
         }
         catch (Exception e)
         {
             return BadRequest("Failed to send email. Please contact admin!");
         }
+    }
+
+    [HttpPost("external-login")]
+    public async Task<IActionResult> ExternalLoginAsync([FromBody] ExternalAuthRequest externalAuth)
+    {
+        var payload = await _jwtService.VerifyGoogleTokenAsync(externalAuth);
+        if (payload is null)
+        {
+            return BadRequest("Invalid External Authentication.");
+        }
+
+        var info = new UserLoginInfo(externalAuth.Provider, payload.Subject, externalAuth.Provider);
+        var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+        if (user == null)
+        {
+            user = await _userManager.FindByEmailAsync(payload.Email);
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    Email = payload.Email,
+                    UserName = payload.Email,
+                    EmailConfirmed = true
+                };
+                await _userManager.CreateAsync(user);
+            }
+
+            await _userManager.AddLoginAsync(user, info);
+        }
+
+        if (user == null)
+            return BadRequest("Invalid External Authentication");
+
+        var token = _jwtService.CreateJwt(user);
+        var result = user.ToUserResponse();
+        result.JWT = token;
+
+        return Ok(result);
+    }
+
+
+    [HttpGet("check-authorized")]
+    [Authorize]
+    public async Task<IActionResult> CheckAuthorize()
+    {
+        return Ok("Ai access");
     }
 }
