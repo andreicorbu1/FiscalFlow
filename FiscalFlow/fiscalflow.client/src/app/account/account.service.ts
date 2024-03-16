@@ -21,7 +21,6 @@ export class AccountService {
   constructor(private httpClient: HttpClient, private router: Router) {}
 
   externalLogin(externalAuth: ExternalAuth) {
-    console.log('ajung aici?');
     this.httpClient
       .post<User>(
         `${environment.appUrl}/api/v1/account/external-login`,

@@ -246,6 +246,9 @@ public class AccountController : ControllerBase
                 user = new AppUser
                 {
                     Email = payload.Email,
+                    FirstName = payload.GivenName ?? string.Empty,
+                    LastName = payload.FamilyName ?? string.Empty,
+                    Provider = externalAuth.Provider ?? string.Empty,
                     UserName = payload.Email,
                     EmailConfirmed = true
                 };
