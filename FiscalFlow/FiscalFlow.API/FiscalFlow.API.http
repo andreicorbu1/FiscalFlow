@@ -1,0 +1,6 @@
+@FiscalFlow.API_HostAddress = http://localhost:5194
+
+GET {{FiscalFlow.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
