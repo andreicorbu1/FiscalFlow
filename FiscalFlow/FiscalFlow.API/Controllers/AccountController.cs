@@ -228,6 +228,9 @@ public class AccountController : ControllerBase
                 {
                     Email = payload.Email,
                     UserName = payload.Email,
+                    FirstName = payload.GivenName ?? string.Empty,
+                    LastName = payload.FamilyName ?? string.Empty,
+                    Provider = externalAuth.Provider,
                     EmailConfirmed = true
                 };
                 await _userManager.CreateAsync(user);
