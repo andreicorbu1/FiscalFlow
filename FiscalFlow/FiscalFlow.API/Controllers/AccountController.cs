@@ -17,11 +17,11 @@ public class AccountController : ControllerBase
 {
     private readonly IJwtService _jwtService;
     private readonly UserManager<AppUser> _userManager;
-    private readonly IAccountService _accountService;
+    private readonly IUserService _accountService;
 
     public AccountController(IJwtService jwtService,
         UserManager<AppUser> userManager,
-        IAccountService accountService)
+        IUserService accountService)
     {
         _jwtService = jwtService;
         _userManager = userManager;
@@ -52,7 +52,7 @@ public class AccountController : ControllerBase
             return Unauthorized("Invalid username!");
         }
 
-        if (user.EmailConfirmed == false)
+        if (!user.EmailConfirmed)
         {
             return Unauthorized("Please confirm your email!");
         }

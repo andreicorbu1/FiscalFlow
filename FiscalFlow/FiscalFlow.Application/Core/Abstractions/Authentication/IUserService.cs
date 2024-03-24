@@ -3,7 +3,7 @@ using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 namespace FiscalFlow.Application.Core.Abstractions.Authentication;
 
-public interface IAccountService
+public interface IUserService
 {
     Task<AppUser?> FindByEmailAsync(string email);
     Task<SignInResult> CheckPasswordSignInAsync(AppUser user, string password, bool lockoutOnFailure);

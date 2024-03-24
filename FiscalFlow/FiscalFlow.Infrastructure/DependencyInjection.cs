@@ -32,7 +32,7 @@ public static class DependencyInjection
                     ValidIssuer = config["JWT:Issuer"],
                     ValidAudience = config["JWT:Audience"],
                     ValidateIssuer = true,
-                    ValidateAudience = true
+                    ValidateAudience = false
                 };
             })
             .AddGoogle(opts =>
