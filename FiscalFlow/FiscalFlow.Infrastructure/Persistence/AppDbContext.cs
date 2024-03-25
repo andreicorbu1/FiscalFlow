@@ -1,10 +1,11 @@
-﻿using FiscalFlow.Domain.Entities;
+﻿using FiscalFlow.Application.Core.Abstractions.Data;
+using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FiscalFlow.Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<AppUser>
+public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
