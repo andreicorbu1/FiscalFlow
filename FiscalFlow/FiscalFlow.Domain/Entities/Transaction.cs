@@ -14,6 +14,8 @@ public class Transaction : BaseEntity, IAuditableEntity
     [NotMapped] public Money Value => new Money(MoneyValue, MoneyCurrency.ToString());
     [JsonIgnore] [Column("Value")] public decimal MoneyValue { get; set; }
     [JsonIgnore] [Column("Currency")] public Currency MoneyCurrency { get; set; }
+    [Column("AccountValueBeforeTransaction")] public decimal AccountValueBefore { get; set; }
+    [Column("AccountValueAfterTransaction")] public decimal AccountValueAfter { get; set; }
     [MaxLength(250)] public string Description { get; set; } = string.Empty;
 
     [MaxLength(100)] public string Payee { get; set; } = string.Empty;

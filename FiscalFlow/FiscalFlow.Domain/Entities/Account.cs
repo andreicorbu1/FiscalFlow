@@ -12,6 +12,7 @@ namespace FiscalFlow.Domain.Entities;
 public class Account : BaseEntity, IAuditableEntity
 {
     [MaxLength(50)] public string? Name { get; set; }
+    [NotMapped] private Money _balance;
     [NotMapped] public Money Balance => new Money(MoneyBalance, MoneyCurrency.ToString());
     [JsonIgnore] [Column("Balance")] public decimal MoneyBalance { get; set; }
     [JsonIgnore] [Column("Currency")] public Currency MoneyCurrency { get; set; }

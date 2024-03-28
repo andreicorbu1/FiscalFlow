@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FiscalFlow.Domain.Repositories;
+using FiscalFlow.Infrastructure.Persistence.Repositories;
 
 public static class DependencyInjection
 {
@@ -76,6 +77,8 @@ public static class DependencyInjection
         });
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
         return services;
     }
 }

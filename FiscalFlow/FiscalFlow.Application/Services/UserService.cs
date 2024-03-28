@@ -104,4 +104,9 @@ public class UserService : IUserService
 
         return await _emailService.SendEmailAsync(emailSend);
     }
+
+    public bool CheckUserExists(string accountId)
+    {
+        return _userManager.FindByIdAsync(accountId).Result != null;
+    }
 }

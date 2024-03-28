@@ -14,7 +14,7 @@ internal abstract class GenericRepository<TEntity> : IGenericRepository<TEntity>
     #endregion
 
     #region Constructors
-    
+
     protected GenericRepository(AppDbContext context)
     {
         _context = context;

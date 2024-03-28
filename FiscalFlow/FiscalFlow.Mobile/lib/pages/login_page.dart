@@ -5,30 +5,32 @@ import 'package:fiscalflow_mobile/components/my_text_field.dart';
 import 'package:fiscalflow_mobile/components/square_tile.dart';
 import 'package:fiscalflow_mobile/models/login_request.dart';
 import 'package:fiscalflow_mobile/models/user.dart';
+import 'package:fiscalflow_mobile/pages/home_page.dart';
+import 'package:fiscalflow_mobile/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dio/dio.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final dio = Dio();
 
-  void signUserIn() async {
+  void signUserIn(BuildContext context) async {
     final String uri = '${dotenv.get('API_URL')}/Account/login';
 
-    final response = await http.post(Uri.parse(uri),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
+    final response = await dio.post(uri,
+        data: jsonEncode(<String, String>{
           'email': usernameController.text,
           'password': passwordController.text
         }));
     if (response.statusCode == 200) {
-      print(
-          User.fromJson(jsonDecode(response.body) as Map<String, dynamic>).jwt);
+      await Storage.storeToken(response.data['token']);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     }
   }
 

@@ -12,4 +12,5 @@ public interface IUserService
     Task<bool> CheckEmailExistsAlready(string email);
     Task<bool> SendConfirmEmailAsync(AppUser user);
     Task<bool> SendForgotPasswordEmailAsync(AppUser user);
+    bool CheckUserExists(string accountId);
 }

@@ -10,7 +10,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
     }
 
-    public IEnumerable<Transaction> GetTransactions(Guid accountId)
+    public IList<Transaction> GetTransactions(Guid accountId)
     {
         return _context.Accounts
             .Include(account => account.Transactions)
@@ -18,7 +18,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
             .Transactions ?? new List<Transaction>();
     }
 
-    public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Guid accountId)
+    public async Task<IList<Transaction>> GetTransactionsAsync(Guid accountId)
     {
         return (await _context.Accounts
                 .Include(account => account.Transactions)
