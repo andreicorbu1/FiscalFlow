@@ -19,7 +19,7 @@ public class TransactionService : ITransactionService
 
     public async Task<Result> AddTransaction(AddTransactionRequest payload)
     {
-        var account = await _accountService.GetAccountFromId(payload.AccountId);
+        var account = await _accountService.GetAccountFromIdAsync(payload.AccountId);
         if(!account.IsSuccess)
         {
             return Result.NotFound($"Account with id {payload.AccountId} does not exist");
@@ -38,7 +38,7 @@ public class TransactionService : ITransactionService
             Category = payload.Category,
             AccountValueBefore = accountValue.MoneyBalance
         };
-        // Add option to Convert from one Currency to the account currency
+        // Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
 
         NodaMoney.Money updatedBalance = accountValue.Balance - transaction.Value;

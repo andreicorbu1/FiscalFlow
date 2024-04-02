@@ -48,7 +48,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("MoneyCurrency")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Currency");
+                        .HasColumnName("MyCurrency");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -178,7 +178,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("MoneyCurrency")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Currency");
+                        .HasColumnName("MyCurrency");
 
                     b.Property<decimal>("MoneyValue")
                         .HasColumnType("numeric")

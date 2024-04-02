@@ -8,7 +8,10 @@ namespace FiscalFlow.Application.Core.Abstractions.Services;
 public interface IAccountService
 {
     Task ExportTransactionsAsCsvAsync(Guid accountId);
-    Result CreateAccount(CreateAccountRequest account);
+    Result CreateAccount(CreateAccountRequest payload);
+    Result InsertBulkAccounts();
     Result UpdateAccount(Account account);
-    Task<Result<Account>> GetAccountFromId(Guid accountId);
+    Task<Result<IReadOnlyCollection<Account>>> GetAccountsOfOwnerAsync(string ownerId);
+    Task<Result<Account>> GetAccountFromIdAsync(Guid accountId);
+    Result DeleteAccount(Guid accountId);
 }

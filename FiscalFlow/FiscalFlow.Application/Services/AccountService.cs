@@ -43,20 +43,43 @@ public class AccountService : IAccountService
         }
     }
 
+    public Result DeleteAccount(Guid accountId)
+    {
+        var account = _accountRepository.GetById(accountId);
+        if(account is null)
+        {
+            return Result.NotFound($"Account with id {accountId} does not exist");
+        }
+        _accountRepository.Remove(account);
+        return Result.Success();
+    }
+
     public async Task ExportTransactionsAsCsvAsync(Guid accountId)
     {
         var transactions = await _accountRepository.GetTransactionsAsync(accountId);
         CsvExporter.ExportList(transactions, $"{accountId}");
     }
 
-    public async Task<Result<Account>> GetAccountFromId(Guid accountId)
+    public async Task<Result<Account>> GetAccountFromIdAsync(Guid accountId)
     {
         var account = await _accountRepository.GetByIdAsync(accountId);
-        if(account is null)
+        if (account is null)
         {
             return Result.NotFound($"Account with id {accountId} does not exist");
         }
         return Result.Success(account);
+    }
+
+    public async Task<Result<IReadOnlyCollection<Account>>> GetAccountsOfOwnerAsync(string ownerId)
+    {
+        var accounts = await _accountRepository.GetUserAccountsAsync(ownerId);
+
+        return Result.Success(accounts);
+    }
+
+    public Result InsertBulkAccounts()
+    {
+        throw new NotImplementedException();
     }
 
     public Result UpdateAccount(Account account)

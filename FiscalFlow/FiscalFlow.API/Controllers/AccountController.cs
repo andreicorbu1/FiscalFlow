@@ -42,7 +42,20 @@ namespace FiscalFlow.API.Controllers
             // Get the full path of the file
             string filePath = Path.Combine(directoryPath, fileName);
             return PhysicalFile(filePath, "text/csv", fileName);
+        }
 
+        [HttpGet("userid ={userId}")]
+        public async Task<ActionResult<IReadOnlyCollection<Domain.Entities.Account>>> GetUsersAccountsAsync(string userId)
+        {
+            var accounts = await _accountService.GetAccountsOfOwnerAsync(userId);
+            if(accounts.IsSuccess)
+            {
+                return Ok(accounts.Value);
+            }
+            else
+            {
+                return this.ToActionResult(accounts);
+            }
         }
     }
 }

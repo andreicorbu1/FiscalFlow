@@ -25,4 +25,9 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
                 .SingleAsync(account => account.Id.Equals(accountId)))
             .Transactions ?? new List<Transaction>();
     }
+
+    public async Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId)
+    {
+        return await _context.Accounts.Where(account => account.OwnerId == userId).ToListAsync();
+    }
 }

@@ -9,7 +9,7 @@ public class TransactionMap : ClassMap<Transaction>
     {
         Map(m => m.Id).Name("Id");
         Map(m => m.MoneyValue).Name("Value");
-        Map(m => m.MoneyCurrency).Name("Currency");
+        Map(m => m.MoneyCurrency).Name("MyCurrency");
         Map(m => m.Description).Name("Description");
         Map(m => m.Payee).Name("Payee");
         Map(m => m.Labels).Name("Labels");

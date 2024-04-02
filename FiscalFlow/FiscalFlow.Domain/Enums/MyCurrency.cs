@@ -1,6 +1,6 @@
 ﻿namespace FiscalFlow.Domain.Enums;
 
-public enum Currency
+public enum MyCurrency
 {
     AED,
     AFN,
