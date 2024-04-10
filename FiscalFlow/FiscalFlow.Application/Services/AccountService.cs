@@ -2,11 +2,11 @@
 using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Application.Tools.Csv;
+using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using System.Web;
+using Microsoft.EntityFrameworkCore;
 
 namespace FiscalFlow.Application.Services;
 
@@ -63,11 +63,13 @@ public class AccountService : IAccountService
     public async Task<Result<Account>> GetAccountFromIdAsync(Guid accountId)
     {
         var account = await _accountRepository.GetByIdAsync(accountId);
-        if (account is null)
-        {
-            return Result.NotFound($"Account with id {accountId} does not exist");
-        }
-        return Result.Success(account);
+        return account is null ? Result.NotFound($"Account with id {accountId} does not exist") : Result.Success(account);
+    }
+
+    public Result UpdateAccount(Account account)
+    {
+        _accountRepository.Update(account);
+        return Result.Success();
     }
 
     public async Task<Result<IReadOnlyCollection<Account>>> GetAccountsOfOwnerAsync(string ownerId)
@@ -82,9 +84,44 @@ public class AccountService : IAccountService
         throw new NotImplementedException();
     }
 
-    public Result UpdateAccount(Account account)
+    public async Task<Result> UpdateAccount(string ownerId, UpdateAccountRequest account)
     {
-        _accountRepository.Update(account);
+        var existingAccount = await _accountRepository.GetAllAsQuery()
+            .Include(acc => acc.Transactions)
+            .FirstOrDefaultAsync(acc => acc.Id.Equals(account.AccountId) );
+ 
+        if (existingAccount is null)
+        {
+            return Result.NotFound($"Account with id {account.AccountId} does not exist!");
+        }
+
+        if (existingAccount.OwnerId != ownerId)
+        {
+            return Result.Unauthorized();
+        }
+        
+        existingAccount.Name = account.Name;
+        if (existingAccount.MoneyCurrency != account.MoneyCurrency && account.MoneyBalance is null)
+        {
+            /* existingAccount.MoneyBalance = existingAccount.MoneyBalance / Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
+        }
+        else if(account.MoneyBalance.HasValue)
+        {
+            existingAccount.MoneyBalance = account.MoneyBalance.Value;
+        }
+        existingAccount.MoneyCurrency = account.MoneyCurrency;
+        existingAccount.AccountType = account.AccountType;
+
+        if (existingAccount.Transactions is not null && existingAccount.Transactions.Count > 0)
+        {
+            foreach (var transaction in existingAccount.Transactions)
+            {
+                transaction.MoneyCurrency = existingAccount.MoneyCurrency;
+                /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
+            }
+        }
+        
+        _accountRepository.Update(existingAccount);
         return Result.Success();
     }
 }

@@ -1,7 +1,10 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using System.Security.Claims;
+using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiscalFlow.API.Controllers
@@ -17,11 +20,13 @@ namespace FiscalFlow.API.Controllers
             _accountService = accountService;
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult CreateAccount(CreateAccountRequest payload)
         {
+            payload.OwnerId = ExtractUserIdFromClaims().Value;
             var result = _accountService.CreateAccount(payload);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 return Created();
             }
@@ -31,24 +36,46 @@ namespace FiscalFlow.API.Controllers
             }
         }
 
-        [HttpGet]
+        [Authorize]
+        [HttpGet("me/accountId={accountId}")]
         [Produces("text/csv")]
-        public async Task<FileResult> GetTransactionsAsCsv(Guid accountId)
+        public async Task<IActionResult> GetTransactionsAsCsv(Guid accountId)
         {
             await _accountService.ExportTransactionsAsCsvAsync(accountId);
             string fileName = $"{accountId}.csv";
-            string directoryPath = "C:\\Users\\Andrei\\Dev\\licenta\\FiscalFlow\\FiscalFlow\\FiscalFlow.API\\CSV"; // This should be the directory where your CSV files are stored
+            string directoryPath =
+                "C:\\Users\\Andrei\\Dev\\licenta\\FiscalFlow\\FiscalFlow\\FiscalFlow.API\\CSV"; // This should be the directory where your CSV files are stored
 
             // Get the full path of the file
             string filePath = Path.Combine(directoryPath, fileName);
             return PhysicalFile(filePath, "text/csv", fileName);
         }
 
-        [HttpGet("userid ={userId}")]
-        public async Task<ActionResult<IReadOnlyCollection<Domain.Entities.Account>>> GetUsersAccountsAsync(string userId)
+        [Authorize]
+        [HttpPut("me/update/account={accountId}")]
+        public async Task<IActionResult> UpdateUserAccount([FromRoute] Guid accountId, [FromBody] UpdateAccountRequest updateAccount)
         {
-            var accounts = await _accountService.GetAccountsOfOwnerAsync(userId);
-            if(accounts.IsSuccess)
+            var id = ExtractUserIdFromClaims();
+            if (!id.IsSuccess)
+            {
+                return Unauthorized();
+            }
+
+            updateAccount.AccountId = accountId;
+            var result = await _accountService.UpdateAccount(id.Value, updateAccount);
+            return this.ToActionResult(result);
+        }
+        
+        [Authorize]
+        [HttpGet("me/accounts")]
+        public async Task<ActionResult<IReadOnlyCollection<Domain.Entities.Account>>> GetUsersAccountsAsync()
+        {
+            var idResult = ExtractUserIdFromClaims();
+            if (!idResult.IsSuccess)
+                return Unauthorized();
+            var ownerId = idResult.Value;
+            var accounts = await _accountService.GetAccountsOfOwnerAsync(ownerId);
+            if (accounts.IsSuccess)
             {
                 return Ok(accounts.Value);
             }
@@ -56,6 +83,17 @@ namespace FiscalFlow.API.Controllers
             {
                 return this.ToActionResult(accounts);
             }
+        }
+
+        private Result<string> ExtractUserIdFromClaims()
+        {
+            Claim? ownerId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (ownerId is null)
+            {
+                return Result.Unauthorized();
+            }
+
+            return Result.Success(ownerId.Value);
         }
     }
 }

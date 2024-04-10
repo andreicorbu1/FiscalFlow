@@ -1,5 +1,6 @@
 ﻿using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Contracts.Transactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace FiscalFlow.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddTransaction(AddTransactionRequest payload)
         {
             var transaction = await _transactionService.AddTransaction(payload);

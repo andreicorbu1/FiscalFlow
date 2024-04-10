@@ -5,26 +5,37 @@ namespace FiscalFlow.Domain.Repositories;
 
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    void Add(TEntity objModel);
-    void AddRange(IEnumerable<TEntity> objModel);
+    public void Add(TEntity objModel);
 
-    TEntity? GetById(Guid id);
-    Task<TEntity?> GetByIdAsync(Guid id);
+    public void AddRange(IEnumerable<TEntity> objModel);
 
-    TEntity? Get(Expression<Func<TEntity, bool>> predicate);
-    Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate);
+    public TEntity? GetById(Guid id);
 
-    IEnumerable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate);
-    Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
+    public Task<TEntity?> GetByIdAsync(Guid id);
 
-    IEnumerable<TEntity> GetAll();
-    Task<IEnumerable<TEntity>> GetAllAsync();
+    public TEntity? Get(Expression<Func<TEntity, bool>> predicate);
 
-    int Count();
-    Task<int> CountAsync();
+    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate);
 
-    void Update(TEntity objModel);
-    void Remove(TEntity objModel);
+    public IEnumerable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate);
 
-    void Dispose();
+    public Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate);
+
+    public IEnumerable<TEntity> GetAll();
+
+    public Task<IEnumerable<TEntity>> GetAllAsync();
+
+    public IQueryable<TEntity> GetAllAsQuery();
+
+    public Task<IQueryable<TEntity>> GetAllAsQueryAsync();
+
+    public int Count();
+
+    public Task<int> CountAsync();
+
+    public void Update(TEntity objModel);
+
+    public void Remove(TEntity objModel);
+
+    public void Dispose();
 }

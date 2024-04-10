@@ -76,6 +76,16 @@ internal abstract class GenericRepository<TEntity> : IGenericRepository<TEntity>
         return await _context.Set<TEntity>().ToListAsync();
     }
 
+    public IQueryable<TEntity> GetAllAsQuery()
+    {
+        return _context.Set<TEntity>().AsQueryable();
+    }
+
+    public async Task<IQueryable<TEntity>> GetAllAsQueryAsync()
+    {
+        return await Task.Run(() => _context.Set<TEntity>().AsQueryable());
+    }
+
     public int Count()
     {
         return _context.Set<TEntity>().Count();
