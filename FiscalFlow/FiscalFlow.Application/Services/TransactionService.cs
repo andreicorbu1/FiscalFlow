@@ -17,12 +17,21 @@ public class TransactionService : ITransactionService
         _accountService = accountService;
     }
 
-    public async Task<Result> AddTransaction(AddTransactionRequest payload)
+    public async Task<Result> AddTransaction(AddTransactionRequest payload, string ownerId)
     {
-        var account = await _accountService.GetAccountFromIdAsync(payload.AccountId);
+        var account = await _accountService.GetAccountFromIdAsync(payload.AccountId, ownerId);
         if(!account.IsSuccess)
         {
-            return Result.NotFound($"Account with id {payload.AccountId} does not exist");
+            switch (account.Status)
+            {
+                case ResultStatus.NotFound:
+                    return Result.NotFound(account.Errors.First());
+                case ResultStatus.Forbidden:
+                case ResultStatus.Unauthorized:
+                        return Result.Unauthorized();
+                default:
+                    return Result.Error();
+            }
         }
         var accountValue = account.Value;
         var transaction = new Transaction
@@ -46,6 +55,17 @@ public class TransactionService : ITransactionService
         transaction.AccountValueAfter = accountValue.MoneyBalance;
         _accountService.UpdateAccount(account);
         _transactionRepository.Add(transaction);
+        return Result.Success();
+    }
+
+    public Result DeleteTransaction(string ownerId, Guid transactionId)
+    {
+        var transaction = _transactionRepository.GetByIdIncludingAccount(transactionId);
+        if (transaction is null)
+            return Result.NotFound($"Transaction with id {transactionId} does not exist!");
+        if (transaction.Account?.OwnerId != ownerId)
+            return Result.Unauthorized();
+        _transactionRepository.Remove(transaction);
         return Result.Success();
     }
 }

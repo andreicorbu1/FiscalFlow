@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiscalFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240328213651_AddAccountBalanceBeforeAndAfterTransaction")]
-    partial class AddAccountBalanceBeforeAndAfterTransaction
+    [Migration("20240410185057_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("MoneyCurrency")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("MyCurrency");
+                        .HasColumnName("Currency");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -186,7 +186,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<string>("MoneyCurrency")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("MyCurrency");
+                        .HasColumnName("Currency");
 
                     b.Property<decimal>("MoneyValue")
                         .HasColumnType("numeric")

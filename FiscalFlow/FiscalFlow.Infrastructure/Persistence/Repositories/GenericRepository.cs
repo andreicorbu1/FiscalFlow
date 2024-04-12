@@ -36,6 +36,11 @@ internal abstract class GenericRepository<TEntity> : IGenericRepository<TEntity>
         _context.SaveChanges();
     }
 
+    public bool Any(Func<TEntity, bool> predicate)
+    {
+        return _context.Set<TEntity>().Any(predicate);
+    }
+
     public TEntity? GetById(Guid id)
     {
         return _context.Set<TEntity>().Find(id);

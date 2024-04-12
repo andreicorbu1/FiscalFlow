@@ -24,7 +24,7 @@ public class AccountService : IAccountService
     public Result CreateAccount(CreateAccountRequest payload)
     {
         var doesAccountExist = _userService.CheckUserExists(payload.OwnerId);
-        if(doesAccountExist)
+        if (doesAccountExist)
         {
             var account = new Account
             {
@@ -43,27 +43,46 @@ public class AccountService : IAccountService
         }
     }
 
-    public Result DeleteAccount(Guid accountId)
+    public Result DeleteAccount(Guid accountId, string ownerId)
     {
         var account = _accountRepository.GetById(accountId);
-        if(account is null)
+        if (account is null)
         {
             return Result.NotFound($"Account with id {accountId} does not exist");
         }
+
+        if (account.OwnerId != ownerId)
+        {
+            return Result.Forbidden();
+        }
+
         _accountRepository.Remove(account);
         return Result.Success();
     }
 
-    public async Task ExportTransactionsAsCsvAsync(Guid accountId)
+    public async Task<Result> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId)
     {
-        var transactions = await _accountRepository.GetTransactionsAsync(accountId);
-        CsvExporter.ExportList(transactions, $"{accountId}");
+        if (_accountRepository.CheckAccountExists(accountId))
+        {
+            if (_accountRepository.CheckIfIsAccountOwner(accountId, ownerId))
+            {
+                var transactions = await _accountRepository.GetTransactionsAsync(accountId);
+                CsvExporter.ExportList(transactions, $"{accountId}");
+                return Result.Success();
+            }
+
+            return Result.Forbidden();
+        }
+
+        return Result.NotFound($"Account with id {accountId} does not exist!");
     }
 
-    public async Task<Result<Account>> GetAccountFromIdAsync(Guid accountId)
+    public async Task<Result<Account>> GetAccountFromIdAsync(Guid accountId, string ownerId)
     {
         var account = await _accountRepository.GetByIdAsync(accountId);
-        return account is null ? Result.NotFound($"Account with id {accountId} does not exist") : Result.Success(account);
+        if (account is null)
+            return Result.NotFound($"Account with id {accountId} does not exist");
+        return account.OwnerId != ownerId ? Result.Forbidden() : Result.Success(account);
     }
 
     public Result UpdateAccount(Account account)
@@ -88,8 +107,8 @@ public class AccountService : IAccountService
     {
         var existingAccount = await _accountRepository.GetAllAsQuery()
             .Include(acc => acc.Transactions)
-            .FirstOrDefaultAsync(acc => acc.Id.Equals(account.AccountId) );
- 
+            .FirstOrDefaultAsync(acc => acc.Id.Equals(account.AccountId));
+
         if (existingAccount is null)
         {
             return Result.NotFound($"Account with id {account.AccountId} does not exist!");
@@ -97,18 +116,19 @@ public class AccountService : IAccountService
 
         if (existingAccount.OwnerId != ownerId)
         {
-            return Result.Unauthorized();
+            return Result.Forbidden();
         }
-        
+
         existingAccount.Name = account.Name;
         if (existingAccount.MoneyCurrency != account.MoneyCurrency && account.MoneyBalance is null)
         {
             /* existingAccount.MoneyBalance = existingAccount.MoneyBalance / Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
         }
-        else if(account.MoneyBalance.HasValue)
+        else if (account.MoneyBalance.HasValue)
         {
             existingAccount.MoneyBalance = account.MoneyBalance.Value;
         }
+
         existingAccount.MoneyCurrency = account.MoneyCurrency;
         existingAccount.AccountType = account.AccountType;
 
@@ -120,7 +140,7 @@ public class AccountService : IAccountService
                 /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
             }
         }
-        
+
         _accountRepository.Update(existingAccount);
         return Result.Success();
     }

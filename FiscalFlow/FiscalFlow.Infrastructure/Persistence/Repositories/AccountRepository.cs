@@ -10,6 +10,16 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
     }
 
+    public bool CheckAccountExists(Guid accountId)
+    {
+        return Any(acc => acc.Id.Equals(accountId));
+    }
+
+    public bool CheckIfIsAccountOwner(Guid accountId, string ownerId)
+    {
+        return Any(acc => acc.Id.Equals(accountId) && acc.OwnerId.Equals(ownerId));
+    }
+
     public IList<Transaction> GetTransactions(Guid accountId)
     {
         return _context.Accounts
@@ -22,7 +32,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
         return (await _context.Accounts
                 .Include(account => account.Transactions)
-                .SingleAsync(account => account.Id.Equals(accountId)))
+                .SingleOrDefaultAsync(account => account.Id.Equals(accountId)))?
             .Transactions ?? new List<Transaction>();
     }
 

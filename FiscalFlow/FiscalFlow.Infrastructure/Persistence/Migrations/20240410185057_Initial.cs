@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiscalFlow.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Addclasses : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -82,7 +82,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     Currency = table.Column<string>(type: "text", nullable: false),
                     AccountType = table.Column<string>(type: "text", nullable: false),
@@ -193,6 +193,8 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Value = table.Column<decimal>(type: "numeric", nullable: false),
                     Currency = table.Column<string>(type: "text", nullable: false),
+                    AccountValueBeforeTransaction = table.Column<decimal>(type: "numeric", nullable: false),
+                    AccountValueAfterTransaction = table.Column<decimal>(type: "numeric", nullable: false),
                     Description = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     Payee = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Labels = table.Column<string[]>(type: "text[]", nullable: false),

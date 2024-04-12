@@ -19,5 +19,5 @@ public class Account : BaseEntity, IAuditableEntity
     public DateTime? ModifiedOnUtc { get; set; }
     [MaxLength(36)] public string OwnerId { get; set; } = Guid.Empty.ToString();
     public virtual AppUser Owner { get; set; } = null!;
-    public virtual IList<Transaction>? Transactions { get; set; }
+    public virtual IList<Transaction>? Transactions { get; set; } = null!;
 }
