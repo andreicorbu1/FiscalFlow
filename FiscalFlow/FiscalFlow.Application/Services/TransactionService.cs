@@ -20,19 +20,18 @@ public class TransactionService : ITransactionService
     public async Task<Result> AddTransaction(AddTransactionRequest payload, string ownerId)
     {
         var account = await _accountService.GetAccountFromIdAsync(payload.AccountId, ownerId);
-        if(!account.IsSuccess)
-        {
+        if (!account.IsSuccess)
             switch (account.Status)
             {
                 case ResultStatus.NotFound:
                     return Result.NotFound(account.Errors.First());
                 case ResultStatus.Forbidden:
                 case ResultStatus.Unauthorized:
-                        return Result.Unauthorized();
+                    return Result.Unauthorized();
                 default:
                     return Result.Error();
             }
-        }
+
         var accountValue = account.Value;
         var transaction = new Transaction
         {
@@ -50,7 +49,7 @@ public class TransactionService : ITransactionService
         // Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
 
-        NodaMoney.Money updatedBalance = accountValue.Balance - transaction.Value;
+        var updatedBalance = accountValue.Balance - transaction.Value;
         accountValue.MoneyBalance = updatedBalance.Amount;
         transaction.AccountValueAfter = accountValue.MoneyBalance;
         _accountService.UpdateAccount(account);

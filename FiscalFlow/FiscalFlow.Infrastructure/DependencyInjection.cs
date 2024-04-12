@@ -1,9 +1,12 @@
-﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using System.Text;
+using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Application.Services;
 using FiscalFlow.Domain.Entities;
+using FiscalFlow.Domain.Repositories;
 using FiscalFlow.Infrastructure.Authentication;
 using FiscalFlow.Infrastructure.Persistence;
+using FiscalFlow.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using FiscalFlow.Domain.Repositories;
-using FiscalFlow.Infrastructure.Persistence.Repositories;
 
 public static class DependencyInjection
 {
@@ -43,20 +43,20 @@ public static class DependencyInjection
                 opts.SignInScheme = IdentityConstants.ExternalScheme;
             });
         services.AddIdentityCore<AppUser>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequiredLength = 8;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireNonAlphanumeric = false;
-            options.SignIn.RequireConfirmedEmail = true;
-        })
-                .AddRoles<IdentityRole>()
-                .AddRoleManager<RoleManager<IdentityRole>>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddSignInManager<SignInManager<AppUser>>()
-                .AddUserManager<UserManager<AppUser>>()
-                .AddDefaultTokenProviders();
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddRoles<IdentityRole>()
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddSignInManager<SignInManager<AppUser>>()
+            .AddUserManager<UserManager<AppUser>>()
+            .AddDefaultTokenProviders();
 
         services.AddCors();
         services.Configure<ApiBehaviorOptions>(options =>

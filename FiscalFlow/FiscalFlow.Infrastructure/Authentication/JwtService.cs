@@ -1,12 +1,12 @@
-﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace FiscalFlow.Infrastructure.Authentication;
 
@@ -28,7 +28,7 @@ public class JwtService : IJwtService
             new(ClaimTypes.NameIdentifier, user.Id),
             new(ClaimTypes.Email, user.Email!),
             new(ClaimTypes.GivenName, user.FirstName!),
-            new(ClaimTypes.Surname, user.LastName!),
+            new(ClaimTypes.Surname, user.LastName!)
         };
 
         var credentials = new SigningCredentials(_jwtKey, SecurityAlgorithms.HmacSha512Signature);
@@ -45,23 +45,22 @@ public class JwtService : IJwtService
         var jwt = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(jwt);
-
     }
 
     public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(ExternalAuthRequest externalAuthRequest)
     {
         try
         {
-            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            var settings = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new List<string>() { _config["Google:ClientId"]! }
+                Audience = new List<string> { _config["Google:ClientId"]! }
             };
             var payload = await GoogleJsonWebSignature.ValidateAsync(externalAuthRequest.IdToken, settings);
             return payload;
         }
         catch (Exception)
         {
-            return new();
+            return new GoogleJsonWebSignature.Payload();
         }
     }
 }

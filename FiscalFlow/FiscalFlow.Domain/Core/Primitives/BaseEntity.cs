@@ -2,21 +2,15 @@
 
 public abstract class BaseEntity
 {
-    public Guid Id { get; private set; }
+    public Guid Id { get; }
 
     public override bool Equals(object? obj)
     {
         var other = obj as BaseEntity;
 
-        if (ReferenceEquals(other, null))
-        {
-            return false;
-        }
+        if (ReferenceEquals(other, null)) return false;
 
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
+        if (ReferenceEquals(this, other)) return true;
 
         if (GetType() != other.GetType())
             return false;
@@ -29,15 +23,9 @@ public abstract class BaseEntity
 
     public static bool operator ==(BaseEntity a, BaseEntity b)
     {
-        if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
-        {
-            return true;
-        }
+        if (ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
 
-        if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
-        {
-            return false;
-        }
+        if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
 
         return a.Equals(b);
     }

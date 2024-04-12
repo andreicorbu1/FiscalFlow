@@ -17,7 +17,7 @@ public class EmailService : IEmailService
 
     public async Task<bool> SendEmailAsync(MailRequest emailSend)
     {
-        MailjetClient client = new MailjetClient(_config["MailJet:ApiKey"], _config["MailJet:SecretKey"]);
+        var client = new MailjetClient(_config["MailJet:ApiKey"], _config["MailJet:SecretKey"]);
 
         var email = new TransactionalEmailBuilder()
             .WithFrom(new SendContact(_config["Email:From"], _config["Email:ApplicationName"]))
@@ -28,12 +28,8 @@ public class EmailService : IEmailService
 
         var response = await client.SendTransactionalEmailAsync(email);
         if (response.Messages != null)
-        {
             if (response.Messages[0].Status == "success")
-            {
                 return true;
-            }
-        }
 
         return false;
     }

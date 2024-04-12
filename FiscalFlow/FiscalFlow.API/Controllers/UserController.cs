@@ -1,11 +1,11 @@
-﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using System.Security.Claims;
+using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using ResetPasswordRequest = FiscalFlow.Contracts.Authentication.ResetPasswordRequest;
 using RegisterRequest = FiscalFlow.Contracts.Authentication.RegisterRequest;
 
@@ -15,9 +15,9 @@ namespace FiscalFlow.API.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
+    private readonly IUserService _accountService;
     private readonly IJwtService _jwtService;
     private readonly UserManager<AppUser> _userManager;
-    private readonly IUserService _accountService;
 
     public UserController(IJwtService jwtService,
         UserManager<AppUser> userManager,
@@ -34,12 +34,9 @@ public class UserController : ControllerBase
     {
         var user = await _accountService.FindByEmailAsync(User.FindFirst(ClaimTypes.Email)!.Value);
 
-        if (user == null)
-        {
-            return BadRequest();
-        }
+        if (user == null) return BadRequest();
 
-        string token = _jwtService.CreateJwt(user);
+        var token = _jwtService.CreateJwt(user);
         return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
     }
 
@@ -47,24 +44,15 @@ public class UserController : ControllerBase
     public async Task<IActionResult> LoginAsync(LoginRequest loginRequest)
     {
         var user = await _accountService.FindByEmailAsync(loginRequest.Email);
-        if (user == null)
-        {
-            return Unauthorized("Invalid username!");
-        }
+        if (user == null) return Unauthorized("Invalid username!");
 
-        if (!user.EmailConfirmed)
-        {
-            return Unauthorized("Please confirm your email!");
-        }
+        if (!user.EmailConfirmed) return Unauthorized("Please confirm your email!");
 
         var result = await _accountService.CheckPasswordSignInAsync(user, loginRequest.Password, true);
 
-        if (!result.Succeeded)
-        {
-            return Unauthorized("Invalid password!");
-        }
+        if (!result.Succeeded) return Unauthorized("Invalid password!");
 
-        string token = _jwtService.CreateJwt(user);
+        var token = _jwtService.CreateJwt(user);
         return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
     }
 
@@ -79,13 +67,11 @@ public class UserController : ControllerBase
         {
             var result = await _accountService.ConfirmEmailAsync(user, confirmEmailRequest.Token!);
             if (result.Succeeded)
-            {
                 return Ok(new
                 {
                     title = "Email confirmed",
                     message = "Your email address has been confirmed! You can login now."
                 });
-            }
 
             return BadRequest("Invalid token. Please try again!");
         }
@@ -107,13 +93,11 @@ public class UserController : ControllerBase
         try
         {
             if (await _accountService.SendConfirmEmailAsync(user))
-            {
                 return Ok(new
                 {
                     title = "Confirmation link sent",
                     message = "New confirmation link has been sent. Please check your inbox."
                 });
-            }
             return BadRequest("Failed to send email.Please contact admin!");
         }
         catch (Exception)
@@ -133,13 +117,11 @@ public class UserController : ControllerBase
         try
         {
             if (await _accountService.SendForgotPasswordEmailAsync(user))
-            {
                 return Ok(new
                 {
                     title = "Forgot password email sent",
                     message = "Please check your email inbox."
                 });
-            }
 
             return BadRequest("Failed to send email. Please contact admin!");
         }
@@ -176,10 +158,8 @@ public class UserController : ControllerBase
     public async Task<IActionResult> RegisterAsync(RegisterRequest registerRequest)
     {
         if (await _accountService.CheckEmailExistsAlready(registerRequest.Email!))
-        {
             return BadRequest(
                 $"An existing account with the email {registerRequest.Email} already exists! Please try another one!");
-        }
 
         var userToAdd = new AppUser
         {
@@ -192,17 +172,11 @@ public class UserController : ControllerBase
 
         var result = await _userManager.CreateAsync(userToAdd, registerRequest.Password!);
 
-        if (!result.Succeeded)
-        {
-            return BadRequest(result.Errors);
-        }
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
         try
         {
-            if (await _accountService.SendConfirmEmailAsync(userToAdd))
-            {
-                return Created();
-            }
+            if (await _accountService.SendConfirmEmailAsync(userToAdd)) return Created();
 
             return BadRequest("Failed to send email. Please contact admin!");
         }
@@ -239,7 +213,7 @@ public class UserController : ControllerBase
             await _userManager.AddLoginAsync(user, info);
         }
 
-        string token = _jwtService.CreateJwt(user);
+        var token = _jwtService.CreateJwt(user);
         return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
     }
 

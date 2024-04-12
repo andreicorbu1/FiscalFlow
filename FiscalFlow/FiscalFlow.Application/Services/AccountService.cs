@@ -32,29 +32,21 @@ public class AccountService : IAccountService
                 AccountType = payload.AccountType,
                 MoneyBalance = payload.Balance,
                 MoneyCurrency = payload.Currency,
-                OwnerId = payload.OwnerId,
+                OwnerId = payload.OwnerId
             };
             _accountRepository.Add(account);
             return Result.Success();
         }
-        else
-        {
-            return Result.NotFound($"Account with id {payload.OwnerId} does not exist!");
-        }
+
+        return Result.NotFound($"Account with id {payload.OwnerId} does not exist!");
     }
 
     public Result DeleteAccount(Guid accountId, string ownerId)
     {
         var account = _accountRepository.GetById(accountId);
-        if (account is null)
-        {
-            return Result.NotFound($"Account with id {accountId} does not exist");
-        }
+        if (account is null) return Result.NotFound($"Account with id {accountId} does not exist");
 
-        if (account.OwnerId != ownerId)
-        {
-            return Result.Forbidden();
-        }
+        if (account.OwnerId != ownerId) return Result.Forbidden();
 
         _accountRepository.Remove(account);
         return Result.Success();
@@ -109,15 +101,9 @@ public class AccountService : IAccountService
             .Include(acc => acc.Transactions)
             .FirstOrDefaultAsync(acc => acc.Id.Equals(account.AccountId));
 
-        if (existingAccount is null)
-        {
-            return Result.NotFound($"Account with id {account.AccountId} does not exist!");
-        }
+        if (existingAccount is null) return Result.NotFound($"Account with id {account.AccountId} does not exist!");
 
-        if (existingAccount.OwnerId != ownerId)
-        {
-            return Result.Forbidden();
-        }
+        if (existingAccount.OwnerId != ownerId) return Result.Forbidden();
 
         existingAccount.Name = account.Name;
         if (existingAccount.MoneyCurrency != account.MoneyCurrency && account.MoneyBalance is null)
@@ -133,14 +119,9 @@ public class AccountService : IAccountService
         existingAccount.AccountType = account.AccountType;
 
         if (existingAccount.Transactions is not null && existingAccount.Transactions.Count > 0)
-        {
             foreach (var transaction in existingAccount.Transactions)
-            {
                 transaction.MoneyCurrency = existingAccount.MoneyCurrency;
-                /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
-            }
-        }
-
+        /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
         _accountRepository.Update(existingAccount);
         return Result.Success();
     }

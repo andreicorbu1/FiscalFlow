@@ -7,13 +7,12 @@ namespace FiscalFlow.Infrastructure.Persistence;
 
 public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
 {
-    public DbSet<Account> Accounts { get; set; }
-    public DbSet<Transaction> Transactions { get; set; }
-
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-
     }
+
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,5 @@
-﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using System.Text;
+using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Contracts.Emails;
@@ -7,17 +8,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Text;
 
 namespace FiscalFlow.Application.Services;
 
 public class UserService : IUserService
 {
+    private readonly IConfiguration _config;
+    private readonly IEmailService _emailService;
     private readonly IJwtService _jwtService;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;
-    private readonly IEmailService _emailService;
-    private readonly IConfiguration _config;
 
     public UserService(IJwtService jwtService,
         SignInManager<AppUser> signInManager,

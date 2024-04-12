@@ -1,6 +1,7 @@
 ﻿using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+
 namespace FiscalFlow.Application.Core.Abstractions.Authentication;
 
 public interface IUserService

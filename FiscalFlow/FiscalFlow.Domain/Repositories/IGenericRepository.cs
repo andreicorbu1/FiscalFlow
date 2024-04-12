@@ -10,7 +10,7 @@ public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     public void AddRange(IEnumerable<TEntity> objModel);
 
     bool Any(Func<TEntity, bool> predicate);
-    
+
     public TEntity? GetById(Guid id);
 
     public Task<TEntity?> GetByIdAsync(Guid id);

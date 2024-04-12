@@ -2,7 +2,6 @@
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FiscalFlow.Application.Core.Abstractions.Services;
 

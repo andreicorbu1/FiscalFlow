@@ -1,13 +1,8 @@
-﻿namespace FiscalFlow.Contracts.Authentication
-{
-    public sealed class ResetPasswordRequest
-    {
-        public ResetPasswordRequest()
-        {
+﻿namespace FiscalFlow.Contracts.Authentication;
 
-        }
-        public required string Email { get; init; }
-        public required string ResetCode { get; init; }
-        public required string NewPassword { get; init; }
-    }
+public sealed class ResetPasswordRequest
+{
+    public required string Email { get; init; }
+    public required string ResetCode { get; init; }
+    public required string NewPassword { get; init; }
 }
