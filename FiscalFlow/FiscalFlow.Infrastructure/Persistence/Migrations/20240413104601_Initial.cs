@@ -86,9 +86,9 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     Currency = table.Column<string>(type: "text", nullable: false),
                     AccountType = table.Column<string>(type: "text", nullable: false),
+                    OwnerId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false),
                     CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    OwnerId = table.Column<string>(type: "character varying(36)", maxLength: 36, nullable: false)
+                    ModifiedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -200,9 +200,9 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     Labels = table.Column<string[]>(type: "text[]", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     Category = table.Column<string>(type: "text", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    AccountId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ModifiedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

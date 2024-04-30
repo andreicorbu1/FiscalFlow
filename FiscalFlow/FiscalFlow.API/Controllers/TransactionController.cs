@@ -1,14 +1,16 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Contracts.Transactions;
+using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static FiscalFlow.API.Utils.Utils;
 
 namespace FiscalFlow.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class TransactionController : ControllerBase
 {
@@ -30,6 +32,16 @@ public class TransactionController : ControllerBase
         return NotFound(transaction.Errors[0]);
     }
 
+    [Authorize]
+    [HttpGet("me/{accountId:guid}/periodOfTime")]
+    public async Task<ActionResult<IList<Transaction>>> GetTransactionsPeriod(Guid accountId,
+        PeriodOfTimeRequest period)
+    {
+        var id = ExtractUserIdFromClaims(User);
+        if (!id.IsSuccess) return Unauthorized();
+        return this.ToActionResult(await _transactionService.GetTransactionsFromAccountPeriodOfTime(id.Value, accountId, period));
+    }
+    
     [HttpDelete("me/delete/{transactionId:guid}")]
     [Authorize]
     public async Task<IActionResult> DeleteTransaction(Guid transactionId)

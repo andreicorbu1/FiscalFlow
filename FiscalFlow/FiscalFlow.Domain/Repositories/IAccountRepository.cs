@@ -9,4 +9,5 @@ public interface IAccountRepository : IGenericRepository<Account>
     IList<Transaction> GetTransactions(Guid accountId);
     Task<IList<Transaction>> GetTransactionsAsync(Guid accountId);
     Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId);
+    Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions);
 }

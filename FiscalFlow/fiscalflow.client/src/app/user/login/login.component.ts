@@ -1,10 +1,10 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AccountService } from '../account.service';
+import { UserService } from '../user.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from 'src/app/shared/models/account/user';
+import { User } from 'src/app/shared/models/user/user';
 import { take } from 'rxjs';
-import { ExternalAuth } from 'src/app/shared/models/account/externalAuth';
+import { ExternalAuth } from 'src/app/shared/models/user/externalAuth';
 
 @Component({
   selector: 'app-login',
@@ -18,13 +18,13 @@ export class LoginComponent implements OnInit {
   returnUrl: string | null = null;
 
   constructor(
-    private accountService: AccountService,
+    private userService: UserService,
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private ngZone: NgZone
   ) {
-    this.accountService.user$.pipe(take(1)).subscribe({
+    this.userService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
         if (user) {
           this.router.navigateByUrl('/');
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
         provider: 'Google',
         idToken: response.credential,
       };
-      this.accountService.externalLogin(externalAuth);
+      this.userService.externalLogin(externalAuth);
     });
   }
 
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
   }
 
   testAuthorize() {
-    this.accountService.checkAuthorized();
+    this.userService.checkAuthorized();
   }
 
   initializeForm() {
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
     this.errorMessages = [];
     this.submitted = true;
     if (this.loginForm.valid) {
-      this.accountService.login(this.loginForm.value).subscribe({
+      this.userService.login(this.loginForm.value).subscribe({
         next: (response: any) => {
           if (this.returnUrl) {
             this.router.navigateByUrl(this.returnUrl);

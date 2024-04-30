@@ -1,10 +1,12 @@
 ﻿using Ardalis.Result;
 using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
+using FiscalFlow.Domain.Enums;
 using FiscalFlow.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,14 +33,21 @@ public class AccountService : IAccountService
                 Name = payload.Name,
                 AccountType = payload.AccountType,
                 MoneyBalance = payload.Balance,
-                MoneyCurrency = payload.Currency,
-                OwnerId = payload.OwnerId
+                MoneyCurrency = Enum.Parse<MyCurrency>(payload.Currency),
+                OwnerId = payload.OwnerId,
+                CreatedOnUtc = DateTime.UtcNow
             };
             _accountRepository.Add(account);
             return Result.Success();
         }
 
         return Result.NotFound($"Account with id {payload.OwnerId} does not exist!");
+    }
+
+    public async Task<Result<IList<Transaction>>> GetLastTransactions(string ownerId, int numberOfTransactions)
+    {
+        var transactions = await _accountRepository.GetLastTransactionsAsync(ownerId, numberOfTransactions);
+        return Result.Success(transactions);
     }
 
     public Result DeleteAccount(Guid accountId, string ownerId)
@@ -49,6 +58,16 @@ public class AccountService : IAccountService
         if (account.OwnerId != ownerId) return Result.Forbidden();
 
         _accountRepository.Remove(account);
+        return Result.Success();
+    }
+
+
+    public Result CheckAccountExistsAndHasAccess(Guid accountId, string ownerId)
+    {
+        if (!_accountRepository.CheckAccountExists(accountId))
+            return Result.NotFound($"Account with id {accountId} does not exist!");
+        if (!_accountRepository.CheckIfIsAccountOwner(accountId, ownerId))
+            return Result.Forbidden();
         return Result.Success();
     }
 
@@ -83,10 +102,10 @@ public class AccountService : IAccountService
         return Result.Success();
     }
 
-    public async Task<Result<IReadOnlyCollection<Account>>> GetAccountsOfOwnerAsync(string ownerId)
+    public async Task<Result<List<AccountDto>>> GetAccountsOfOwnerAsync(string ownerId)
     {
-        var accounts = await _accountRepository.GetUserAccountsAsync(ownerId);
-
+        var accounts = (await _accountRepository.GetUserAccountsAsync(ownerId)).Select(account => account.ToAccountDto()).ToList();
+        
         return Result.Success(accounts);
     }
 

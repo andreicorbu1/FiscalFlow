@@ -27,7 +27,6 @@
 
     <ItemGroup>
         <Folder Include="Core\Abstractions\Data\"/>
-        <Folder Include="Core\Extensions\"/>
     </ItemGroup>
 
 </Project>

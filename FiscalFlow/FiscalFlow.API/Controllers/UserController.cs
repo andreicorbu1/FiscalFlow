@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         var result = await _accountService.CheckPasswordSignInAsync(user, loginRequest.Password, true);
 
         if (!result.Succeeded) return Unauthorized("Invalid password!");
-
+        
         var token = _jwtService.CreateJwt(user);
         return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
     }

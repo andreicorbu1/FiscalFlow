@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from './account/account.service';
+import { UserService } from './user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -8,23 +8,23 @@ import { AccountService } from './account/account.service';
 })
 export class AppComponent implements OnInit{
 
-constructor(private accountService: AccountService){}
+constructor(private userService: UserService){}
 
   ngOnInit(): void {
     this.refreshUser();
   }
 
   private refreshUser() {
-    const jwt = this.accountService.getJwt();
+    const jwt = this.userService.getJwt();
     if(jwt) {
-      this.accountService.refreshUser(jwt).subscribe({
+      this.userService.refreshUser(jwt).subscribe({
         next: _ => {},
         error: _ => {
-          this.accountService.logout();
+          this.userService.logout();
         }
       });
     } else {
-      this.accountService.refreshUser(null).subscribe();
+      this.userService.refreshUser(null).subscribe();
     }
   }
 

@@ -1,1 +1,17 @@
-<p>home works!</p>
+<div *ngIf="(userService.user$ | async) as user; else loggedOut">
+  <div class="home-container">
+    <div class="row">
+      <div *ngFor="let account of accounts" class="col-sm">
+        <app-account [account]="account">
+        </app-account>
+      </div>
+    </div>
+    <div class="row-gap-1">
+      <p>Show last x transactions from all accounts</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loggedOut>
+  <h1><strong style="color:red;font-size: 42px">Please login first to have full access to the website!</strong></h1>
+</ng-template>

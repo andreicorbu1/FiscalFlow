@@ -40,4 +40,15 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
         return await _context.Accounts.Where(account => account.OwnerId == userId).ToListAsync();
     }
+
+    public async Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions)
+    {
+        return await _context.Accounts
+            .Where(account => account.OwnerId == userId)
+            .Include(ac => ac.Transactions)
+            .SelectMany(ac => ac.Transactions!)
+            .OrderByDescending(tr => tr.CreatedOnUtc)
+            .Take(numberOfTransactions)
+            .ToListAsync();
+    }
 }

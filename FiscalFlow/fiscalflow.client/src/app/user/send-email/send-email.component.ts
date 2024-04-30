@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../account.service';
+import { UserService } from '../user.service';
 import { SharedService } from 'src/app/shared/shared.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs';
-import { User } from 'src/app/shared/models/account/user';
+import { User } from 'src/app/shared/models/user/user';
 
 @Component({
   selector: 'app-send-email',
@@ -17,7 +17,7 @@ export class SendEmailComponent implements OnInit {
   mode: string | undefined;
   errorMessages: string[] = [];
   constructor(
-    private accountService: AccountService,
+    private userService: UserService,
     private sharedService: SharedService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -25,7 +25,7 @@ export class SendEmailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.accountService.user$.pipe(take(1)).subscribe({
+    this.userService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
         if (user) {
           this.router.navigateByUrl('/');
@@ -60,7 +60,7 @@ export class SendEmailComponent implements OnInit {
     this.errorMessages = [];
     if (this.emailForm.valid && this.mode) {
       if (this.mode.includes('resend-email-confirmation-link')) {
-        this.accountService
+        this.userService
           .resendEmailConfirmationLink(this.emailForm.get('email')?.value)
           .subscribe({
             next: (response: any) => {
@@ -69,7 +69,7 @@ export class SendEmailComponent implements OnInit {
                 response.title,
                 response.message
               );
-              this.router.navigateByUrl('/account/login');
+              this.router.navigateByUrl('/user/login');
             },
             error: (error) => {
               if (error.error.errors) {
@@ -86,7 +86,7 @@ export class SendEmailComponent implements OnInit {
             },
           });
       } else if (this.mode.includes('forgot-password')) {
-        this.accountService
+        this.userService
           .forgotPassword(this.emailForm.get('email')?.value)
           .subscribe({
             next: (response: any) => {
@@ -95,7 +95,7 @@ export class SendEmailComponent implements OnInit {
                 response.title,
                 response.message
               );
-              this.router.navigateByUrl('/account/login');
+              this.router.navigateByUrl('/user/login');
             },
             error: (error) => {
               if (error.error.errors) {
@@ -115,6 +115,6 @@ export class SendEmailComponent implements OnInit {
     }
   }
   cancel() {
-    this.router.navigateByUrl('/account/login');
+    this.router.navigateByUrl('/user/login');
   }
 }

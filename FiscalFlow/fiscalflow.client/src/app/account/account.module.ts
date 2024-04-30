@@ -1,29 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { AccountRoutingModule } from './account-routing.module';
-import { SharedModule } from '../shared/shared.module';
-import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
-import { SendEmailComponent } from './send-email/send-email.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
+import { AccountRoutingModule } from './account-routing.module';
+import { AddAccountComponent } from './add-account/add-account.component';
+import {SharedModule} from "../shared/shared.module";
+import {FormsModule} from "@angular/forms";
+import { AccountComponent } from './account/account.component';
+import {MatCardModule} from "@angular/material/card";
 
 
 @NgModule({
   declarations: [
-    LoginComponent,
-    RegisterComponent,
-    ConfirmEmailComponent,
-    SendEmailComponent,
-    ResetPasswordComponent
+    AddAccountComponent,
+    AccountComponent
+  ],
+  exports: [
+    AccountComponent
   ],
   imports: [
     CommonModule,
-    GoogleSigninButtonModule,
     AccountRoutingModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    MatCardModule
   ]
 })
 export class AccountModule { }

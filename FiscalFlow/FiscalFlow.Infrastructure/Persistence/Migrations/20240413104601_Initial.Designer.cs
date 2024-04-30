@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiscalFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240410185057_Initial")]
+    [Migration("20240413104601_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

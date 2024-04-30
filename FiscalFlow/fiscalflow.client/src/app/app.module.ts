@@ -10,14 +10,16 @@ import { HomeComponent } from './home/home.component';
 import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
+import {AccountModule} from "./account/account.module";
 @NgModule({
   declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    SharedModule,
-    BrowserAnimationsModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        SharedModule,
+        BrowserAnimationsModule,
+        AccountModule,
+    ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],

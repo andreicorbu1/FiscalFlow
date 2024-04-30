@@ -63,22 +63,22 @@ internal abstract class GenericRepository<TEntity> : IGenericRepository<TEntity>
 
     public IEnumerable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate)
     {
-        return _context.Set<TEntity>().Where(predicate).ToList();
+        return _context.Set<TEntity>().Where(predicate).OrderBy(e => e.CreatedOnUtc).ToList();
     }
 
     public async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        return await _context.Set<TEntity>().Where(predicate).ToListAsync();
+        return await _context.Set<TEntity>().Where(predicate).OrderBy(e => e.CreatedOnUtc).ToListAsync();
     }
 
     public IEnumerable<TEntity> GetAll()
     {
-        return _context.Set<TEntity>().ToList();
+        return _context.Set<TEntity>().OrderBy(e => e.CreatedOnUtc).ToList();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await _context.Set<TEntity>().ToListAsync();
+        return await _context.Set<TEntity>().OrderBy(e => e.CreatedOnUtc).ToListAsync();
     }
 
     public IQueryable<TEntity> GetAllAsQuery()

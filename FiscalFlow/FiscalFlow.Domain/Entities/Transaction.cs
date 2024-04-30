@@ -29,8 +29,5 @@ public class Transaction : BaseEntity, IAuditableEntity
     public Category Category { get; set; }
 
     public Guid AccountId { get; set; }
-    public virtual Account? Account { get; set; } = null!;
-    public DateTime CreatedOnUtc { get; init; } = DateTime.UtcNow;
-
-    public DateTime? ModifiedOnUtc { get; set; }
+    public virtual Account Account { get; set; } = null!;
 }

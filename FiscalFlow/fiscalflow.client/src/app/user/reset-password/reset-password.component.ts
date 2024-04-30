@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../account.service';
+import { UserService } from '../user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SharedService } from 'src/app/shared/shared.service';
 import { take } from 'rxjs';
-import { User } from 'src/app/shared/models/account/user';
-import { ResetPassword } from 'src/app/shared/models/account/resetPassword';
+import { User } from 'src/app/shared/models/user/user';
+import { ResetPassword } from 'src/app/shared/models/user/resetPassword';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,14 +19,14 @@ export class ResetPasswordComponent implements OnInit {
   submitted: boolean = false;
   errorMessages: string[] = [];
   constructor(
-    private accountService: AccountService,
+    private userService: UserService,
     private sharedService: SharedService,
     private formBuilder: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    this.accountService.user$.pipe(take(1)).subscribe({
+    this.userService.user$.pipe(take(1)).subscribe({
       next: (user: User | null) => {
         if (user) {
           this.router.navigateByUrl('/');
@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
               if (this.token && this.email) {
                 this.initializeForm(this.email);
               } else {
-                this.router.navigateByUrl('/account/login');
+                this.router.navigateByUrl('/user/login');
               }
             },
           });
@@ -70,14 +70,14 @@ export class ResetPasswordComponent implements OnInit {
         resetCode: this.token,
         newPassword: this.resetPasswordForm.get('newPassword')?.value,
       };
-      this.accountService.resetPassword(model).subscribe({
+      this.userService.resetPassword(model).subscribe({
         next: (response: any) => {
           this.sharedService.showNotification(
             true,
             response.title,
             response.message
           );
-          this.router.navigateByUrl('/account/login');
+          this.router.navigateByUrl('/user/login');
         },
         error: (error: any) => {
           if (error.error.errors) {

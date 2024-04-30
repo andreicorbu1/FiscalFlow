@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Repositories;
@@ -44,8 +45,10 @@ public class TransactionService : ITransactionService
             Labels = payload.Labels,
             Type = payload.Type,
             Category = payload.Category,
+            CreatedOnUtc = DateTime.UtcNow,
             AccountValueBefore = accountValue.MoneyBalance
         };
+        
         // Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
 
@@ -55,6 +58,19 @@ public class TransactionService : ITransactionService
         _accountService.UpdateAccount(account);
         _transactionRepository.Add(transaction);
         return Result.Success();
+    }
+
+    public async Task<Result<IList<Transaction>>> GetTransactionsFromAccountPeriodOfTime(string ownerId, Guid accountId,
+        PeriodOfTimeRequest period)
+    {
+        var accountExists = _accountService.CheckAccountExistsAndHasAccess(accountId, ownerId);
+        if (!accountExists.IsSuccess)
+            return accountExists;
+        var startDate = new DateTime(period.StartDate.Year, period.StartDate.Month, period.StartDate.Day);
+        var endDate = new DateTime(period.EndDate.Year, period.EndDate.Month, period.EndDate.Day);
+        var transactions =
+            await _transactionRepository.GetTransactionsFromAccountInPeriodOfTime(accountId, startDate, endDate);
+        return Result.Success(transactions);
     }
 
     public Result DeleteTransaction(string ownerId, Guid transactionId)

@@ -1,8 +1,11 @@
-﻿namespace FiscalFlow.Domain.Core.Primitives;
+﻿using System.ComponentModel.DataAnnotations;
+using FiscalFlow.Domain.Core.Abstractions;
 
-public abstract class BaseEntity
+namespace FiscalFlow.Domain.Core.Primitives;
+
+public abstract class BaseEntity : IAuditableEntity
 {
-    public Guid Id { get; }
+    public Guid Id { get; set; }
 
     public override bool Equals(object? obj)
     {
@@ -39,4 +42,7 @@ public abstract class BaseEntity
     {
         return (GetType().ToString() + Id).GetHashCode();
     }
+
+    public DateTime CreatedOnUtc { get; init; } = DateTime.Now;
+    public DateTime? ModifiedOnUtc { get; set; }
 }

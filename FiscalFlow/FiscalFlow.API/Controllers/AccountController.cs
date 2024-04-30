@@ -9,7 +9,7 @@ using static FiscalFlow.API.Utils.Utils;
 
 namespace FiscalFlow.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class AccountController : ControllerBase
 {
@@ -31,6 +31,25 @@ public class AccountController : ControllerBase
         return NotFound(result.Errors[0]);
     }
 
+    [Authorize]
+    [HttpGet("me/account/last-{numberOfTransactions}-transactions")]
+    public async Task<IActionResult> GetLastTransactionsOfUser(int numberOfTransactions)
+    {
+        var ownerId = ExtractUserIdFromClaims(User);
+        if (!ownerId.IsSuccess)
+        {
+            return Unauthorized();
+        }
+
+        var transactions = await _accountService.GetLastTransactions(ownerId, numberOfTransactions);
+        if (!transactions.IsSuccess)
+        {
+            return BadRequest();
+        }
+        
+        return Ok(transactions.Value);
+    }
+    
     [Authorize]
     [HttpGet("me/csv/export/{accountId}")]
     [Produces("text/csv")]
@@ -74,7 +93,7 @@ public class AccountController : ControllerBase
 
     [Authorize]
     [HttpGet("me/accounts")]
-    public async Task<ActionResult<IReadOnlyCollection<Account>>> GetUsersAccounts()
+    public async Task<ActionResult<List<AccountDto>>> GetUsersAccounts()
     {
         var idResult = ExtractUserIdFromClaims(User);
         if (!idResult.IsSuccess)
