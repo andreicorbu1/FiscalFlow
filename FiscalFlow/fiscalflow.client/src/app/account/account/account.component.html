@@ -1,4 +1,4 @@
-<mat-card class="example-card">
+<mat-card class="example-card" style="width: 200px">
   <mat-card-header>
     <mat-card-title>{{ account?.name }}</mat-card-title>
     <mat-card-subtitle>{{ account?.balance }} {{ account?.currency }}</mat-card-subtitle>
@@ -7,7 +7,7 @@
       account?.createdOnUtc | date : "dd-MMM-y HH:mm:ss"
     }}
   </mat-card-subtitle>
-  <mat-card-content class="transaction-container">
+  <mat-card-content class="transaction-container" style="max-height: calc(100% - 64px); height: 75px; overflow-y: auto;">
     <div *ngFor="let transaction of account?.transactions">
       {{ transaction.payee }}  {{ transaction.type === 0 ? "+" : "-" }}{{ transaction.value }}
     </div>

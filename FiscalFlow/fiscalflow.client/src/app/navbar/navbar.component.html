@@ -1,5 +1,5 @@
 <header>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4758b8">
     <div class="container">
       <a class="navbar-brand">
         <img src="./assets/images/logo.png" class="me-3" alt="Logo">
@@ -33,7 +33,7 @@
         </ul>
         <div class="d-flex align-items-center" *ngIf="(userService.user$ | async) as user">
           <a class="text-white" style="text-decoration: none; cursor: pointer;">
-            Hi <span class="h3 text-warning">{{ user.firstName | titlecase }}</span>
+            Hi <span class="h3" style="color: azure">{{ user.firstName | titlecase }}</span>
           </a>
           <a class="btn btn-secondary ms-2" (click)="logout()">Logout</a>
         </div>

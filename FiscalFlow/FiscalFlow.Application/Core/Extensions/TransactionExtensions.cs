@@ -12,7 +12,7 @@ public static class TransactionExtensions
             AccountValueAfter = transaction.AccountValueAfter,
             AccountValueBefore = transaction.AccountValueBefore,
             Category = transaction.Category,
-            Currency = transaction.Value.Currency.ToString()!,
+            Currency = transaction.Value.Currency.Code,
             Description = transaction.Description,
             Payee = transaction.Payee,
             Type = transaction.Type,
@@ -20,6 +20,10 @@ public static class TransactionExtensions
             CreatedOnUtc = transaction.CreatedOnUtc,
             Id = transaction.Id
         };
+        if (transaction.Account is not null)
+        {
+            transactionDto.Account = transaction.Account.Name!;
+        }
         return transactionDto;
     }
 }

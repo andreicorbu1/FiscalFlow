@@ -11,5 +11,6 @@ export interface Transaction {
   payee: string;
   type: TransactionType;
   category: Category;
+  createdOnUtc: Date,
   accountId: string;
 }

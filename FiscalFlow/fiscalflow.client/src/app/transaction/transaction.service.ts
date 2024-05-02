@@ -15,8 +15,8 @@ export class TransactionService {
     return this.httpClient.post(`${environment.appUrl}/api/v1/transaction`, transaction);
   }
 
-  getLastTransactions() {
-    return this.httpClient.get<Transaction[]>(`${environment.appUrl}/api/v1/account/me/account/last-5-transactions`);
+  getLastTransactions(transactions: number) {
+    return this.httpClient.get<Transaction[]>(`${environment.appUrl}/api/v1/account/me/account/last-${transactions}-transactions`);
   }
 
 }

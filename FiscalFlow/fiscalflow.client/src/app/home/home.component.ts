@@ -12,7 +12,10 @@ import {TransactionService} from "../transaction/transaction.service";
 })
 export class HomeComponent implements OnInit {
   accounts: Account[] | undefined;
-  transactions: Transaction[] | undefined;
+  displayedColumns: string[] = ['CreatedOnUtc','Account', 'Payee', 'Value'];
+
+  // @ts-ignore
+  transactions: Transaction[];
   constructor(public userService: UserService, private accountService: AccountService, private transactionService: TransactionService) {
   }
 
@@ -22,7 +25,7 @@ export class HomeComponent implements OnInit {
         console.log(this.accounts[0]?.transactions);
       }
     );
-    this.transactionService.getLastTransactions().subscribe((transactions) => {
+    this.transactionService.getLastTransactions(10).subscribe((transactions) => {
       this.transactions = transactions;
       console.log(transactions);
     })

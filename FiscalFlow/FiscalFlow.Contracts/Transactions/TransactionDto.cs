@@ -11,7 +11,6 @@ public class TransactionDto
     public decimal AccountValueAfter { get; set; }
     public string Description { get; set; }
     public string Payee { get; set; }
-    public IList<string> Labels { get; set; }
     public TransactionType Type { get; set; }
     public Category Category { get; set; }
     public DateTime CreatedOnUtc { get; set; }

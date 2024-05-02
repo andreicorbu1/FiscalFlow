@@ -45,7 +45,8 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
         return await _context.Accounts
             .Where(account => account.OwnerId == userId)
-            .Include(ac => ac.Transactions)
+            .Include(ac => ac.Transactions!)
+            .ThenInclude(tr => tr.Account)
             .SelectMany(ac => ac.Transactions!)
             .OrderByDescending(tr => tr.CreatedOnUtc)
             .Take(numberOfTransactions)
