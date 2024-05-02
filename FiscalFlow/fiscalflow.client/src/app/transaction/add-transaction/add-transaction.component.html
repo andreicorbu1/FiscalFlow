@@ -1,0 +1,66 @@
+<div mat-dialog-title>
+  <h1>Transaction Form</h1>
+</div>
+<form [formGroup]="addTransactionForm" (ngSubmit)="onFormSubmit()">
+  <div mat-dialog-content class="content">
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Account</mat-label>
+        <input matInput type="text" placeholder="{{data?.name}}" formControlName="accountId">
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Payee</mat-label>
+        <input matInput type="text" placeholder="Payee" formControlName="payee" required>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="col-sm">
+        <mat-form-field appearance="outline" class="value-field">
+          <mat-label>Value</mat-label>
+          <input matInput type="number" placeholder="Value" formControlName="value" required>
+        </mat-form-field>
+      </div>
+      <div class="col-sm">
+        <span>{{data?.currency}}</span>
+      </div>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input matInput type="text" placeholder="Description" formControlName="description" required>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-radio-group aria-label="Select an option" formControlName="transactionType" required>
+        <mat-label><b>Transaction Type</b></mat-label>
+        <mat-radio-button value=0>Income</mat-radio-button>
+        <mat-radio-button value=1>Expense</mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Date of transaction</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="transactionDate" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category" required>
+          <mat-option>--</mat-option>
+          <mat-option *ngFor="let category of categories" [value]="category.value">
+            {{ category.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div mat-dialog-actions class="action">
+    <button mat-raised-button type="button" [mat-dialog-close]="false">Cancel</button>
+    <button mat-raised-button color="primary" type="submit">{{ data ? 'Save' : 'Update' }}</button>
+  </div>
+</form>

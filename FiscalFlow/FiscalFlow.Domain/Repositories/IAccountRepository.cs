@@ -10,4 +10,5 @@ public interface IAccountRepository : IGenericRepository<Account>
     Task<IList<Transaction>> GetTransactionsAsync(Guid accountId);
     Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId);
     Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions);
+    bool CheckAccountWithSameName(string payloadOwnerId, string payloadName);
 }

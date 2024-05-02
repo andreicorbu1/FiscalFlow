@@ -3,7 +3,9 @@ using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
+using FiscalFlow.Domain.Enums;
 using FiscalFlow.Domain.Repositories;
+using NodaMoney;
 
 namespace FiscalFlow.Application.Services;
 
@@ -42,17 +44,23 @@ public class TransactionService : ITransactionService
             MoneyCurrency = accountValue.MoneyCurrency,
             Description = payload.Description,
             Payee = payload.Payee,
-            Labels = payload.Labels,
             Type = payload.Type,
             Category = payload.Category,
-            CreatedOnUtc = DateTime.UtcNow,
+            CreatedOnUtc = payload.CreatedOnUtc,
             AccountValueBefore = accountValue.MoneyBalance
         };
         
         // Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
-
-        var updatedBalance = accountValue.Balance - transaction.Value;
+        Money updatedBalance;
+        if (transaction.Type == TransactionType.Income)
+        {
+            updatedBalance = accountValue.Balance + transaction.Value;
+        }
+        else
+        {
+            updatedBalance = accountValue.Balance - transaction.Value;
+        }
         accountValue.MoneyBalance = updatedBalance.Amount;
         transaction.AccountValueAfter = accountValue.MoneyBalance;
         _accountService.UpdateAccount(account);

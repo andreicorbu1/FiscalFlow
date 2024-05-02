@@ -24,7 +24,6 @@ public class Transaction : BaseEntity, IAuditableEntity
     [MaxLength(250)] public string Description { get; set; } = string.Empty;
 
     [MaxLength(100)] public string Payee { get; set; } = string.Empty;
-    public IList<string> Labels { get; set; } = new List<string>();
     public TransactionType Type { get; set; }
     public Category Category { get; set; }
 

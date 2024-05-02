@@ -26,9 +26,7 @@ public class AccountController : ControllerBase
     {
         payload.OwnerId = ExtractUserIdFromClaims(User);
         var result = _accountService.CreateAccount(payload);
-        if (result.IsSuccess)
-            return Created();
-        return NotFound(result.Errors[0]);
+        return this.ToActionResult(result);
     }
 
     [Authorize]

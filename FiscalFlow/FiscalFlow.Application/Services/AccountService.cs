@@ -28,6 +28,12 @@ public class AccountService : IAccountService
         var doesAccountExist = _userService.CheckUserExists(payload.OwnerId);
         if (doesAccountExist)
         {
+            var sameName = _accountRepository.CheckAccountWithSameName(payload.OwnerId, payload.Name);
+            if (sameName)
+            {
+                return Result.Conflict($"You already have an account with the name {payload.Name}");
+            }
+            
             var account = new Account
             {
                 Name = payload.Name,
@@ -44,10 +50,15 @@ public class AccountService : IAccountService
         return Result.NotFound($"Account with id {payload.OwnerId} does not exist!");
     }
 
-    public async Task<Result<IList<Transaction>>> GetLastTransactions(string ownerId, int numberOfTransactions)
+    public async Task<Result<List<TransactionDto>>> GetLastTransactions(string ownerId, int numberOfTransactions)
     {
         var transactions = await _accountRepository.GetLastTransactionsAsync(ownerId, numberOfTransactions);
-        return Result.Success(transactions);
+        var transactionDtos = new List<TransactionDto>();
+        foreach (var transaction in transactions)
+        {
+            transactionDtos.Add(transaction.ToTransactionDto());
+        }
+        return Result.Success(transactionDtos);
     }
 
     public Result DeleteAccount(Guid accountId, string ownerId)

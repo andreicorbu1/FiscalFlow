@@ -7,7 +7,9 @@ import {SharedModule} from "../shared/shared.module";
 import {FormsModule} from "@angular/forms";
 import { AccountComponent } from './account/account.component';
 import {MatCardModule} from "@angular/material/card";
-
+import {MatButtonModule} from "@angular/material/button";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -17,12 +19,15 @@ import {MatCardModule} from "@angular/material/card";
   exports: [
     AccountComponent
   ],
-  imports: [
-    CommonModule,
-    AccountRoutingModule,
-    SharedModule,
-    FormsModule,
-    MatCardModule
-  ]
+    imports: [
+        CommonModule,
+        AccountRoutingModule,
+        SharedModule,
+        MatIconModule,
+        FormsModule,
+        MatCardModule,
+        MatButtonModule,
+        MatTooltipModule
+    ]
 })
 export class AccountModule { }

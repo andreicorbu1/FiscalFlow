@@ -38,7 +38,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
 
     public async Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId)
     {
-        return await _context.Accounts.Where(account => account.OwnerId == userId).ToListAsync();
+        return await _context.Accounts.Include(acc => acc.Transactions).Where(account => account.OwnerId == userId).ToListAsync();
     }
 
     public async Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions)
@@ -50,5 +50,10 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
             .OrderByDescending(tr => tr.CreatedOnUtc)
             .Take(numberOfTransactions)
             .ToListAsync();
+    }
+
+    public bool CheckAccountWithSameName(string ownerId, string accoutName)
+    {
+        return _context.Accounts.Any(ac => ac.Name == accoutName && ac.OwnerId == ownerId);
     }
 }

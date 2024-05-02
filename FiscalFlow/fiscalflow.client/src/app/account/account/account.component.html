@@ -1,12 +1,22 @@
 <mat-card class="example-card">
   <mat-card-header>
-    <mat-card-title>{{account?.name}}</mat-card-title>
-    <mat-card-subtitle>{{account?.balance}} {{account?.currency}}</mat-card-subtitle>
+    <mat-card-title>{{ account?.name }}</mat-card-title>
+    <mat-card-subtitle>{{ account?.balance }} {{ account?.currency }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-subtitle class="date-posted">{{
       account?.createdOnUtc | date : "dd-MMM-y HH:mm:ss"
-    }}</mat-card-subtitle>
-  <mat-card-content>
-    <p>Last 3 transactions</p>
+    }}
+  </mat-card-subtitle>
+  <mat-card-content class="transaction-container">
+    <div *ngFor="let transaction of account?.transactions">
+      {{ transaction.payee }}  {{ transaction.type === 0 ? "+" : "-" }}{{ transaction.value }}
+    </div>
   </mat-card-content>
+  <mat-card-actions>
+    <div class="account-button-container">
+      <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </mat-card-actions>
 </mat-card>

@@ -1,5 +1,6 @@
 import {CurrencyEnum} from "./enums/currencyEnum";
 import {AccountType} from "./enums/accountType";
+import {Transaction} from "../transaction/transaction";
 
 export interface Account {
   id: string;
@@ -9,4 +10,5 @@ export interface Account {
   type: AccountType;
   createdOnUtc: Date;
   ownerId: string;
+  transactions: Transaction[];
 }

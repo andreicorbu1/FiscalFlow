@@ -6,8 +6,10 @@
         </app-account>
       </div>
     </div>
-    <div class="row-gap-1">
-      <p>Show last x transactions from all accounts</p>
+    <div class="row">
+      <div *ngFor="let transaction of transactions" class="row">
+        {{transaction.payee}} {{transaction.type === 0 ? "+" : "-" }} {{transaction.value}}
+      </div>
     </div>
   </div>
 </div>

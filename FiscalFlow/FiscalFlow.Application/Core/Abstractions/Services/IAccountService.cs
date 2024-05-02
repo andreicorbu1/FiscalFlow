@@ -15,6 +15,6 @@ public interface IAccountService
     Task<Result> UpdateAccount(string ownerId, UpdateAccountRequest account);
     Task<Result<List<AccountDto>>> GetAccountsOfOwnerAsync(string ownerId);
     Task<Result<Account>> GetAccountFromIdAsync(Guid accountId, string ownerId);
-    Task<Result<IList<Transaction>>> GetLastTransactions(string ownerId, int numberOfTransactions);
+    Task<Result<List<TransactionDto>>> GetLastTransactions(string ownerId, int numberOfTransactions);
     Result DeleteAccount(Guid accountId, string ownerId);
 }

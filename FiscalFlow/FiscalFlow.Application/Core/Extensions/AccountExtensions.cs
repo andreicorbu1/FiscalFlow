@@ -12,8 +12,19 @@ public static class AccountExtensions
             Name = account.Name!,
             AccountType = account.AccountType!,
             Balance = account.Balance.Amount,
-            Currency = account.MoneyCurrency.ToString()
+            Currency = account.MoneyCurrency.ToString(),
+            Transactions = new List<TransactionDto>(),
+            Id = account.Id
         };
+        if (account.Transactions is { Count: > 0 })
+        {
+            foreach (var transaction in account.Transactions)
+            {
+                var transactionDto = transaction.ToTransactionDto();
+                transactionDto.Account = account.Name!;
+                accountDto.Transactions.Add(transactionDto);
+            }
+        }
         return accountDto;
     }
 }

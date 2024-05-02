@@ -13,7 +13,6 @@ export class AccountService {
   constructor(private httpClient: HttpClient, private router: Router) { }
 
   addAccount(account: CreateAccountRequest) {
-    console.log(account);
     return this.httpClient.post(`${environment.appUrl}/api/v1/account`, account);
   }
 
