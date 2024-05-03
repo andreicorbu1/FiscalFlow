@@ -54,4 +54,15 @@ public class TransactionController : ControllerBase
         
         return this.ToActionResult(result);
     }
+
+    [HttpPut("me/edit")]
+    [Authorize]
+    public async Task<IActionResult> EditTransaction(UpdateTransaction payload)
+    {
+        var id = ExtractUserIdFromClaims(User);
+        if (!id.IsSuccess)
+            return Unauthorized();
+        var result = await _transactionService.UpdateTransaction(payload, id);
+        return this.ToActionResult(result);
+    }
 }

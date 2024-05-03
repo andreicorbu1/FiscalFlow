@@ -3,6 +3,7 @@ import {TransactionType} from "./enums/transactionType";
 import {Category} from "./enums/category";
 
 export interface Transaction {
+  id: string;
   value: number;
   currency: CurrencyEnum;
   accountValueBefore: number;

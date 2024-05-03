@@ -6,7 +6,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Account</mat-label>
-        <input matInput type="text" placeholder="{{data?.name}}" formControlName="accountId">
+        <input matInput type="text" placeholder="{{data.account.name}}" formControlName="accountId">
       </mat-form-field>
     </div>
     <div class="row">
@@ -23,7 +23,7 @@
         </mat-form-field>
       </div>
       <div class="col-sm">
-        <span>{{data?.currency}}</span>
+        <span>{{data.account.currency}}</span>
       </div>
     </div>
     <div class="row">
@@ -33,7 +33,7 @@
       </mat-form-field>
     </div>
     <div class="row">
-      <mat-radio-group aria-label="Select an option" formControlName="transactionType" required>
+      <mat-radio-group aria-label="Select an option" formControlName="type" required>
         <mat-label><b>Transaction Type</b></mat-label>
         <mat-radio-button value=0>Income</mat-radio-button>
         <mat-radio-button value=1>Expense</mat-radio-button>
@@ -42,7 +42,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Date of transaction</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="transactionDate" required>
+        <input matInput [matDatepicker]="picker" [max]="today" formControlName="createdOnUtc" required>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
@@ -61,6 +61,6 @@
   </div>
   <div mat-dialog-actions class="action">
     <button mat-raised-button type="button" [mat-dialog-close]="false">Cancel</button>
-    <button mat-raised-button color="primary" type="submit">{{ data ? 'Save' : 'Update' }}</button>
+    <button mat-raised-button color="primary" type="submit">{{ data.transaction === null ? 'Save' : 'Update' }}</button>
   </div>
 </form>

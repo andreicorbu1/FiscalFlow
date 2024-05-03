@@ -68,6 +68,56 @@ public class TransactionService : ITransactionService
         return Result.Success();
     }
 
+    public async Task<Result> UpdateTransaction(UpdateTransaction payload, string ownerId)
+    {
+        var oldTransaction = await _transactionRepository.GetByIdIncludingAccountAsync(payload.TransactionId);
+        if (oldTransaction is null)
+        {
+            return Result.NotFound($"Transaction with id {payload.TransactionId} does not exist!");
+        }
+
+        var account = oldTransaction.Account;
+        if (account.OwnerId != ownerId)
+        {
+            return Result.Unauthorized();
+        }
+
+        Money updatedBalance;
+        if (oldTransaction.Type == TransactionType.Income)
+        {
+            updatedBalance = account.Balance - oldTransaction.Value;
+        }
+        else
+        {
+            updatedBalance = account.Balance + oldTransaction.Value;
+        }
+
+        account.MoneyBalance = updatedBalance.Amount;
+
+        oldTransaction.AccountValueBefore = updatedBalance.Amount;
+        oldTransaction.AccountId = account.Id;
+        oldTransaction.Category = payload.Category;
+        oldTransaction.CreatedOnUtc = payload.CreatedOnUtc;
+        oldTransaction.Description = payload.Description;
+        oldTransaction.ModifiedOnUtc = DateTime.UtcNow;
+        oldTransaction.Payee = payload.Payee;
+        oldTransaction.Type = payload.Type;
+        oldTransaction.MoneyValue = payload.Value;
+        if (payload.Type == TransactionType.Income)
+        {
+            updatedBalance = account.MoneyBalance + payload.Value;
+        }
+        else
+        {
+            updatedBalance = account.MoneyBalance - payload.Value;
+        }
+        account.MoneyBalance = updatedBalance.Amount;
+        oldTransaction.AccountValueAfter = account.MoneyBalance;
+        _accountService.UpdateAccount(account);
+        _transactionRepository.Update(oldTransaction);
+        return Result.Success();
+    }
+
     public async Task<Result<IList<Transaction>>> GetTransactionsFromAccountPeriodOfTime(string ownerId, Guid accountId,
         PeriodOfTimeRequest period)
     {
@@ -86,8 +136,21 @@ public class TransactionService : ITransactionService
         var transaction = _transactionRepository.GetByIdIncludingAccount(transactionId);
         if (transaction is null)
             return Result.NotFound($"Transaction with id {transactionId} does not exist!");
-        if (transaction.Account?.OwnerId != ownerId)
+        if (transaction.Account.OwnerId != ownerId)
             return Result.Unauthorized();
+        var account = transaction.Account;
+        Money updatedBalance;
+        if (transaction.Type == TransactionType.Income)
+        {
+            updatedBalance = account.Balance - transaction.Value;
+        }
+        else
+        {
+            updatedBalance = account.Balance + transaction.Value;
+        }
+
+        account.MoneyBalance = updatedBalance.Amount;
+        _accountService.UpdateAccount(account);
         _transactionRepository.Remove(transaction);
         return Result.Success();
     }

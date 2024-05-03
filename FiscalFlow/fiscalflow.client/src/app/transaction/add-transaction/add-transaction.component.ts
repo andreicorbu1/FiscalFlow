@@ -1,10 +1,11 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Account} from "../../shared/models/account/account";
 import {AddTransaction} from "../../shared/models/transaction/addTransaction";
 import {TransactionService} from "../transaction.service";
-import {error} from "@angular/compiler-cli/src/transformers/util";
+import {Transaction} from "../../shared/models/transaction/transaction";
+import {UpdateTransaction} from "../../shared/models/transaction/updateTransaction";
 
 interface Category {
   value: number;
@@ -17,7 +18,7 @@ interface Category {
   styleUrls: ['./add-transaction.component.scss']
 })
 export class AddTransactionComponent implements OnInit {
-  dataAcc:boolean = true;
+  today:Date = new Date();
   categories: Category[] = [
     {value: 0, viewValue: "Food and Drinks"},
     {value: 1, viewValue: "Shopping"},
@@ -36,46 +37,70 @@ export class AddTransactionComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private transactionService: TransactionService,
               private _dialogRef: MatDialogRef<AddTransactionComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: Account) {
+              @Inject(MAT_DIALOG_DATA) public data: {
+                account: Account,
+                transaction: Transaction
+              }) {
     this.addTransactionForm = this.fb.group({
       description: ['', Validators.required],
-      value:[0, Validators.required],
-      transactionType:[0, Validators.required],
-      transactionDate:['', Validators.required],
-      category:['', Validators.required],
+      value: ['', Validators.required],
+      type: [0, Validators.required],
+      createdOnUtc: ['', Validators.required],
+      category: ['', Validators.required],
       payee: ['', Validators.required],
-      accountId: [{value:this.data.name, disabled: true}, Validators.required]
+      accountId: [{value: this.data.account.name, disabled: true}, Validators.required]
     })
-    console.log(this.dataAcc);
   }
 
   ngOnInit(): void {
-   // this.addTransactionForm.patchValue(this.data);
+    this.addTransactionForm.patchValue(this.data.transaction);
   }
 
   onFormSubmit() {
-    if(this.addTransactionForm.valid) {
-        // make rest req
+    if (this.addTransactionForm.valid) {
+      if(this.data.transaction != null) {
+        // edit transaction
         const formValue = this.addTransactionForm.value;
-        console.log(formValue);
-        let addTransactionReq:AddTransaction = {
+        const updateTransaction: UpdateTransaction = {
+          transactionId: this.data.transaction.id,
           description: formValue.description,
-          payee:formValue.payee,
-          type: Number(formValue.transactionType),
+          payee: formValue.payee,
+          type: Number(formValue.type),
           value: formValue.value,
           category: formValue.category,
-          createdOnUtc: formValue.transactionDate,
-          accountId: this.data.id
+          createdOnUtc: formValue.createdOnUtc,
         };
-        this.transactionService.addTransaction(addTransactionReq).subscribe({
-          next: data => {
+        this.transactionService.editTransaction(updateTransaction).subscribe({
+          next: () => {
             this._dialogRef.close(true);
           },
           error: error => {
             this._dialogRef.close(false);
             console.log(error);
           }
-        })
+        });
+      } else {
+        // create new transaction
+        const formValue = this.addTransactionForm.value;
+        let addTransactionReq: AddTransaction = {
+          description: formValue.description,
+          payee: formValue.payee,
+          type: Number(formValue.type),
+          value: formValue.value,
+          category: formValue.category,
+          createdOnUtc: formValue.createdOnUtc,
+          accountId: this.data.account.id
+        };
+        this.transactionService.addTransaction(addTransactionReq).subscribe({
+          next: () => {
+            this._dialogRef.close(true);
+          },
+          error: error => {
+            this._dialogRef.close(false);
+            console.log(error);
+          }
+        });
+      }
     }
   }
 }

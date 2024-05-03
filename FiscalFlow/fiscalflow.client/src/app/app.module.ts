@@ -23,6 +23,7 @@ import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatTableModule} from "@angular/material/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
 @NgModule({
   declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent],
     imports: [
@@ -42,6 +43,7 @@ import {MatTableModule} from "@angular/material/table";
         FormsModule,
         MatButtonModule,
         MatTableModule,
+        MatTooltipModule,
     ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

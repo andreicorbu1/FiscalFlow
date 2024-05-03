@@ -4,6 +4,8 @@ import {Account} from "../shared/models/account/account";
 import {AccountService} from "../account/account.service";
 import {Transaction} from "../shared/models/transaction/transaction";
 import {TransactionService} from "../transaction/transaction.service";
+import {MatDialog} from "@angular/material/dialog";
+import {AddTransactionComponent} from "../transaction/add-transaction/add-transaction.component";
 
 @Component({
   selector: 'app-home',
@@ -11,23 +13,56 @@ import {TransactionService} from "../transaction/transaction.service";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  accounts: Account[] | undefined;
-  displayedColumns: string[] = ['CreatedOnUtc','Account', 'Payee', 'Value'];
+  // @ts-ignore
+  accounts: Account[];
+  displayedColumns: string[] = ['CreatedOnUtc','Account', 'Payee', 'Value', 'Actions'];
 
   // @ts-ignore
   transactions: Transaction[];
-  constructor(public userService: UserService, private accountService: AccountService, private transactionService: TransactionService) {
+  constructor(public userService: UserService, private dialog: MatDialog, private accountService: AccountService, private transactionService: TransactionService) {
+  }
+
+  onEditTransaction(transaction: Transaction) {
+    const dialogRef = this.dialog.open(AddTransactionComponent, {
+      data: {
+        account: {
+          // @ts-ignore
+          name: transaction.account,
+        },
+        transaction: transaction,
+      }
+    });
+    dialogRef.afterClosed().subscribe( result => {
+      if(result === true) {
+        this.ngOnInit();
+      }
+    });
+  }
+
+  onDeleteTransaction(transaction: Transaction) {
+    this.transactionService.deleteTransaction(transaction.id).subscribe({
+      next: data => {
+        this.ngOnInit();
+      },
+      error: error => {
+        console.log(error);
+      }
+    });
   }
 
   ngOnInit(): void {
     this.accountService.getAllAccounts().subscribe((accounts) => {
         this.accounts = accounts;
-        console.log(this.accounts[0]?.transactions);
       }
     );
     this.transactionService.getLastTransactions(10).subscribe((transactions) => {
       this.transactions = transactions;
-      console.log(transactions);
     })
+  }
+
+  refreshAccounts($event: boolean) {
+    if($event) {
+      this.ngOnInit();
+    }
   }
 }
