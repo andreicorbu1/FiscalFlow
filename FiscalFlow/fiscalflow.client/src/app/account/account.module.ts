@@ -10,11 +10,13 @@ import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatIconModule} from "@angular/material/icon";
+import { AccountDetailComponent } from './account-detail/account-detail.component';
 
 @NgModule({
   declarations: [
     AddAccountComponent,
-    AccountComponent
+    AccountComponent,
+    AccountDetailComponent
   ],
   exports: [
     AccountComponent

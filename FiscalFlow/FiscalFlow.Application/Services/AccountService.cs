@@ -104,6 +104,7 @@ public class AccountService : IAccountService
         var account = await _accountRepository.GetByIdAsync(accountId);
         if (account is null)
             return Result.NotFound($"Account with id {accountId} does not exist");
+        account.Transactions = await _accountRepository.GetTransactionsAsync(accountId);
         return account.OwnerId != ownerId ? Result.Forbidden() : Result.Success(account);
     }
 

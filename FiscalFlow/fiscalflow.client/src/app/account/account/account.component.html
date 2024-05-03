@@ -1,22 +1,20 @@
-<mat-card class="example-card" style="width: 200px">
-  <mat-card-header>
-    <mat-card-title>{{ account?.name }}</mat-card-title>
-    <mat-card-subtitle>{{ account?.balance }} {{ account?.currency }}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-subtitle class="date-posted">{{
-      account?.createdOnUtc | date : "dd-MMM-y HH:mm:ss"
-    }}
-  </mat-card-subtitle>
-  <mat-card-content class="transaction-container" style="max-height: calc(100% - 64px); height: 75px; overflow-y: auto;">
-    <div *ngFor="let transaction of account?.transactions">
-      {{ transaction.payee }}  {{ transaction.type === 0 ? "+" : "-" }}{{ transaction.value }}
-    </div>
-  </mat-card-content>
-  <mat-card-actions>
-    <div class="account-button-container">
-      <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-  </mat-card-actions>
-</mat-card>
+<a style="text-decoration:none;color: inherit;" [routerLink]="['/account/details', account?.id]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+  <mat-card class="example-card" style="width: 200px">
+    <mat-card-header>
+      <mat-card-title>{{ account?.name }}</mat-card-title>
+      <mat-card-subtitle>{{ account?.balance }} {{ account?.currency }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="transaction-container" style="max-height: calc(100% - 64px); height: 75px; overflow-y: auto;">
+      <div *ngFor="let transaction of account?.transactions">
+        {{ transaction.payee }}  {{ transaction.type === 0 ? "+" : "-" }}{{ transaction.value }}
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="account-button-container">
+        <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</a>

@@ -13,6 +13,7 @@ public static class AccountExtensions
             AccountType = account.AccountType!,
             Balance = account.Balance.Amount,
             Currency = account.MoneyCurrency.ToString(),
+            CreatedOnUtc = account.CreatedOnUtc,
             Transactions = new List<TransactionDto>(),
             Id = account.Id
         };

@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result.AspNetCore;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
@@ -67,13 +68,13 @@ public class AccountController : ControllerBase
 
     [HttpGet("me/account/{accountId}")]
     [Authorize]
-    public async Task<ActionResult<Account>> GetUserAccount(Guid accountId)
+    public async Task<ActionResult<AccountDto>> GetUserAccount(Guid accountId)
     {
         var id = ExtractUserIdFromClaims(User);
         if (!id.IsSuccess) return Unauthorized();
 
         var account = await _accountService.GetAccountFromIdAsync(accountId, id.Value);
-        return this.ToActionResult(account);
+        return account.Value.ToAccountDto();
     }
 
     [Authorize]

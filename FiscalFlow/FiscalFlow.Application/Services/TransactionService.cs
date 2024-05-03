@@ -125,7 +125,7 @@ public class TransactionService : ITransactionService
         if (!accountExists.IsSuccess)
             return accountExists;
         var startDate = new DateTime(period.StartDate.Year, period.StartDate.Month, period.StartDate.Day);
-        var endDate = new DateTime(period.EndDate.Year, period.EndDate.Month, period.EndDate.Day);
+        var endDate = new DateTime(period.EndDate.Year, period.EndDate.Month, period.EndDate.Day, 23, 59, 59);
         var transactions =
             await _transactionRepository.GetTransactionsFromAccountInPeriodOfTime(accountId, startDate, endDate);
         return Result.Success(transactions);

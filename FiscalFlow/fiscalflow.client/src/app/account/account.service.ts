@@ -20,4 +20,7 @@ export class AccountService {
     return this.httpClient.get<Account[]>(`${environment.appUrl}/api/v1/Account/me/accounts`);
   }
 
+  getAccountId(accountId: string) {
+    return this.httpClient.get<Account>(`${environment.appUrl}/api/v1/Account/me/account/${accountId}`);
+  }
 }

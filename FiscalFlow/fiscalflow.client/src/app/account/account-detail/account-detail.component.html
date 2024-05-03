@@ -1,0 +1,11 @@
+<div *ngIf="account !== null">
+  <label>{{account.name}}</label>
+  <label>{{account.currency}}</label>
+  <label>{{account.balance}}</label>
+  <label>{{account.createdOnUtc | date: 'longDate'}}</label>
+  <label>{{account.type}}</label>
+  <div *ngFor="let transaction of account.transactions">
+    <label>{{ transaction.payee }}</label>
+    <label>{{ transaction.value }}</label>
+  </div>
+</div>
