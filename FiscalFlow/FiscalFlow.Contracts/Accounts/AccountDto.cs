@@ -10,6 +10,6 @@ public class AccountDto
     public decimal Balance { get; set; }
     public string Currency { get; set; }
     public DateTime CreatedOnUtc { get; set; }
-    public AccountType AccountType { get; set; }
+    public string Type { get; set; }
     public IList<TransactionDto> Transactions { get; set; }
 }

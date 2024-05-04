@@ -10,7 +10,7 @@ public static class AccountExtensions
         var accountDto = new AccountDto()
         {
             Name = account.Name!,
-            AccountType = account.AccountType!,
+            Type = account.AccountType!.ToString(),
             Balance = account.Balance.Amount,
             Currency = account.MoneyCurrency.ToString(),
             CreatedOnUtc = account.CreatedOnUtc,

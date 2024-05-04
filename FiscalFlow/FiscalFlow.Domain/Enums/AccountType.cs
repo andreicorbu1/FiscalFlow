@@ -3,5 +3,5 @@
 public enum AccountType
 {
     Cash,
-    BankAccount
+    Bank
 }

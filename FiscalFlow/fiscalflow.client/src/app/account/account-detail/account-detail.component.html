@@ -1,11 +1,31 @@
-<div *ngIf="account !== null">
-  <label>{{account.name}}</label>
-  <label>{{account.currency}}</label>
-  <label>{{account.balance}}</label>
-  <label>{{account.createdOnUtc | date: 'longDate'}}</label>
-  <label>{{account.type}}</label>
-  <div *ngFor="let transaction of account.transactions">
-    <label>{{ transaction.payee }}</label>
-    <label>{{ transaction.value }}</label>
+<div *ngIf="account != null">
+  <div class="account-details">
+    <div class="detail-box">
+      <p class="detail-label">
+        Account Name
+      </p>
+      <p class="account-name">
+        {{account.name}}
+      </p>
+    </div>
+    <div class="detail-box">
+      <p class="detail-label">
+        Balance
+      </p>
+      <p class="account-balance">
+        {{account.balance}} {{account.currency}}
+      </p>
+    </div>
+    <div class="detail-box">
+      <p class="detail-label">
+        Type of account
+      </p>
+      <p class="account-balance">
+        {{account.type}}
+      </p>
+    </div>
+<!--    <div class="detail-box">-->
+<!--      <transactions-show [transactions]="account.transactions"></transactions-show>-->
+<!--    </div>-->
   </div>
 </div>
