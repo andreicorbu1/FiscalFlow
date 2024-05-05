@@ -8,33 +8,7 @@
     </div>
     <div class="row"><br></div>
     <div class="row">
-      <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
-        <ng-container matColumnDef="Payee">
-          <th mat-header-cell *matHeaderCellDef>Payee</th>
-          <td mat-cell *matCellDef="let element">{{ element.payee }}</td>
-        </ng-container>
-        <ng-container matColumnDef="Account">
-          <th mat-header-cell *matHeaderCellDef>Account</th>
-          <td mat-cell *matCellDef="let element">{{ element.account }}</td>
-        </ng-container>
-        <ng-container matColumnDef="Value">
-          <th mat-header-cell *matHeaderCellDef>Value</th>
-          <td mat-cell *matCellDef="let element">{{ element.type === 0 ? "+" : "-" }}{{ element.value}} {{element.currency}}</td>
-        </ng-container>
-        <ng-container matColumnDef="CreatedOnUtc">
-          <th mat-header-cell *matHeaderCellDef>Date of Transaction</th>
-          <td mat-cell *matCellDef="let element">{{ element.createdOnUtc | date:'longDate' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="Actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let row">
-            <button style="margin: 0 5px 0 5px" mat-raised-button matTooltip="Edit Transaction" color="primary" (click)="onEditTransaction(row)">Edit</button>
-            <button mat-raised-button style="margin: 0 5px 0 5px" matTooltip="Delete Transaction" color="warn" (click)="onDeleteTransaction(row)">Delete</button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+      <app-transactions-tabel [transactions]="transactions" (modifiedTransactionEvent)="refreshAccounts($event)"></app-transactions-tabel>
     </div>
   </div>
 </div>

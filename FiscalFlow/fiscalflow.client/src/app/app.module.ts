@@ -24,30 +24,33 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { TransactionsTabelComponent } from './transaction/transactions-tabel/transactions-tabel.component';
 @NgModule({
   declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        SharedModule,
-        BrowserAnimationsModule,
-        AccountModule,
-        MatGridListModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatRadioModule,
-        MatDialogModule,
-        MatSelectModule,
-        FormsModule,
-        MatButtonModule,
-        MatTableModule,
-        MatTooltipModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    SharedModule,
+    BrowserAnimationsModule,
+    TransactionsTabelComponent,
+    AccountModule,
+    MatGridListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatRadioModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
+    MatButtonModule,
+    MatTableModule,
+    MatTooltipModule,
+  ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
+  exports: []
 })
 export class AppModule {}

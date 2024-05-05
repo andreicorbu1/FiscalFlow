@@ -28,4 +28,9 @@ export class AccountDetailComponent implements OnInit{
       });
     });
   }
+  refreshAccount($event: boolean) {
+    if($event) {
+      this.ngOnInit();
+    }
+  }
 }

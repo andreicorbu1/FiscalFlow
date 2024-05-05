@@ -11,6 +11,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatIconModule} from "@angular/material/icon";
 import { AccountDetailComponent } from './account-detail/account-detail.component';
+import {AppModule} from "../app.module";
+import {TransactionsTabelComponent} from "../transaction/transactions-tabel/transactions-tabel.component";
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { AccountDetailComponent } from './account-detail/account-detail.componen
         FormsModule,
         MatCardModule,
         MatButtonModule,
-        MatTooltipModule
+        MatTooltipModule,
+      TransactionsTabelComponent,
     ]
 })
 export class AccountModule { }

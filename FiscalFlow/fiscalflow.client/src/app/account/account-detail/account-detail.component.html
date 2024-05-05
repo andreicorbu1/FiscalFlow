@@ -24,8 +24,8 @@
         {{account.type}}
       </p>
     </div>
-<!--    <div class="detail-box">-->
-<!--      <transactions-show [transactions]="account.transactions"></transactions-show>-->
-<!--    </div>-->
+    <div class="detail-box">
+      <app-transactions-tabel [transactions]="account.transactions" (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
+    </div>
   </div>
 </div>

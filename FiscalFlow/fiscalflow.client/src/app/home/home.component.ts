@@ -22,33 +22,6 @@ export class HomeComponent implements OnInit {
   constructor(public userService: UserService, private dialog: MatDialog, private accountService: AccountService, private transactionService: TransactionService) {
   }
 
-  onEditTransaction(transaction: Transaction) {
-    const dialogRef = this.dialog.open(AddTransactionComponent, {
-      data: {
-        account: {
-          // @ts-ignore
-          name: transaction.account,
-        },
-        transaction: transaction,
-      }
-    });
-    dialogRef.afterClosed().subscribe( result => {
-      if(result === true) {
-        this.ngOnInit();
-      }
-    });
-  }
-
-  onDeleteTransaction(transaction: Transaction) {
-    this.transactionService.deleteTransaction(transaction.id).subscribe({
-      next: data => {
-        this.ngOnInit();
-      },
-      error: error => {
-        console.log(error);
-      }
-    });
-  }
 
   ngOnInit(): void {
     this.accountService.getAllAccounts().subscribe((accounts) => {
