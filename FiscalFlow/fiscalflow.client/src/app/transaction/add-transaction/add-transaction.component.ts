@@ -6,6 +6,7 @@ import {AddTransaction} from "../../shared/models/transaction/addTransaction";
 import {TransactionService} from "../transaction.service";
 import {Transaction} from "../../shared/models/transaction/transaction";
 import {UpdateTransaction} from "../../shared/models/transaction/updateTransaction";
+import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
 
 interface Category {
   value: number;
@@ -15,6 +16,10 @@ interface Category {
 @Component({
   selector: 'app-add-transaction',
   templateUrl: './add-transaction.component.html',
+  providers: [{
+    provide: MAT_RADIO_DEFAULT_OPTIONS,
+    useValue: { color: 'primary' },
+  }],
   styleUrls: ['./add-transaction.component.scss']
 })
 export class AddTransactionComponent implements OnInit {
@@ -44,7 +49,7 @@ export class AddTransactionComponent implements OnInit {
     this.addTransactionForm = this.fb.group({
       description: ['', Validators.required],
       value: ['', Validators.required],
-      type: [0, Validators.required],
+      type: ['', Validators.required],
       createdOnUtc: ['', Validators.required],
       category: ['', Validators.required],
       payee: ['', Validators.required],
@@ -53,7 +58,12 @@ export class AddTransactionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.addTransactionForm.patchValue(this.data.transaction);
+    if(this.data.transaction != null) {
+      this.addTransactionForm.patchValue(this.data.transaction);
+      this.addTransactionForm.patchValue({
+        type: this.data.transaction.type == 0 ? '0' : '1'
+      });
+    }
   }
 
   onFormSubmit() {

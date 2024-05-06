@@ -19,7 +19,6 @@ export class AccountDetailComponent implements OnInit{
       const accountId: string = params.get('id');
       this.accountService.getAccountId(accountId).subscribe({
         next: (account: Account) => {
-          console.log(account);
           this.account = account;
         },
         error: _ => {

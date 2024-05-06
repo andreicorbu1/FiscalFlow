@@ -33,6 +33,7 @@ export class TransactionsTabelComponent {
         account: {
           // @ts-ignore
           name: transaction.account,
+          currency: transaction.currency,
         },
         transaction: transaction,
       }
