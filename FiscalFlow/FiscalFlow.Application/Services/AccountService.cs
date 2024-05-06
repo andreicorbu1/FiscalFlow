@@ -50,6 +50,28 @@ public class AccountService : IAccountService
         return Result.NotFound($"Account with id {payload.OwnerId} does not exist!");
     }
 
+    public async Task<Result<Dictionary<Category, decimal>>> GetCategoryReportsFromAllAccounts(string ownerId)
+    {
+        var accounts = await _accountRepository.GetUserAccountsAsync(ownerId);
+        var dict = new Dictionary<Category, decimal>();
+        foreach (var account in accounts)
+        {
+            foreach (var transaction in account.Transactions!)
+            {
+                if (dict.TryGetValue(transaction.Category, out var oldValue))
+                {
+                    dict[transaction.Category] = oldValue + transaction.MoneyValue;
+                }
+                else
+                {
+                    dict.Add(transaction.Category, transaction.MoneyValue);
+                }
+            }
+        }
+        Console.WriteLine(dict);
+        return Result.Success(dict);
+    }
+
     public async Task<Result<List<TransactionDto>>> GetLastTransactions(string ownerId, int numberOfTransactions)
     {
         var transactions = await _accountRepository.GetLastTransactionsAsync(ownerId, numberOfTransactions);

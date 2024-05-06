@@ -4,6 +4,7 @@ using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
+using FiscalFlow.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static FiscalFlow.API.Utils.Utils;
@@ -47,6 +48,20 @@ public class AccountController : ControllerBase
         }
         
         return Ok(transactions.Value);
+    }
+
+    [Authorize]
+    [HttpGet("me/category-expenses")]
+    public async Task<ActionResult<Dictionary<Category, decimal>>> GetCategoryExpenses()
+    {
+        var userId = ExtractUserIdFromClaims(User);
+        if (!userId.IsSuccess)
+        {
+            return Unauthorized();
+        }
+
+        var dict = await _accountService.GetCategoryReportsFromAllAccounts(userId);
+        return this.ToActionResult(dict);
     }
     
     [Authorize]

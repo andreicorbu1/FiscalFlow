@@ -2,6 +2,7 @@
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
+using FiscalFlow.Domain.Enums;
 
 namespace FiscalFlow.Application.Core.Abstractions.Services;
 
@@ -10,6 +11,7 @@ public interface IAccountService
     Result CheckAccountExistsAndHasAccess(Guid accountId, string ownerId);
     Task<Result> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId);
     Result CreateAccount(CreateAccountRequest payload);
+    Task<Result<Dictionary<Category, decimal>>> GetCategoryReportsFromAllAccounts(string ownerId);
     Result InsertBulkAccounts();
     Result UpdateAccount(Account account);
     Task<Result> UpdateAccount(string ownerId, UpdateAccountRequest account);

@@ -1,0 +1,30 @@
+.category-content {
+  padding: 12px; /* Reduce padding for a smaller size */
+  text-align: center;
+}
+
+.mat-grid-tile {
+  width: 25%;
+  height: 25%;
+  border-radius: 16px; /* Rounded corners */
+  overflow: hidden; /* Hide overflow content to prevent sharp corners */
+}
+
+.food-and-drinks, .shopping, .house {
+  border-radius: 251px;
+  border: 1px transparent/* Keep rounded corners consistent for all tiles */
+}
+
+.food-and-drinks {
+  background-color: #FF5733; /* Unique color for FoodAndDrinks category */
+}
+.food-and-drinks, .shopping, .Life-And-Entertainment {
+  border-radius: 8px; /* Keep rounded corners consistent for all tiles */
+}
+.shopping {
+  background-color: #3498DB; /* Unique color for Shopping category */
+}
+
+.Life-And-Entertainment {
+  background-color: #27AE60; /* Unique color for House category */
+}

@@ -18,16 +18,20 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { CategorySpendingComponent } from './category-spending/category-spending.component';
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [
     AddAccountComponent,
     AccountComponent,
-    AccountDetailComponent
+    AccountDetailComponent,
+    CategorySpendingComponent
   ],
-  exports: [
-    AccountComponent
-  ],
+    exports: [
+        AccountComponent,
+        CategorySpendingComponent
+    ],
   imports: [
     CommonModule,
     AccountRoutingModule,
@@ -44,6 +48,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     MatSelectModule,
     MatRadioModule,
     MatDatepickerModule,
+    MatGridListModule,
   ]
 })
 export class AccountModule {

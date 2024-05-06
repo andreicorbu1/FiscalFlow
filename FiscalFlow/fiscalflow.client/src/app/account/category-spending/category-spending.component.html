@@ -1,0 +1,8 @@
+<mat-grid-list cols="4" rowHeight="200px">
+  <mat-grid-tile *ngFor="let category of categories | keyvalue" [ngClass]="getCategoryClass(category.key)">
+    <div class="category-content">
+      <h3>{{ category.key }}</h3>
+      <p>Total Spending: {{ category.value }}</p>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

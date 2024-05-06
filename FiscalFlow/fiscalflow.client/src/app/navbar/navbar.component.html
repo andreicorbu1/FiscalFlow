@@ -18,6 +18,10 @@
             <a class="nav-link" routerLink="/account/create-account" routerLinkActive="active"
                [routerLinkActiveOptions]="{exact:true}">Add Account</a>
           </li>
+          <li class="nav-item" *ngIf="(userService.user$ | async) as user">
+            <a class="nav-link" routerLink="/account/dashboard" routerLinkActive="active"
+               [routerLinkActiveOptions]="{exact:true}">Dashboard</a>
+          </li>
         </ul>
         <ul class="navbar-nav" *ngIf="(userService.user$ | async) === null">
           <li class="nav-item">
