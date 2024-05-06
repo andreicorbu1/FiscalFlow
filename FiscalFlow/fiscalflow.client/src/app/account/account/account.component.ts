@@ -27,7 +27,7 @@ export class AccountComponent {
       if(result === true) {
         this.newTransactionEvent.emit(true);
       }
-    })
+    });
   }
 
   navigateToDetails() {

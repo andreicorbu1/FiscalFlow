@@ -8,7 +8,7 @@ import { NotificationComponent } from './components/modals/notification/notifica
 export class SharedService {
 
   bsModalRef?: BsModalRef;
-
+  private darkMode = false;
   constructor(private modalService: BsModalService) { }
 
   showNotification(isSuccess: boolean, title: string, message: string) {

@@ -7,19 +7,23 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { NotificationComponent } from './components/modals/notification/notification.component';
 import {ModalModule} from 'ngx-bootstrap/modal';
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
     NotFoundComponent,
     ValidationMessagesComponent,
-    NotificationComponent
+    NotificationComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
     HttpClientModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [
     RouterModule,

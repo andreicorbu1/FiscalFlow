@@ -28,8 +28,7 @@ public class TransactionController : ControllerBase
         var id = ExtractUserIdFromClaims(User);
         if (!id.IsSuccess) return Unauthorized();
         var transaction = await _transactionService.AddTransaction(payload, id.Value);
-        if (transaction.IsSuccess) return Created();
-        return NotFound(transaction.Errors[0]);
+        return this.ToActionResult(transaction);
     }
 
     [Authorize]

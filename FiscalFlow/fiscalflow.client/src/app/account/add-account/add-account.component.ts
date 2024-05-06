@@ -21,8 +21,8 @@ export class AddAccountComponent implements OnInit{
   ngOnInit() {
     this.accountForm = this.formBuilder.group({
       name: ['', Validators.required],
-      balance: [0, Validators.required],
-      currency: [null, Validators.required],
+      balance: ['', Validators.required],
+      currency: ['', Validators.required],
       accountType: ['Cash', Validators.required]
     });
   }

@@ -1,25 +1,37 @@
-<!-- create-account.component.html -->
 <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" id="name" formControlName="name" required>
+  <div mat-dialog-content class="content">
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" placeholder="Account name" formControlName="name" required>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Balance</mat-label>
+        <input matInput type="number" placeholder="Balance" formControlName="balance" required>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Currency</mat-label>
+        <mat-select formControlName="currency" required>
+          <mat-option>---</mat-option>
+          <mat-option *ngFor="let currency of currencyValues" [value]="currency">
+            {{ currency }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-radio-group aria-label="Select an option" formControlName="accountType" required>
+        <mat-label><b>Account Type</b></mat-label>
+        <mat-radio-button value='0'>Cash</mat-radio-button>
+        <mat-radio-button value='1'>Bank Account</mat-radio-button>
+      </mat-radio-group>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="balance">Balance:</label>
-    <input type="number" class="form-control" id="balance" formControlName="balance" required>
+  <div mat-dialog-actions class="action row">
+    <button mat-raised-button color="primary" type="submit" [disabled]="accountForm.invalid">Create Account</button>
   </div>
-  <div class="form-group">
-    <label for="currency">Currency:</label>
-    <select class="form-control" id="currency" formControlName="currency" required>
-      <option *ngFor="let currency of currencyValues" [value]="currency">{{ currency }}</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="accountType">Account Type:</label>
-    <select class="form-control" id="accountType" formControlName="accountType" required>
-      <option value='0'>Cash</option>
-      <option value='1'>Bank Account</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary" [disabled]="accountForm.invalid">Create Account</button>
 </form>

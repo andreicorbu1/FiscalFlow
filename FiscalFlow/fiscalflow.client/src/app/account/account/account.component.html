@@ -5,6 +5,7 @@
   </mat-card-header>
   <mat-card-content class="transaction-container"
                     style="max-height: calc(100% - 64px); height: 75px; overflow-y: auto;">
+
     <div *ngFor="let transaction of account?.transactions">
       {{ transaction.payee }}  {{ transaction.type === 0 ? "+" : "-" }}{{ transaction.value }}
     </div>

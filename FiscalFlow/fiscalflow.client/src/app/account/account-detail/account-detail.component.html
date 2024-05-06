@@ -1,11 +1,11 @@
-<div *ngIf="account != null">
+<div *ngIf="account != null" class="account-container">
   <div class="account-details">
     <div class="detail-box">
       <p class="detail-label">
         Account Name
       </p>
       <p class="account-name">
-        {{account.name}}
+        {{ account.name }}
       </p>
     </div>
     <div class="detail-box">
@@ -13,7 +13,7 @@
         Balance
       </p>
       <p class="account-balance">
-        {{account.balance}} {{account.currency}}
+        {{ account.balance }} {{ account.currency }}
       </p>
     </div>
     <div class="detail-box">
@@ -21,11 +21,18 @@
         Type of account
       </p>
       <p class="account-balance">
-        {{account.type}}
+        {{ account.type }}
       </p>
     </div>
-    <div class="detail-box">
-      <app-transactions-tabel [transactions]="account.transactions" (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
-    </div>
+  </div>
+  <br>
+  <div class="transaction-table">
+    <app-transactions-tabel [transactions]="account.transactions"
+                            (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
+  </div>
+  <div class="add-transaction-button-container">
+    <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">
+      <mat-icon>add</mat-icon>
+    </button>
   </div>
 </div>

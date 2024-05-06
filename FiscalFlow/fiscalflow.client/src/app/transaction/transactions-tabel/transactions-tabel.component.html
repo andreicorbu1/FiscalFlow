@@ -1,27 +1,70 @@
-<table mat-table [dataSource]="transactions" class="mat-elevation-z8">
-  <ng-container matColumnDef="Payee">
-    <th mat-header-cell *matHeaderCellDef>Payee</th>
-    <td mat-cell *matCellDef="let element">{{ element.payee }}</td>
-  </ng-container>
-  <ng-container matColumnDef="Account">
-    <th mat-header-cell *matHeaderCellDef>Account</th>
-    <td mat-cell *matCellDef="let element">{{ element.account }}</td>
-  </ng-container>
-  <ng-container matColumnDef="Value">
-    <th mat-header-cell *matHeaderCellDef>Value</th>
-    <td mat-cell *matCellDef="let element">{{ element.type === 0 ? "+" : "-" }}{{ element.value}} {{element.currency}}</td>
-  </ng-container>
-  <ng-container matColumnDef="CreatedOnUtc">
-    <th mat-header-cell *matHeaderCellDef>Date of Transaction</th>
-    <td mat-cell *matCellDef="let element">{{ element.createdOnUtc | date:'longDate' }}</td>
-  </ng-container>
-  <ng-container matColumnDef="Actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let row">
-      <button style="margin: 0 5px 0 5px" mat-raised-button matTooltip="Edit Transaction" color="primary" (click)="onEditTransaction(row)">Edit</button>
-      <button mat-raised-button style="margin: 0 5px 0 5px" matTooltip="Delete Transaction" color="warn" (click)="onDeleteTransaction(row)">Delete</button>
-    </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+<div class="table-container">
+  <div *ngIf="transactions != null && transactions.length > 0; else noTransactions">
+    <div class="filter-container">
+      <mat-form-field appearance="fill">
+        <input matInput [matDatepicker]="startDatePicker" placeholder="Start Date" [(ngModel)]="startDate">
+        <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <input matInput [matDatepicker]="endDatePicker" placeholder="End Date" [(ngModel)]="endDate">
+        <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #endDatePicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="applyDateFilter()" [disabled]="!startDate || !endDate">Apply
+        Filter
+      </button>
+      <button mat-raised-button color="warn" (click)="resetDateFilter()">Reset Filter</button>
+    </div>
+    <table mat-table [dataSource]="filteredTransactions | slice:pag.pageIndex*pag.pageSize:
+                  (pag.pageIndex+1)*pag.pageSize">
+      <ng-container matColumnDef="Payee">
+        <th mat-header-cell *matHeaderCellDef>Payee</th>
+        <td mat-cell *matCellDef="let element">{{ element.payee }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Account">
+        <th mat-header-cell *matHeaderCellDef>Account</th>
+        <td mat-cell *matCellDef="let element">{{ element.account }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Value">
+        <th mat-header-cell *matHeaderCellDef>Value</th>
+        <td mat-cell
+            *matCellDef="let element">{{ element.type === 0 ? "+" : "-" }}{{ element.value }} {{ element.currency }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="CreatedOnUtc">
+        <th mat-header-cell *matHeaderCellDef>Date of Transaction</th>
+        <td mat-cell *matCellDef="let element">{{ element.createdOnUtc | date:'longDate' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let row">
+          <button style="margin: 0 5px 0 5px" class="details-button" mat-raised-button
+                  matTooltip="See more details about transaction"
+                  (click)="onEditTransaction(row)">Details
+          </button>
+          <button style="margin: 0 5px 0 5px" mat-raised-button matTooltip="Edit Transaction" color="primary"
+                  (click)="onEditTransaction(row)">Edit
+          </button>
+          <button mat-raised-button style="margin: 0 5px 0 5px" matTooltip="Delete Transaction" color="warn"
+                  (click)="onDeleteTransaction(row)">Delete
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator #pag [length]="transactions.length"
+                   [pageSizeOptions]="[5, 10, 25, 100]"
+                   showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+<ng-template #noTransactions>
+  <div style="margin-left: 10px; margin-top: 10px">
+    <h1><strong style="color:#000000;font-size: 25px;">You currently have not added any transactions to this account.
+      After you will add some transactions they will appear here.</strong></h1>
+  </div>
+</ng-template>

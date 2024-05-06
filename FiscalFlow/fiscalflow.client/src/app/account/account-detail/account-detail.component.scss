@@ -1,9 +1,22 @@
+.account-details {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 10px;
+  border: 3px solid #3f51b4;
+  width: 25%;
+}
+
+.account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .detail-box {
   background-color: #fafafa;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 11px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .detail-label {
   font-weight: bold;
@@ -13,4 +26,17 @@
 
 .detail-value {
   font-size: 14px;
+}
+
+.transaction-table {
+  background-color: #fafafa;
+  border: 3px solid #3f51b4;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 10px;
+}
+
+.add-transaction-button-container {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
 }

@@ -7,6 +7,7 @@ import {TransactionService} from "../transaction.service";
 import {Transaction} from "../../shared/models/transaction/transaction";
 import {UpdateTransaction} from "../../shared/models/transaction/updateTransaction";
 import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
+import {SharedService} from "../../shared/shared.service";
 
 interface Category {
   value: number;
@@ -41,6 +42,7 @@ export class AddTransactionComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private transactionService: TransactionService,
+              private sharedService: SharedService,
               private _dialogRef: MatDialogRef<AddTransactionComponent>,
               @Inject(MAT_DIALOG_DATA) public data: {
                 account: Account,
@@ -107,6 +109,9 @@ export class AddTransactionComponent implements OnInit {
           },
           error: error => {
             this._dialogRef.close(false);
+            const errorMessage:string = error.error.detail;
+            const displayMessage:string = errorMessage.substring((errorMessage.indexOf('*') + 1)).trim();
+            this.sharedService.showNotification(false, 'Add Transaction', displayMessage);
             console.log(error);
           }
         });

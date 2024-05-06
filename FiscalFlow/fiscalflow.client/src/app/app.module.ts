@@ -25,8 +25,9 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { TransactionsTabelComponent } from './transaction/transactions-tabel/transactions-tabel.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent],
+  declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent, DashboardComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

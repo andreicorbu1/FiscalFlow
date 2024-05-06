@@ -49,7 +49,7 @@ public class TransactionService : ITransactionService
             CreatedOnUtc = payload.CreatedOnUtc,
             AccountValueBefore = accountValue.MoneyBalance
         };
-        
+
         // Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
         Money updatedBalance;
@@ -59,8 +59,16 @@ public class TransactionService : ITransactionService
         }
         else
         {
-            updatedBalance = accountValue.Balance - transaction.Value;
+            if (accountValue.Balance - transaction.Value >= 0)
+            {
+                updatedBalance = accountValue.Balance - transaction.Value;
+            }
+            else
+            {
+                return Result.Error("This transaction value is bigger than your account's balance.");
+            }
         }
+
         accountValue.MoneyBalance = updatedBalance.Amount;
         transaction.AccountValueAfter = accountValue.MoneyBalance;
         _accountService.UpdateAccount(account);
@@ -111,6 +119,7 @@ public class TransactionService : ITransactionService
         {
             updatedBalance = account.MoneyBalance - payload.Value;
         }
+
         account.MoneyBalance = updatedBalance.Amount;
         oldTransaction.AccountValueAfter = account.MoneyBalance;
         _accountService.UpdateAccount(account);

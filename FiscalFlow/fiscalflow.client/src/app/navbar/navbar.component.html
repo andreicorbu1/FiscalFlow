@@ -33,9 +33,9 @@
         </ul>
         <div class="d-flex align-items-center" *ngIf="(userService.user$ | async) as user">
           <a class="text-white" style="text-decoration: none; cursor: pointer;">
-            Hi <span class="h3" style="color: azure">{{ user.firstName | titlecase }}</span>
+            Hi <span class="h3" style="color: #fdfdfd">{{ user.firstName | titlecase }}</span>
           </a>
-          <a class="btn btn-secondary ms-2" (click)="logout()">Logout</a>
+          <a class="btn btn-danger ms-3" (click)="logout()">Logout</a>
         </div>
       </div>
     </div>
