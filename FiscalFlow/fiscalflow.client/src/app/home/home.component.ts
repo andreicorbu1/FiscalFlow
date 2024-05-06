@@ -15,7 +15,6 @@ import {AddTransactionComponent} from "../transaction/add-transaction/add-transa
 export class HomeComponent implements OnInit {
   // @ts-ignore
   accounts: Account[];
-  displayedColumns: string[] = ['CreatedOnUtc','Account', 'Payee', 'Value', 'Actions'];
 
   // @ts-ignore
   transactions: Transaction[];
@@ -28,9 +27,9 @@ export class HomeComponent implements OnInit {
         this.accounts = accounts;
       }
     );
-    this.transactionService.getLastTransactions(10).subscribe((transactions) => {
-      this.transactions = transactions;
-    })
+      this.transactionService.getLastTransactions(10).subscribe((transactions) => {
+        this.transactions = transactions;
+      });
   }
 
   refreshAccounts($event: boolean) {

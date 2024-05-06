@@ -1,34 +1,38 @@
-<div *ngIf="account != null" class="account-container">
-  <div class="account-details">
-    <div class="detail-box">
-      <p class="detail-label">
-        Account Name
-      </p>
-      <p class="account-name">
-        {{ account.name }}
-      </p>
-    </div>
-    <div class="detail-box">
-      <p class="detail-label">
-        Balance
-      </p>
-      <p class="account-balance">
-        {{ account.balance }} {{ account.currency }}
-      </p>
-    </div>
-    <div class="detail-box">
-      <p class="detail-label">
-        Type of account
-      </p>
-      <p class="account-balance">
-        {{ account.type }}
-      </p>
+<div *ngIf="account != null" class="page-container">
+  <div class="account-container">
+    <div class="account-details">
+      <div class="detail-box">
+        <p class="detail-label">
+          Account Name
+        </p>
+        <p class="account-name">
+          {{ account.name }}
+        </p>
+      </div>
+      <div class="detail-box">
+        <p class="detail-label">
+          Balance
+        </p>
+        <p class="account-balance">
+          {{ account.balance }} {{ account.currency }}
+        </p>
+      </div>
+      <div class="detail-box">
+        <p class="detail-label">
+          Type of account
+        </p>
+        <p class="account-balance">
+          {{ account.type }}
+        </p>
+      </div>
     </div>
   </div>
   <br>
-  <div class="transaction-table">
-    <app-transactions-tabel [transactions]="account.transactions"
-                            (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
+  <div class="transaction-container">
+    <div class="transaction-table">
+      <app-transactions-tabel [transactions]="account.transactions"
+                              (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
+    </div>
   </div>
   <div class="add-transaction-button-container">
     <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">

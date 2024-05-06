@@ -1,10 +1,20 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {Transaction} from "../../shared/models/transaction/transaction";
 import {AddTransactionComponent} from "../add-transaction/add-transaction.component";
 import {MatDialog} from "@angular/material/dialog";
 import {TransactionService} from "../transaction.service";
 import {MatTableModule} from "@angular/material/table";
-import {DatePipe, NgIf, SlicePipe} from "@angular/common";
+import {AsyncPipe, DatePipe, NgIf, SlicePipe} from "@angular/common";
 import {MatButtonModule} from "@angular/material/button";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatDatepickerModule} from "@angular/material/datepicker";
@@ -28,35 +38,27 @@ import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
     MatInputModule,
     FormsModule,
     MatPaginatorModule,
-    SlicePipe
+    SlicePipe,
+    AsyncPipe
   ],
   styleUrls: ['./transactions-tabel.component.scss']
 })
-export class TransactionsTabelComponent implements OnChanges {
-  // @ts-ignore
+export class TransactionsTabelComponent implements OnChanges{
   @Input() transactions: Transaction[];
-  // @ts-ignore
   filteredTransactions: Transaction[];
   @Output() modifiedTransactionEvent = new EventEmitter();
   displayedColumns: string[] = ['CreatedOnUtc', 'Account', 'Payee', 'Value', 'Actions'];
-  // @ts-ignore
   startDate: Date;
-  // @ts-ignore
   endDate: Date;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
 
   constructor(private dialog: MatDialog, private transactionService: TransactionService) {
   }
 
-  ngOnChanges() {
-    if (this.transactions && this.transactions.length > 0) {
+  ngOnChanges(changes: SimpleChanges): void {
       this.filteredTransactions = [...this.transactions];
-    } else {
-      this.filteredTransactions = [];
     }
-  }
 
   onEditTransaction(transaction: Transaction) {
     const dialogRef = this.dialog.open(AddTransactionComponent, {
@@ -69,12 +71,13 @@ export class TransactionsTabelComponent implements OnChanges {
         transaction: transaction,
       }
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if(result === true) {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
         this.modifiedTransactionEvent.emit(true);
       }
     });
   }
+
   onDeleteTransaction(transaction: Transaction) {
     this.transactionService.deleteTransaction(transaction.id).subscribe({
       next: data => {
@@ -85,14 +88,23 @@ export class TransactionsTabelComponent implements OnChanges {
       }
     });
   }
+
   applyDateFilter() {
-    if (this.startDate && this.endDate) {
-      this.filteredTransactions = this.transactions.filter(transaction => {
-        const transactionDate = new Date(transaction.createdOnUtc);
+    this.filteredTransactions = this.filteredTransactions.filter(transaction => {
+      const transactionDate = new Date(transaction.createdOnUtc);
+      if (this.startDate && this.endDate) {
         return transactionDate >= this.startDate && transactionDate <= this.endDate;
-      });
-    }
+      }
+      if (!this.startDate && this.endDate) {
+        return transactionDate <= this.endDate;
+      }
+      if (this.startDate && !this.endDate) {
+        return transactionDate >= this.startDate;
+      }
+      return true;
+    });
   }
+
 
   resetDateFilter() {
     // @ts-ignore

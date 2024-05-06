@@ -20,10 +20,8 @@
         <mat-form-field appearance="outline" class="value-field">
           <mat-label>Value</mat-label>
           <input matInput type="number" placeholder="Value" formControlName="value" required>
+          <span matTextSuffix>{{data.account.currency}}</span>
         </mat-form-field>
-      </div>
-      <div class="col-sm">
-        <span>{{data.account.currency}}</span>
       </div>
     </div>
     <div class="row">

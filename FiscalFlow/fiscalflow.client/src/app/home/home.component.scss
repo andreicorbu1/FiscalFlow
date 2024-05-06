@@ -1,14 +1,40 @@
-table {
-  width: 100%;
+//.account {
+//  justify-content: center;
+//  display: flex;
+//}
+//
+//.transaction-table {
+//  border: 3px solid #3f51b4;
+//  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+//  border-radius: 15px;
+//}
+/* Style for the home container */
+.home-container {
+  padding: 20px;
 }
 
+/* Style for the account cards */
 .account {
-  justify-content: center;
   display: flex;
+  justify-content: center;
+  margin-bottom: 20px; /* Add some space between account cards */
 }
 
+/* Style for the transaction table */
 .transaction-table {
   border: 3px solid #3f51b4;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  overflow: auto; /* Add overflow auto to enable scrolling if needed */
+}
+
+/* Style for the logged out message */
+.logged-out-message {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.logged-out-message strong {
+  color: red;
+  font-size: 24px;
 }

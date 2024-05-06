@@ -1,8 +1,68 @@
-.table-container{
+/* Base styles */
+.table-container {
   border-radius: 8px;
-  overflow:hidden !important;
+  overflow: hidden !important;
+  margin-top: 20px;
+}
+
+.datepicker {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.mat-elevation-z8 {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.no-transactions {
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.no-transactions h1 {
+  color: #000000;
+  font-size: 25px;
 }
 
 .details-button {
   border: 1px solid #3f51b4;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 600px) {
+  .filter-container {
+    flex-direction: column; /* Change flex direction to stack items vertically */
+    align-items: flex-start; /* Align items to the start */
+  }
+
+  .filter-button {
+    margin-left: 0; /* Remove left margin for filter buttons */
+    margin-top: 10px; /* Add top margin for better spacing */
+  }
+
+  .datepicker {
+    margin-left: 0; /* Remove left margin for datepickers */
+    margin-right: 0; /* Remove right margin for datepickers */
+  }
+
+  .transaction-table {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Add smooth scrolling on iOS */
+  }
 }

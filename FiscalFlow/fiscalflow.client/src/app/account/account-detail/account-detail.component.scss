@@ -1,14 +1,20 @@
+/* Base styles */
+.page-container {
+  padding: 20px;
+}
+
 .account-details {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
   border: 3px solid #3f51b4;
-  width: 25%;
+  width: 100%; /* Change width to full width for mobile */
+  max-width: 400px; /* Add max-width for larger screens */
+  margin: auto; /* Center the container */
 }
 
 .account-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 
 .detail-box {
@@ -16,8 +22,8 @@
   padding: 10px;
   border-radius: 11px;
   text-align: center;
-  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .detail-label {
   font-weight: bold;
   font-size: 14px;
@@ -33,10 +39,26 @@
   border: 3px solid #3f51b4;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 10px;
+  width: 100%; /* Change width to full width */
+  max-width: 800px; /* Add max-width for larger screens */
+  margin: auto; /* Center the container */
 }
 
 .add-transaction-button-container {
   position: fixed;
   bottom: 40px;
   right: 20px;
+}
+
+/* Responsive styles */
+@media screen and (min-width: 768px) {
+  .account-details {
+    width: 45%; /* Adjust width for larger screens */
+    max-width: none; /* Remove max-width */
+  }
+
+  .transaction-table {
+    width: 90%; /* Adjust width for larger screens */
+    max-width: none; /* Remove max-width */
+  }
 }
