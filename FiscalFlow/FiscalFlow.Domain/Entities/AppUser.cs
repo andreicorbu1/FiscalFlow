@@ -14,6 +14,5 @@ public class AppUser : IdentityUser, IAuditableEntity
     public virtual IList<Account> Accounts { get; set; } = new List<Account>();
     public DateTime CreatedOnUtc { get; init; } = DateTime.UtcNow;
     public DateTime? ModifiedOnUtc { get; set; }
-    //public string? RefreshToken { get; set; }
-    //public DateTime? RefreshTokenExpiry { get; set; }
+    public string? RefreshToken { get; set; } = string.Empty;
 }

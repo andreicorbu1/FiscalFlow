@@ -1,36 +1,86 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Category} from "../../shared/models/transaction/enums/category";
-import {AccountService} from "../account.service";
+import { Component, Input, OnInit } from '@angular/core';
+import { Category } from '../../shared/models/transaction/enums/category';
+import { AccountService } from '../account.service';
+import { ChartData } from 'chart.js';
 
 export interface Expense {
-  category: string,
-  value: number
+  category: string;
+  value: number;
 }
 
 @Component({
   selector: 'app-category-spending',
   templateUrl: './category-spending.component.html',
-  styleUrls: ['./category-spending.component.scss']
+  styleUrls: ['./category-spending.component.scss'],
 })
-export class CategorySpendingComponent implements OnInit{
+export class CategorySpendingComponent implements OnInit {
   categories: any;
-  constructor(private accountService: AccountService) {
+  expensesIncomeData: ChartData<'doughnut', number[], string>;
+  categoryExpensesData: ChartData<'pie', number[], string>;
+  expensesIncomeLabels: string[] = ['Expenses', 'Income'];
+  categoryExpensesLabels: string[];
+  constructor(private accountService: AccountService) {}
+  ngOnInit(): void {
+    this.accountService.getCategoryExpenses().subscribe((data) => {
+      this.categories = data;
+      const totalExpenses = Object.entries(this.categories)
+        .filter(([key]) => key !== 'Income')
+        .reduce((sum, [key, value]) => sum + (value as number), 0);
+
+      this.expensesIncomeData = {
+        labels: this.expensesIncomeLabels,
+        datasets: [
+          {
+            data: [totalExpenses, this.categories['Income'] as number],
+            backgroundColor: ['#FF6384', '#36A2EB'],
+            hoverBackgroundColor: ['#FF6384', '#36A2EB'],
+          },
+        ],
+      };
+
+      const categoryExpensesDataArray = Object.entries(this.categories)
+        .filter(([key]) => key !== 'Income')
+        .map(([key, value]) => value as number);
+
+      this.categoryExpensesLabels = Object.keys(this.categories).filter(
+        (key) => key !== 'Income'
+      );
+
+      this.categoryExpensesData = {
+        labels: this.categoryExpensesLabels,
+        datasets: [
+          {
+            data: categoryExpensesDataArray,
+            backgroundColor: this.categoryExpensesLabels.map(() =>
+              this.getRandomColor()
+            ),
+            hoverBackgroundColor: this.categoryExpensesLabels.map(() =>
+              this.getRandomColor()
+            ),
+          },
+        ],
+      };
+    });
+  }
+  getCategoryClass(category: any): string {
+    switch (category) {
+      case 'FoodAndDrinks':
+        return 'Food-and-Drinks';
+      case 'LifeAndEntertainment':
+        return 'Life-and-Entertainment';
+      case 'FinancialExpenses':
+        return 'Financial-Expenses';
+      default:
+        return category.toLowerCase();
     }
-    ngOnInit(): void {
-      this.accountService.getCategoryExpenses().subscribe(data => {
-        this.categories = data;
-      })
+  }
+
+  getRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
     }
-    getCategoryClass(category: any): string {
-      switch (category) {
-        case 'FoodAndDrinks':
-          return 'food-and-drinks';
-        case 'Shopping':
-          return 'shopping';
-        case 'LifeAndEntertainment':
-          return 'Life-And-Entertainment';
-        default:
-          return '';
-      }
-    }
+    return color;
+  }
 }

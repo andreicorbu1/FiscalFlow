@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using ResetPasswordRequest = FiscalFlow.Contracts.Authentication.ResetPasswordRequest;
 using RegisterRequest = FiscalFlow.Contracts.Authentication.RegisterRequest;
+using System.Security.Cryptography;
+using Microsoft.Extensions.Primitives;
 
 namespace FiscalFlow.API.Controllers;
 
@@ -28,16 +30,43 @@ public class UserController : ControllerBase
         _accountService = accountService;
     }
 
+    [HttpPut("revoke-refresh-token")]
     [Authorize]
-    [HttpGet("refresh-user-token")]
-    public async Task<IActionResult> RefreshTokenAsync()
+    public async Task<IActionResult> RevokeTokenAsync()
     {
-        var user = await _accountService.FindByEmailAsync(User.FindFirst(ClaimTypes.Email)!.Value);
+        var userId = Utils.Utils.ExtractUserIdFromClaims(User);
+        var user = await _userManager.FindByIdAsync(userId);
+        user!.RefreshToken = null;
+        await _userManager.UpdateAsync(user);
+        return Ok();
+    }
 
-        if (user == null) return BadRequest();
-
-        var token = _jwtService.CreateJwt(user);
-        return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
+    [HttpPost("refresh-user-token")]
+    public async Task<IActionResult> RefreshTokenAsync(string refreshToken)
+    {
+        Request.Headers.TryGetValue("Authorization", out StringValues headerValues);
+        string? token = headerValues.FirstOrDefault()?.Substring(7);
+        if (string.IsNullOrEmpty(token))
+        {
+            return Unauthorized("Please login again!");
+        }
+        var principal = _jwtService.GetPrincipalFromExpiredToken(token);
+        var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)!.Value;
+        var savedRefreshToken = await _accountService.GetSavedRefreshToken(email);
+        if(!savedRefreshToken.IsSuccess)
+        {
+            return Unauthorized("Please login again!");
+        }
+        if(savedRefreshToken != refreshToken)
+        {
+            return Unauthorized("Please login again!");
+        }
+        var user = await _userManager.FindByEmailAsync(email!);
+        var newJwtToken = _jwtService.CreateJwt(user!);
+        var newRefreshToken = GenerateRefreshToken();
+        user!.RefreshToken = newRefreshToken;
+        await _userManager.UpdateAsync(user);
+        return Ok(new TokenResponse(newJwtToken, newRefreshToken, user.FirstName!, user.LastName!));
     }
 
     [HttpPost("login")]
@@ -51,9 +80,12 @@ public class UserController : ControllerBase
         var result = await _accountService.CheckPasswordSignInAsync(user, loginRequest.Password, true);
 
         if (!result.Succeeded) return Unauthorized("Invalid password!");
-        
+
         var token = _jwtService.CreateJwt(user);
-        return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
+        var refreshToken = GenerateRefreshToken();
+        user.RefreshToken = refreshToken;
+        await _userManager.UpdateAsync(user);
+        return Ok(new TokenResponse(token, refreshToken, user.FirstName!, user.LastName!));
     }
 
     [HttpPut("confirm-email")]
@@ -214,14 +246,19 @@ public class UserController : ControllerBase
         }
 
         var token = _jwtService.CreateJwt(user);
-        return Ok(new TokenResponse(token, user.FirstName!, user.LastName!));
+        var refreshToken = GenerateRefreshToken();
+        user.RefreshToken = refreshToken;
+        await _userManager.UpdateAsync(user);
+        return Ok(new TokenResponse(token, refreshToken, user.FirstName!, user.LastName!));
     }
 
-
-    [HttpGet("check-authorized")]
-    [Authorize]
-    public IActionResult CheckAuthorize()
+    private string GenerateRefreshToken()
     {
-        return Ok("Ai access");
+        var randomNumber = new byte[32];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
     }
 }

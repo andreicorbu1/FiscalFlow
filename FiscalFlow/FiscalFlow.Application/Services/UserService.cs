@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Ardalis.Result;
 using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Contracts.Authentication;
@@ -108,5 +109,15 @@ public class UserService : IUserService
     public bool CheckUserExists(string accountId)
     {
         return _userManager.FindByIdAsync(accountId).Result != null;
+    }
+
+    public async Task<Result<string>> GetSavedRefreshToken(string? email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            return Result.NotFound($"User with email {email} does not exist!");
+        }
+        return user.RefreshToken;
     }
 }

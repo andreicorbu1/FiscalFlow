@@ -5,9 +5,8 @@ export enum Category {
   Transportation,
   Vehicle,
   LifeAndEntertainment,
-  CommunicationAndPc,
   FinancialExpenses,
   Investments,
   Income,
-  Others
+  Others,
 }

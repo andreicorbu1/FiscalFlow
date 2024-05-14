@@ -1,4 +1,5 @@
-﻿using FiscalFlow.Contracts.Authentication;
+﻿using Ardalis.Result;
+using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
@@ -14,4 +15,5 @@ public interface IUserService
     Task<bool> SendConfirmEmailAsync(AppUser user);
     Task<bool> SendForgotPasswordEmailAsync(AppUser user);
     bool CheckUserExists(string accountId);
+    Task<Result<string>> GetSavedRefreshToken(string? email);
 }

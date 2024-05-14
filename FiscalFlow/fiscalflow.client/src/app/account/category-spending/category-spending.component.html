@@ -1,8 +1,30 @@
-<mat-grid-list cols="4" rowHeight="200px">
-  <mat-grid-tile *ngFor="let category of categories | keyvalue" [ngClass]="getCategoryClass(category.key)">
-    <div class="category-content">
-      <h3>{{ category.key }}</h3>
-      <p>Total Spending: {{ category.value }}</p>
+<div class="grid-container">
+  <mat-grid-list cols="6" rowHeight="100px" gutterSize="16px">
+    <mat-grid-tile
+      class="category-container"
+      *ngFor="let category of categories | keyvalue"
+      [ngClass]="getCategoryClass(category.key)"
+    >
+      <div class="category-content">
+        <h3>{{ getCategoryClass(category.key) | categoryPipe }}</h3>
+        <p>Total Spending: {{ category.value }}</p>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <div class="chart-container">
+    <div class="chart-wrapper">
+      <h3>Expenses vs Income</h3>
+      <canvas
+        baseChart
+        [data]="expensesIncomeData"
+        [type]="'doughnut'"
+      ></canvas>
     </div>
-  </mat-grid-tile>
-</mat-grid-list>
+
+    <div class="chart-wrapper">
+      <h3>Category Expenses</h3>
+      <canvas baseChart [data]="categoryExpensesData" [type]="'pie'"></canvas>
+    </div>
+  </div>
+</div>

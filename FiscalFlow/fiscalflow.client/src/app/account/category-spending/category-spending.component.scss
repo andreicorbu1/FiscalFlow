@@ -1,30 +1,112 @@
-.category-content {
-  padding: 12px; /* Reduce padding for a smaller size */
-  text-align: center;
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.mat-grid-list {
+  width: 100%;
+  max-width: 1200px;
 }
 
 .mat-grid-tile {
-  width: 25%;
-  height: 25%;
-  border-radius: 16px; /* Rounded corners */
-  overflow: hidden; /* Hide overflow content to prevent sharp corners */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-.food-and-drinks, .shopping, .house {
-  border-radius: 251px;
-  border: 1px transparent/* Keep rounded corners consistent for all tiles */
+.category-container {
+  margin: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5; /* Light background for better contrast */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted look */
+  transition: transform 0.2s; /* Smooth scaling effect on hover */
 }
 
-.food-and-drinks {
-  background-color: #FF5733; /* Unique color for FoodAndDrinks category */
+.category-container:hover {
+  transform: scale(1.05); /* Slightly enlarge the tile on hover */
 }
-.food-and-drinks, .shopping, .Life-And-Entertainment {
-  border-radius: 8px; /* Keep rounded corners consistent for all tiles */
+
+.category-content {
+  padding: 12px;
+  text-align: center;
 }
+
+.chart-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 20px;
+}
+
+.chart-wrapper {
+  flex: 1;
+  max-width: 500px;
+  padding: 20px;
+  background-color: #ffffff; /* White background for the chart */
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted look */
+}
+
+.Food-and-Drinks,
+.shopping,
+.house,
+.transportation,
+.vehicle,
+.Life-and-Entertainment,
+.Financial-Expenses,
+.investments,
+.income,
+.others {
+  border-radius: 10px;
+  border: 3px solid #3f51b4;
+}
+
+.Food-and-Drinks {
+  background-color: #ff5733;
+}
+
 .shopping {
-  background-color: #3498DB; /* Unique color for Shopping category */
+  background-color: #3498db;
 }
 
-.Life-And-Entertainment {
-  background-color: #27AE60; /* Unique color for House category */
+.house {
+  background-color: brown;
+}
+
+.transportation {
+  background-color: chartreuse;
+}
+
+.vehicle {
+  background-color: #f39c12;
+}
+
+.Financial-Expenses {
+  background-color: #8e44ad;
+}
+
+.investments {
+  background-color: #14a89c;
+}
+
+.others {
+  background-color: #f1c40f;
+}
+
+.income {
+  background-color: green;
+}
+
+.Life-and-Entertainment {
+  background-color: #b4098f;
 }

@@ -38,3 +38,35 @@
   color: red;
   font-size: 24px;
 }
+
+.logged-out-container {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 900px;
+  font-family: "Arial, sans-serif";
+}
+
+.welcome-section {
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.headline {
+  color: #2c3e50;
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.subheadline {
+  color: #34495e;
+  font-size: 18px;
+  margin-bottom: 30px;
+}

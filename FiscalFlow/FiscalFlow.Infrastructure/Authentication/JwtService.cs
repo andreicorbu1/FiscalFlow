@@ -47,6 +47,32 @@ public class JwtService : IJwtService
         return tokenHandler.WriteToken(jwt);
     }
 
+    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"]!)),
+            ValidIssuer = _config["JWT:Issuer"],
+            ValidAudience = _config["JWT:Audience"],
+            ValidateIssuer = true,
+            ValidateLifetime = false,
+            ClockSkew = TimeSpan.Zero,
+            RequireExpirationTime = true,
+            ValidateAudience = false
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+        JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
+        if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals("HS512", StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return principal;
+    }
+
     public async Task<GoogleJsonWebSignature.Payload> VerifyGoogleTokenAsync(ExternalAuthRequest externalAuthRequest)
     {
         try

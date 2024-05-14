@@ -20,13 +20,15 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import { CategorySpendingComponent } from './category-spending/category-spending.component';
 import {MatGridListModule} from "@angular/material/grid-list";
-
+import { CategoryPipePipe } from './category-pipe.pipe';
+import {NgChartsModule} from "ng2-charts";
 @NgModule({
   declarations: [
     AddAccountComponent,
     AccountComponent,
     AccountDetailComponent,
-    CategorySpendingComponent
+    CategorySpendingComponent,
+    CategoryPipePipe
   ],
     exports: [
         AccountComponent,
@@ -37,6 +39,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
     AccountRoutingModule,
     SharedModule,
     MatIconModule,
+    NgChartsModule,
     FormsModule,
     MatFormFieldModule,
     MatCardModule,

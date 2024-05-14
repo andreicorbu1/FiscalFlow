@@ -1,18 +1,86 @@
-<div *ngIf="(userService.user$ | async) as user; else loggedOut">
+<div *ngIf="userService.user$ | async as user; else loggedOut">
   <div class="home-container">
     <div class="row">
       <div *ngFor="let account of accounts" class="account col-sm">
-          <app-account [account]="account" (newTransactionEvent)="refreshAccounts($event)">
-          </app-account>
+        <app-account
+          [account]="account"
+          (newTransactionEvent)="refreshAccounts($event)"
+        >
+        </app-account>
       </div>
     </div>
-    <div class="row"><br></div>
+    <div class="row"><br /></div>
     <div class="row transaction-table">
-      <app-transactions-tabel [transactions]="transactions" (modifiedTransactionEvent)="refreshAccounts($event)"></app-transactions-tabel>
+      <app-transactions-tabel
+        [transactions]="transactions"
+        (modifiedTransactionEvent)="refreshAccounts($event)"
+      ></app-transactions-tabel>
     </div>
   </div>
 </div>
 
 <ng-template #loggedOut>
-  <h1><strong style="color:red;font-size: 42px">Please login first to have full access to the website!</strong></h1>
+  <div class="logged-out-container">
+    <div class="welcome-section">
+      <img
+        src="../../assets/images/logo.png"
+        alt="Platform Logo"
+        class="logo"
+      />
+      <h1 class="headline">Welcome to Our Financial Management Platform</h1>
+      <p class="subheadline">
+        Your all-in-one solution for managing your finances effortlessly.
+      </p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <img
+          src="assets/track-expenses.png"
+          alt="Track Expenses"
+          class="feature-icon"
+        />
+        <h3>Track Your Expenses</h3>
+        <p>
+          Keep a close eye on your spending habits with our intuitive tracking
+          tools.
+        </p>
+      </div>
+      <div class="feature">
+        <img
+          src="assets/manage-accounts.png"
+          alt="Manage Accounts"
+          class="feature-icon"
+        />
+        <h3>Manage Your Accounts</h3>
+        <p>
+          Consolidate all your financial accounts in one place for easy
+          management.
+        </p>
+      </div>
+      <div class="feature">
+        <img
+          src="assets/plan-budget.png"
+          alt="Plan Budget"
+          class="feature-icon"
+        />
+        <h3>Plan Your Budget</h3>
+        <p>
+          Create and stick to a budget that works for you, with real-time
+          updates.
+        </p>
+      </div>
+    </div>
+
+    <div class="call-to-action">
+      <h2>Join Us Today</h2>
+      <p>
+        Register now to gain full access to all our features and take control of
+        your financial future.
+      </p>
+      <button (click)="navigateToRegister()" class="register-button">
+        Register Now
+      </button>
+    </div>
+  </div>
 </ng-template>

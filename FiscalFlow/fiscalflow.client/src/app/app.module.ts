@@ -26,6 +26,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { TransactionsTabelComponent } from './transaction/transactions-tabel/transactions-tabel.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { NgChartsModule } from 'ng2-charts';
 @NgModule({
   declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent, DashboardComponent],
   imports: [
@@ -47,6 +48,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatButtonModule,
     MatTableModule,
     MatTooltipModule,
+    NgChartsModule,
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
