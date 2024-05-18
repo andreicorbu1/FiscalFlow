@@ -7,9 +7,8 @@ import { SharedModule } from '../shared/shared.module';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { SendEmailComponent } from './send-email/send-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 // import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
-
-
 
 @NgModule({
   declarations: [
@@ -17,12 +16,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     RegisterComponent,
     ConfirmEmailComponent,
     SendEmailComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
   ],
-  imports: [
-    CommonModule,
-    UserRoutingModule,
-    SharedModule
-  ]
+  imports: [CommonModule, MatButtonModule, UserRoutingModule, SharedModule],
 })
-export class UserModule { }
+export class UserModule {}

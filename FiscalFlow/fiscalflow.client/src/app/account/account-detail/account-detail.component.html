@@ -1,41 +1,37 @@
 <div *ngIf="account != null" class="page-container">
   <div class="account-container">
-    <div class="account-details">
+    <div class="account-details" tabindex="0" aria-label="Account Details">
       <div class="detail-box">
-        <p class="detail-label">
-          Account Name
-        </p>
-        <p class="account-name">
-          {{ account.name }}
-        </p>
+        <p class="detail-label">Account Name</p>
+        <p class="detail-value">{{ account.name }}</p>
       </div>
       <div class="detail-box">
-        <p class="detail-label">
-          Balance
-        </p>
-        <p class="account-balance">
-          {{ account.balance }} {{ account.currency }}
-        </p>
+        <p class="detail-label">Balance</p>
+        <p class="detail-value">{{ account.balance }} {{ account.currency }}</p>
       </div>
       <div class="detail-box">
-        <p class="detail-label">
-          Type of account
-        </p>
-        <p class="account-balance">
-          {{ account.type }}
-        </p>
+        <p class="detail-label">Type of Account</p>
+        <p class="detail-value">{{ account.type }}</p>
       </div>
     </div>
   </div>
-  <br>
+  <br />
   <div class="transaction-container">
-    <div class="transaction-table">
-      <app-transactions-tabel [transactions]="account.transactions"
-                              (modifiedTransactionEvent)="refreshAccount($event)"></app-transactions-tabel>
+    <div class="transaction-table" tabindex="0" aria-label="Transaction Table">
+      <app-transactions-tabel
+        [transactions]="account.transactions"
+        (modifiedTransactionEvent)="refreshAccount($event)"
+      ></app-transactions-tabel>
     </div>
   </div>
   <div class="add-transaction-button-container">
-    <button mat-mini-fab matTooltip="Add Transaction" color="primary" (click)="openAddTransactionForm()">
+    <button
+      mat-mini-fab
+      matTooltip="Add Transaction"
+      color="primary"
+      aria-label="Add Transaction"
+      (click)="openAddTransactionForm()"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </div>

@@ -1,45 +1,88 @@
 <header>
-  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4758b8">
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand">
-        <img src="./assets/images/logo.png" class="me-3" alt="Logo">
+        <img src="./assets/images/logo.png" class="me-3" alt="Logo" />
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/" routerLinkActive="active"
-               [routerLinkActiveOptions]="{exact:true}">Home</a>
+            <a
+              class="nav-link"
+              routerLink="/"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Home</a
+            >
           </li>
-          <li class="nav-item" *ngIf="(userService.user$ | async) as user">
-            <a class="nav-link" routerLink="/account/create-account" routerLinkActive="active"
-               [routerLinkActiveOptions]="{exact:true}">Add Account</a>
+          <li class="nav-item" *ngIf="userService.user$ | async as user">
+            <a
+              class="nav-link"
+              routerLink="/account/dashboard"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Dashboard</a
+            >
           </li>
-          <li class="nav-item" *ngIf="(userService.user$ | async) as user">
-            <a class="nav-link" routerLink="/account/dashboard" routerLinkActive="active"
-               [routerLinkActiveOptions]="{exact:true}">Dashboard</a>
+          <li class="nav-item" *ngIf="userService.user$ | async as user">
+            <a
+              class="nav-link"
+              routerLink="/account/create-account"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Add Account</a
+            >
           </li>
         </ul>
         <ul class="navbar-nav" *ngIf="(userService.user$ | async) === null">
           <li class="nav-item">
-            <a class="btn btn-secondary mx-2" routerLink="/user/register" routerLinkActive="active">
+            <a
+              mat-flat-button
+              style="border-radius: 24px; background-color: #2b3b78"
+              color="primary"
+              class="mx-2"
+              routerLink="/user/register"
+              routerLinkActive="active"
+            >
               Create account
             </a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-secondary" routerLink="/user/login" routerLinkActive="active">
+            <a
+              style="border-radius: 24px; background-color: #2b3b78"
+              mat-flat-button
+              color="primary"
+              routerLink="/user/login"
+              routerLinkActive="active"
+            >
               Login
             </a>
           </li>
         </ul>
-        <div class="d-flex align-items-center" *ngIf="(userService.user$ | async) as user">
-          <a class="text-white" style="text-decoration: none; cursor: pointer;">
-            Hi <span class="h3" style="color: #fdfdfd">{{ user.firstName | titlecase }}</span>
+        <div
+          class="d-flex align-items-center"
+          *ngIf="userService.user$ | async as user"
+        >
+          <a class="text-white" style="text-decoration: none; cursor: pointer">
+            Hi
+            <span class="h3" style="color: #fdfdfd">{{
+              user.firstName | titlecase
+            }}</span>
           </a>
-          <a class="btn btn-danger ms-3" (click)="logout()">Logout</a>
+          <button mat-flat-button color="warn" class="ms-3" (click)="logout()">
+            Logout
+          </button>
         </div>
       </div>
     </div>

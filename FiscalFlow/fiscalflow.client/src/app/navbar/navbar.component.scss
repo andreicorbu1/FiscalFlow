@@ -1,3 +1,43 @@
-.active {
-    color: #eaeaea !important;
+/* Navbar styles */
+.navbar {
+  background-color: #4758b8;
+  height: 75px;
+}
+
+.navbar-brand img {
+  margin-right: 10px;
+}
+
+.navbar-nav .nav-link,
+.navbar-nav .active {
+  color: #ffffff;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+/* Button styles */
+.mat-flat-button {
+  background-color: #4758b8; /* Match navbar color */
+  color: #ffffff;
+  border: solid 1px #4758b8;
+  border-radius: 15px;
+  margin: 0 8px; /* Adjust as needed */
+  cursor: pointer;
+}
+
+.mat-flat-button:hover {
+  background-color: #3a4870; /* Darker shade on hover */
+}
+
+.mat-flat-button .text-white {
+  color: #ffffff;
+}
+
+/* Remove underline and change cursor for links */
+.navbar-nav .nav-link,
+.mat-button {
+  text-decoration: none;
+  cursor: pointer;
 }
