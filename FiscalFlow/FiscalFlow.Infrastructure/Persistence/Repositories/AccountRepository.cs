@@ -33,7 +33,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
         return (await _context.Accounts
                 .Include(account => account.Transactions)
                 .SingleOrDefaultAsync(account => account.Id.Equals(accountId)))?
-            .Transactions ?? new List<Transaction>();
+            .Transactions?.OrderByDescending(tr => tr.CreatedOnUtc).ToList() ?? new List<Transaction>();
     }
 
     public async Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId)

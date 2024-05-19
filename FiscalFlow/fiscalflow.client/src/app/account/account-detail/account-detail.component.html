@@ -27,12 +27,31 @@
   <div class="add-transaction-button-container">
     <button
       mat-mini-fab
-      matTooltip="Add Transaction"
+      matTooltip="Menu"
       color="primary"
-      aria-label="Add Transaction"
-      (click)="openAddTransactionForm()"
+      aria-label="Menu"
+      [matMenuTriggerFor]="menu"
     >
       <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openAddTransactionForm()">
+        <mat-icon>add</mat-icon>
+        <span>Add Transaction</span>
+      </button>
+      <button mat-menu-item (click)="importTransactionsFromCSV()">
+        <mat-icon>file_upload</mat-icon>
+        <span>Import Transactions from CSV</span>
+      </button>
+    </mat-menu>
+    <button
+      mat-mini-fab
+      matTooltip="Download Transactions as CSV"
+      color="primary"
+      aria-label="Download Transactions as CSV"
+      (click)="downloadCsv()"
+    >
+      <mat-icon>download</mat-icon>
     </button>
   </div>
 </div>

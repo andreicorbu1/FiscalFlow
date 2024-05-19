@@ -5,6 +5,7 @@ using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
+using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Enums;
 using FiscalFlow.Domain.Repositories;
@@ -15,12 +16,14 @@ namespace FiscalFlow.Application.Services;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository _accountRepository;
+    private readonly ITransactionRepository _transactionRepository;
     private readonly IUserService _userService;
 
-    public AccountService(IAccountRepository accountRepository, IUserService userService)
+    public AccountService(IAccountRepository accountRepository, IUserService userService, ITransactionRepository transactionRepository)
     {
         _accountRepository = accountRepository;
         _userService = userService;
+        this._transactionRepository = transactionRepository;
     }
 
     public Result CreateAccount(CreateAccountRequest payload)
@@ -33,7 +36,7 @@ public class AccountService : IAccountService
             {
                 return Result.Conflict($"You already have an account with the name {payload.Name}");
             }
-            
+
             var account = new Account
             {
                 Name = payload.Name,
@@ -139,7 +142,7 @@ public class AccountService : IAccountService
     public async Task<Result<List<AccountDto>>> GetAccountsOfOwnerAsync(string ownerId)
     {
         var accounts = (await _accountRepository.GetUserAccountsAsync(ownerId)).Select(account => account.ToAccountDto()).ToList();
-        
+
         return Result.Success(accounts);
     }
 
@@ -176,6 +179,35 @@ public class AccountService : IAccountService
                 transaction.MoneyCurrency = existingAccount.MoneyCurrency;
         /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
         _accountRepository.Update(existingAccount);
+        return Result.Success();
+    }
+
+    public async Task<Result> ImportTransactionsFromCsv(IList<Transaction> transactions, string ownerId, Guid accountId)
+    {
+        var account = await _accountRepository.GetByIdAsync(accountId);
+        if(account == null)
+        {
+            return Result.NotFound($"Account with id {accountId} does not exist!");
+        }
+        foreach (var transaction in transactions.Reverse())
+        {
+            transaction.AccountId = accountId;
+            transaction.AccountValueBefore = account.MoneyBalance;
+            if(transaction.Type == TransactionType.Income)
+            {
+                account.MoneyBalance += transaction.MoneyValue;
+                transaction.AccountValueAfter = account.MoneyBalance;
+            }
+            else
+            {
+                account.MoneyBalance -= transaction.MoneyValue;
+                transaction.AccountValueAfter = account.MoneyBalance;
+            }
+            transaction.CreatedOnUtc = transaction.CreatedOnUtc.ToUniversalTime();
+            transaction.ModifiedOnUtc = transaction.ModifiedOnUtc?.ToUniversalTime();
+        }
+        _transactionRepository.AddRange(transactions);
+        _accountRepository.Update(account);
         return Result.Success();
     }
 }

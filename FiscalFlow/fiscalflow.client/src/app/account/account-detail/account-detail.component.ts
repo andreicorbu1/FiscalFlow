@@ -1,21 +1,23 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Account} from "../../shared/models/account/account";
-import {AccountService} from "../account.service";
-import {ActivatedRoute} from "@angular/router";
-import {AddTransactionComponent} from "../../transaction/add-transaction/add-transaction.component";
-import {MatDialog} from "@angular/material/dialog";
+import { Component, Input, OnInit } from '@angular/core';
+import { Account } from '../../shared/models/account/account';
+import { AccountService } from '../account.service';
+import { ActivatedRoute } from '@angular/router';
+import { AddTransactionComponent } from '../../transaction/add-transaction/add-transaction.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-account-detail',
   templateUrl: './account-detail.component.html',
-  styleUrls: ['./account-detail.component.scss']
+  styleUrls: ['./account-detail.component.scss'],
 })
-export class AccountDetailComponent implements OnInit{
+export class AccountDetailComponent implements OnInit {
   // @ts-ignore
   account: Account = null;
-  constructor(private accountService: AccountService, private route: ActivatedRoute,
-              private dialog: MatDialog) {
-  }
+  constructor(
+    private accountService: AccountService,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {}
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       // @ts-ignore
@@ -24,14 +26,14 @@ export class AccountDetailComponent implements OnInit{
         next: (account: Account) => {
           this.account = account;
         },
-        error: _ => {
+        error: (_) => {
           console.log(_);
-        }
+        },
       });
     });
   }
   refreshAccount($event: boolean) {
-    if($event) {
+    if ($event) {
       this.ngOnInit();
     }
   }
@@ -40,12 +42,57 @@ export class AccountDetailComponent implements OnInit{
       data: {
         account: this.account,
         transaction: null,
-      }
+      },
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if(result === true) {
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
         this.ngOnInit();
       }
     });
+  }
+
+  downloadCsv() {
+    console.log('here 1');
+    this.accountService
+      .getTransactionsFromAccountAsCsv(this.account.id)
+      .subscribe(
+        (response: Blob) => {
+          const blob = new Blob([response], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'transactions.csv';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  }
+
+  importTransactionsFromCSV() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const accountId = this.account.id;
+
+        this.accountService.importTransactions(accountId, formData).subscribe({
+          next: () => {
+            this.refreshAccount(true);
+          },
+          error: (error) => {
+            console.error('Import failed', error);
+          },
+        });
+      }
+    };
+    input.click();
   }
 }

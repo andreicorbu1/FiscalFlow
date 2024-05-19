@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Application.Core.Extensions;
+using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
@@ -46,7 +47,7 @@ public class AccountController : ControllerBase
         {
             return BadRequest();
         }
-        
+
         return Ok(transactions.Value);
     }
 
@@ -63,7 +64,7 @@ public class AccountController : ControllerBase
         var dict = await _accountService.GetCategoryReportsFromAllAccounts(userId);
         return this.ToActionResult(dict);
     }
-    
+
     [Authorize]
     [HttpGet("me/csv/export/{accountId}")]
     [Produces("text/csv")]
@@ -79,6 +80,26 @@ public class AccountController : ControllerBase
         // Get the full path of the file
         var filePath = Path.Combine(directoryPath, fileName);
         return PhysicalFile(filePath, "text/csv", fileName);
+    }
+
+    [Authorize]
+    [HttpPost("me/csv/import/{accountId}")]
+    public async Task<IActionResult> ImportTransactionsFromCsv(Guid accountId, IFormFile file)
+    {
+        if(file == null || file.Length == 0)
+        {
+            return BadRequest("File is empty!");
+        }
+        IList<Transaction> transactions = new List<Transaction>();
+        using (var stream = new MemoryStream())
+        {
+            await file.CopyToAsync(stream);
+            stream.Position = 0;
+            transactions = CsvImporter.Import<Transaction>(stream);
+        }
+        var ownerId = ExtractUserIdFromClaims(User);
+        var result = await _accountService.ImportTransactionsFromCsv(transactions, ownerId, accountId);
+        return this.ToActionResult(result);
     }
 
     [HttpGet("me/account/{accountId}")]

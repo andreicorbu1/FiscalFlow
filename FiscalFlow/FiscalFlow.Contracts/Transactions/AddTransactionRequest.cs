@@ -12,5 +12,6 @@ public class AddTransactionRequest
     public decimal Value { get; set; }
     public Category Category { get; set; }
     public DateTime CreatedOnUtc { get; set; }
+    public DateTime? DateModified { get; set; } = null;
     public Guid AccountId { get; set; }
 }
