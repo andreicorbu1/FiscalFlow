@@ -3,6 +3,7 @@ using System;
 using FiscalFlow.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiscalFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240602071651_AddRecursiveTable")]
+    partial class AddRecursiveTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,10 +162,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("Recurrence")
                         .HasColumnType("integer");
 
@@ -170,8 +169,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.HasIndex("TransactionId");
 
@@ -386,12 +383,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.RecursiveTransaction", b =>
                 {
-                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FiscalFlow.Domain.Entities.Transaction", "LastTransaction")
                         .WithMany()
                         .HasForeignKey("TransactionId")
@@ -399,8 +390,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("LastTransaction");
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.Transaction", b =>

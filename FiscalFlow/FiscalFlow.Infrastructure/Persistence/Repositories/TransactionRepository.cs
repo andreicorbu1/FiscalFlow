@@ -27,6 +27,7 @@ internal sealed class TransactionRepository : GenericRepository<Transaction>, IT
     {
         return await _context.Transactions
             .Where(tr => tr.AccountId.Equals(accountId) && tr.CreatedOnUtc >= startTime && tr.CreatedOnUtc <= endTime)
+            .OrderByDescending(tr => tr.CreatedOnUtc)
             .ToListAsync();
     }
 }

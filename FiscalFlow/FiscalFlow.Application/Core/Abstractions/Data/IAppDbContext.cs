@@ -8,6 +8,6 @@ public interface IAppDbContext
     public DbSet<AppUser> Users { get; }
     public DbSet<Account> Accounts { get; }
     public DbSet<Transaction> Transactions { get; }
-
+    public DbSet<RecursiveTransaction> RecursiveTransactions { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

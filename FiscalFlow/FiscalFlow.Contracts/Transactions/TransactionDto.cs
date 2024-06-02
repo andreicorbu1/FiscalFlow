@@ -12,6 +12,8 @@ public class TransactionDto
     public string Description { get; set; }
     public string Payee { get; set; }
     public TransactionType Type { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public Category Category { get; set; }
     public DateTime CreatedOnUtc { get; set; }
     public string Account { get; set; }

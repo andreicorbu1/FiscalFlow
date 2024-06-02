@@ -49,7 +49,14 @@ export class AccountService {
 
   importTransactions(accountId: string, formData: FormData) {
     return this.httpClient.post(
-      `${environment.appUrl}/api/v1/Account/me/csv/import/${accountId}`, formData
+      `${environment.appUrl}/api/v1/Account/me/csv/import/${accountId}`,
+      formData
+    );
+  }
+
+  deleteAccount(accountId: string) {
+    return this.httpClient.delete(
+      `${environment.appUrl}/api/v1/Account/me/delete/${accountId}`
     );
   }
 }

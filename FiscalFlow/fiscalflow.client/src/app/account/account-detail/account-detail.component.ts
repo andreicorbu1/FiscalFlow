@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Account } from '../../shared/models/account/account';
 import { AccountService } from '../account.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AddTransactionComponent } from '../../transaction/add-transaction/add-transaction.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -16,7 +16,8 @@ export class AccountDetailComponent implements OnInit {
   constructor(
     private accountService: AccountService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {}
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -94,5 +95,20 @@ export class AccountDetailComponent implements OnInit {
       }
     };
     input.click();
+  }
+
+  deleteAccount() {
+    this.accountService.deleteAccount(this.account.id).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/');      
+      },
+      error: (error) => {
+        console.error('Delete failed', error);
+      },
+    });
+  }
+
+  editAccount() {
+    throw new Error('Method not implemented.');
   }
 }

@@ -6,43 +6,96 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Account</mat-label>
-        <input matInput type="text" placeholder="{{data.account.name}}" formControlName="accountId">
+        <input
+          matInput
+          type="text"
+          formControlName="accountId"
+          readonly="true"
+        />
       </mat-form-field>
     </div>
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Payee</mat-label>
-        <input matInput type="text" placeholder="Payee" formControlName="payee" required>
+        <input
+          matInput
+          type="text"
+          placeholder="Payee"
+          formControlName="payee"
+          required
+        />
       </mat-form-field>
     </div>
     <div class="row">
       <div class="col-sm">
         <mat-form-field appearance="outline" class="value-field">
           <mat-label>Value</mat-label>
-          <input matInput type="number" placeholder="Value" formControlName="value" required>
-          <span matTextSuffix>{{data.account.currency}}</span>
+          <input
+            matInput
+            type="number"
+            placeholder="Value"
+            formControlName="value"
+            required
+          />
+          <span matTextSuffix>{{ data.account.currency }}</span>
         </mat-form-field>
       </div>
     </div>
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
-        <input matInput type="text" placeholder="Description" formControlName="description" required>
+        <input
+          matInput
+          type="text"
+          placeholder="Description"
+          formControlName="description"
+          required
+        />
       </mat-form-field>
     </div>
     <div class="row">
-      <mat-radio-group aria-label="Select an option" formControlName="type" required>
+      <mat-radio-group
+        aria-label="Select an option"
+        formControlName="type"
+        required
+      >
         <mat-label><b>Transaction Type</b></mat-label>
-        <mat-radio-button value=0>Income</mat-radio-button>
-        <mat-radio-button value=1>Expense</mat-radio-button>
+        <mat-radio-button value="0">Income</mat-radio-button>
+        <mat-radio-button value="1">Expense</mat-radio-button>
       </mat-radio-group>
     </div>
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Date of transaction</mat-label>
-        <input matInput [matDatepicker]="picker" [max]="today" formControlName="createdOnUtc" required>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [max]="today"
+          formControlName="createdOnUtc"
+          required
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-slide-toggle formControlName="isRecursive"
+        >Is Recursive</mat-slide-toggle
+      >
+    </div>
+    <br />
+    <div class="row" *ngIf="addTransactionForm.get('isRecursive')!.value">
+      <mat-form-field appearance="outline">
+        <mat-label>Recurrence Period (Months)</mat-label>
+        <input
+          matInput
+          type="number"
+          placeholder="Recurrence Period"
+          formControlName="recurrencePeriod"
+        />
       </mat-form-field>
     </div>
     <div class="row">
@@ -50,15 +103,59 @@
         <mat-label>Category</mat-label>
         <mat-select formControlName="category" required>
           <mat-option>--</mat-option>
-          <mat-option *ngFor="let category of categories" [value]="category.value">
+          <mat-option
+            *ngFor="let category of categories"
+            [value]="category.value"
+          >
             {{ category.viewValue }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
+    <div class="row">
+      <mat-slide-toggle formControlName="enableLocation">
+        Enable Location
+      </mat-slide-toggle>
+    </div>
+    <br />
+    <div class="row" *ngIf="addTransactionForm.get('enableLocation')!.value">
+      <mat-form-field appearance="outline">
+        <mat-label>Location</mat-label>
+        <input
+          matInput
+          readonly="true"
+          type="text"
+          formControlName="location"
+          placeholder="Click on the map to set location"
+        />
+      </mat-form-field>
+    </div>
+    <div class="row" *ngIf="addTransactionForm.get('enableLocation')!.value">
+      <google-map
+        height="200px"
+        width="100%"
+        [center]="mapCenter"
+        [zoom]="mapZoom"
+        (mapClick)="onMapClick($event)"
+      >
+        <map-marker
+          *ngIf="markerPosition"
+          [position]="markerPosition"
+        ></map-marker>
+      </google-map>
+    </div>
   </div>
   <div mat-dialog-actions class="action">
-    <button mat-raised-button type="button" [mat-dialog-close]="false">Cancel</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="addTransactionForm.invalid">{{ data.transaction === null ? 'Save' : 'Update' }}</button>
+    <button mat-raised-button type="button" [mat-dialog-close]="false">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="addTransactionForm.invalid"
+    >
+      {{ data.transaction === null ? "Save" : "Update" }}
+    </button>
   </div>
 </form>

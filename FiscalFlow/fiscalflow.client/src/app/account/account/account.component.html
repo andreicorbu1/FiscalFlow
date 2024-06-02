@@ -11,7 +11,7 @@
     >
   </mat-card-header>
   <mat-card-content class="transaction-container">
-    <div *ngFor="let transaction of account?.transactions">
+    <div *ngFor="let transaction of transactions">
       {{ transaction.payee }} {{ transaction.type === 0 ? "+" : "-"
       }}{{ transaction.value }}
     </div>

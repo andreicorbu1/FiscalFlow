@@ -8,6 +8,13 @@
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  flex: 0 0 calc(33.333% - 20px); /* Adjust width as needed */
+  margin: 10px; /* Adjust margin as needed */
+}
+.accounts-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Style for the transaction table */
@@ -22,10 +29,11 @@
 .logged-out-container {
   text-align: center;
   padding: 20px 20px;
-  background-color: #f9f9f9;
+  background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px;
+  border: 3px solid #3f51b4;
+  margin-bottom: 12px;
 }
 
 /* Style for the welcome section */

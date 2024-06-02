@@ -5,7 +5,7 @@ namespace FiscalFlow.Domain.Repositories;
 
 public interface IGenericRepository<TEntity> where TEntity : BaseEntity
 {
-    public void Add(TEntity objModel);
+    public Guid Add(TEntity objModel);
 
     public void AddRange(IEnumerable<TEntity> objModel);
 

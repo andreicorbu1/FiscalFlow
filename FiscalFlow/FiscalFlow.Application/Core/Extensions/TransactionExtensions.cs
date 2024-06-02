@@ -14,6 +14,8 @@ public static class TransactionExtensions
             Category = transaction.Category,
             Currency = transaction.Value.Currency.Code,
             Description = transaction.Description,
+            Latitude = transaction.Latitude,
+            Longitude = transaction.Longitude,
             Payee = transaction.Payee,
             Type = transaction.Type,
             Value = transaction.Value.Amount,

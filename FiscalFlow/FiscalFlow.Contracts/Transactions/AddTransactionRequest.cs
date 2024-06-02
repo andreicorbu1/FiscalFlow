@@ -11,7 +11,11 @@ public class AddTransactionRequest
     public TransactionType Type { get; set; }
     public decimal Value { get; set; }
     public Category Category { get; set; }
+    public bool IsRecursive { get; set; } = false;
+    public ushort? Recurrence { get; set; } = null;
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? DateModified { get; set; } = null;
+    public double? Latitude { get; set; } = null;
+    public double? Longitude { get; set; } = null;
     public Guid AccountId { get; set; }
 }

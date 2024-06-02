@@ -25,7 +25,7 @@ export class CategorySpendingComponent implements OnInit {
       this.categories = data;
       const totalExpenses = Object.entries(this.categories)
         .filter(([key]) => key !== 'Income')
-        .reduce((sum, [key, value]) => sum + (value as number), 0);
+        .reduce((sum, [_, value]) => sum + (value as number), 0);
 
       this.expensesIncomeData = {
         labels: this.expensesIncomeLabels,
@@ -40,7 +40,7 @@ export class CategorySpendingComponent implements OnInit {
 
       const categoryExpensesDataArray = Object.entries(this.categories)
         .filter(([key]) => key !== 'Income')
-        .map(([key, value]) => value as number);
+        .map(([_, value]) => value as number);
 
       this.categoryExpensesLabels = Object.keys(this.categories).filter(
         (key) => key !== 'Income'

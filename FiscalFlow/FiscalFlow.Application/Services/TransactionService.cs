@@ -11,23 +11,25 @@ namespace FiscalFlow.Application.Services;
 
 public class TransactionService : ITransactionService
 {
+    private readonly IRecursiveTransactionRepository _recursiveTransactionRepository;
     private readonly IAccountService _accountService;
     private readonly ITransactionRepository _transactionRepository;
 
-    public TransactionService(ITransactionRepository transactionRepository, IAccountService accountService)
+    public TransactionService(ITransactionRepository transactionRepository, IAccountService accountService, IRecursiveTransactionRepository recursiveTransactionRepository)
     {
         _transactionRepository = transactionRepository;
         _accountService = accountService;
+        _recursiveTransactionRepository = recursiveTransactionRepository;
     }
 
-    public async Task<Result> AddTransaction(AddTransactionRequest payload, string ownerId)
+    public async Task<Result<Transaction>> AddTransaction(AddTransactionRequest payload, string ownerId)
     {
         var account = await _accountService.GetAccountFromIdAsync(payload.AccountId, ownerId);
         if (!account.IsSuccess)
             switch (account.Status)
             {
                 case ResultStatus.NotFound:
-                    return Result.NotFound(account.Errors.First());
+                    return Result.NotFound(account.Errors[0]);
                 case ResultStatus.Forbidden:
                 case ResultStatus.Unauthorized:
                     return Result.Unauthorized();
@@ -44,6 +46,8 @@ public class TransactionService : ITransactionService
             MoneyCurrency = accountValue.MoneyCurrency,
             Description = payload.Description,
             Payee = payload.Payee,
+            Latitude = payload.Latitude,
+            Longitude = payload.Longitude,
             Type = payload.Type,
             Category = payload.Category,
             CreatedOnUtc = payload.CreatedOnUtc,
@@ -68,12 +72,22 @@ public class TransactionService : ITransactionService
                 return Result.Error("This transaction value is bigger than your account's balance.");
             }
         }
-
         accountValue.MoneyBalance = updatedBalance.Amount;
         transaction.AccountValueAfter = accountValue.MoneyBalance;
         _accountService.UpdateAccount(account);
-        _transactionRepository.Add(transaction);
-        return Result.Success();
+        var id = _transactionRepository.Add(transaction);
+        if (payload.IsRecursive)
+        {
+            var rt = new RecursiveTransaction
+            {
+                LastTransaction = transaction,
+                Recurrence = payload.Recurrence ?? 0,
+                TransactionId = id,
+                OwnerId = ownerId
+            };
+            _recursiveTransactionRepository.Add(rt);
+        }
+        return Result.Success(transaction);
     }
 
     public async Task<Result> UpdateTransaction(UpdateTransaction payload, string ownerId)
@@ -107,6 +121,8 @@ public class TransactionService : ITransactionService
         oldTransaction.Category = payload.Category;
         oldTransaction.CreatedOnUtc = payload.CreatedOnUtc;
         oldTransaction.Description = payload.Description;
+        oldTransaction.Latitude = payload.Latitude;
+        oldTransaction.Longitude = payload.Longitude;
         oldTransaction.ModifiedOnUtc = DateTime.UtcNow;
         oldTransaction.Payee = payload.Payee;
         oldTransaction.Type = payload.Type;

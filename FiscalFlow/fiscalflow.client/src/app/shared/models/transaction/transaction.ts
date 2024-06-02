@@ -1,6 +1,6 @@
-import {CurrencyEnum} from "../account/enums/currencyEnum";
-import {TransactionType} from "./enums/transactionType";
-import {Category} from "./enums/category";
+import { CurrencyEnum } from '../account/enums/currencyEnum';
+import { TransactionType } from './enums/transactionType';
+import { Category } from './enums/category';
 
 export interface Transaction {
   id: string;
@@ -11,7 +11,9 @@ export interface Transaction {
   description: string;
   payee: string;
   type: TransactionType;
+  longitude: number;
+  latitude: number;
   category: Category;
-  createdOnUtc: Date,
+  createdOnUtc: Date;
   accountId: string;
 }

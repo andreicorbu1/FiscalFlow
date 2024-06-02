@@ -1,7 +1,7 @@
 <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" class="account-form">
   <div mat-dialog-content class="content">
-    <div class="row">
-      <mat-form-field appearance="outline" class="form-group">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
         <input
           matInput
@@ -12,8 +12,8 @@
         />
       </mat-form-field>
     </div>
-    <div class="row">
-      <mat-form-field appearance="outline" class="form-group">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
         <mat-label>Balance</mat-label>
         <input
           matInput
@@ -24,11 +24,11 @@
         />
       </mat-form-field>
     </div>
-    <div class="row">
-      <mat-form-field appearance="outline" class="form-group">
+    <div class="form-group">
+      <mat-form-field appearance="outline">
         <mat-label>Currency</mat-label>
         <mat-select formControlName="currency" required>
-          <mat-option>---</mat-option>
+          <mat-option disabled>---</mat-option>
           <mat-option
             *ngFor="let currency of currencyValues"
             [value]="currency"
@@ -38,7 +38,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="row">
+    <div class="form-group">
       <mat-radio-group
         aria-label="Select an option"
         formControlName="accountType"
@@ -52,7 +52,7 @@
       </mat-radio-group>
     </div>
   </div>
-  <div mat-dialog-actions class="action row">
+  <div mat-dialog-actions class="action">
     <button
       mat-raised-button
       color="primary"

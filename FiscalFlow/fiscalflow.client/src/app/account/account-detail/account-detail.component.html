@@ -13,9 +13,16 @@
         <p class="detail-label">Type of Account</p>
         <p class="detail-value">{{ account.type }}</p>
       </div>
+      <div class="button-row">
+        <button mat-raised-button color="primary" (click)="editAccount()">
+          Edit Account
+        </button>
+        <button mat-raised-button color="warn" (click)="deleteAccount()">
+          Delete Account
+        </button>
+      </div>
     </div>
   </div>
-  <br />
   <div class="transaction-container">
     <div class="transaction-table" tabindex="0" aria-label="Transaction Table">
       <app-transactions-tabel

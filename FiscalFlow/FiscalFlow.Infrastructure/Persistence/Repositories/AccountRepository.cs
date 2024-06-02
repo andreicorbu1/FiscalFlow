@@ -25,7 +25,8 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
         return _context.Accounts
             .Include(account => account.Transactions)
             .Single(account => account.Id.Equals(accountId))
-            .Transactions ?? new List<Transaction>();
+            .Transactions?
+            .OrderByDescending(tr => tr.CreatedOnUtc).ToList() ?? new List<Transaction>();
     }
 
     public async Task<IList<Transaction>> GetTransactionsAsync(Guid accountId)
@@ -38,7 +39,20 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
 
     public async Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId)
     {
-        return await _context.Accounts.Include(acc => acc.Transactions).Where(account => account.OwnerId == userId).ToListAsync();
+        return await _context.Accounts
+        .Include(acc => acc.Transactions)
+        .Where(account => account.OwnerId == userId)
+        .Select(account => new Account
+        {
+            Id = account.Id,
+            OwnerId = account.OwnerId,
+            Name = account.Name,
+            MoneyBalance = account.MoneyBalance,
+            MoneyCurrency = account.MoneyCurrency,
+            AccountType = account.AccountType,
+            Transactions = account.Transactions!.OrderByDescending(t => t.CreatedOnUtc).ToList()
+        })
+        .ToListAsync();
     }
 
     public async Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions)

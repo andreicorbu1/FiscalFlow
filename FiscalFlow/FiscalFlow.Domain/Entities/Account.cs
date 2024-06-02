@@ -8,7 +8,7 @@ using NodaMoney;
 
 namespace FiscalFlow.Domain.Entities;
 
-public class Account : BaseEntity, IAuditableEntity
+public class Account : BaseEntity
 {
     [MaxLength(50)] public string? Name { get; set; }
     [NotMapped] public Money Balance => new(MoneyBalance, MoneyCurrency.ToString());

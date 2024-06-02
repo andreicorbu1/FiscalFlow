@@ -9,7 +9,7 @@ using MyCurrency = FiscalFlow.Domain.Enums.MyCurrency;
 
 namespace FiscalFlow.Domain.Entities;
 
-public class Transaction : BaseEntity, IAuditableEntity
+public class Transaction : BaseEntity
 {
     [NotMapped] public Money Value => new(MoneyValue, MoneyCurrency.ToString());
     [JsonIgnore] [Column("Value")] public decimal MoneyValue { get; set; }
@@ -20,6 +20,9 @@ public class Transaction : BaseEntity, IAuditableEntity
 
     [Column("AccountValueAfterTransaction")]
     public decimal AccountValueAfter { get; set; }
+
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
 
     [MaxLength(250)] public string Description { get; set; } = string.Empty;
 

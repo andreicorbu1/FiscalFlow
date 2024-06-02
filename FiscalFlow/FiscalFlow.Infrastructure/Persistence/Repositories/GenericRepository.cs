@@ -24,10 +24,11 @@ internal abstract class GenericRepository<TEntity> : IGenericRepository<TEntity>
 
     #region Methods
 
-    public void Add(TEntity objModel)
+    public Guid Add(TEntity objModel)
     {
         _context.Set<TEntity>().Add(objModel);
         _context.SaveChanges();
+        return objModel.Id;
     }
 
     public void AddRange(IEnumerable<TEntity> objModel)

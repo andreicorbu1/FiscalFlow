@@ -14,6 +14,8 @@ public class TransactionMap : ClassMap<Transaction>
         Map(m => m.Type).Name("Type");
         Map(m => m.Category).Name("Category");
         Map(m => m.CreatedOnUtc).Name("Created");
+        Map(m => m.Latitude).Name("Latitude");
+        Map(m => m.Longitude).Name("Longitude");
         Map(m => m.ModifiedOnUtc).Name("Modified");
     }
 }

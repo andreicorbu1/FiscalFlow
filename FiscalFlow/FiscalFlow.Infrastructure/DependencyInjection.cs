@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using FiscalFlow.Application.Core.Abstractions.Authentication;
+using FiscalFlow.Application.Core.Abstractions.Data;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Application.Services;
 using FiscalFlow.Domain.Entities;
@@ -19,7 +20,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<AppDbContext>(options =>
+        services.AddDbContext<IAppDbContext, AppDbContext>(options =>
         {
             options.UseNpgsql(config.GetConnectionString("DefaultConnection"));
         });
@@ -81,6 +82,7 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IRecursiveTransactionRepository, RecursiveTransactionRepository>();
         return services;
     }
 }

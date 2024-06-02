@@ -1,12 +1,16 @@
-import {TransactionType} from "./enums/transactionType";
-import {Category} from "./enums/category";
+import { TransactionType } from './enums/transactionType';
+import { Category } from './enums/category';
 
 export interface AddTransaction {
-  description: string,
-  payee: string,
-  type: TransactionType,
-  value: number,
-  category: Category,
-  createdOnUtc: Date,
-  accountId: string
+  description: string;
+  payee: string;
+  type: TransactionType;
+  value: number;
+  category: Category;
+  longitude: number | null;
+  latitude: number | null;
+  isRecursive: boolean;
+  recurrence: number | null;
+  createdOnUtc: Date;
+  accountId: string;
 }

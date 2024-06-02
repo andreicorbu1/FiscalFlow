@@ -1,13 +1,14 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Account} from "../../shared/models/account/account";
-import {AddTransaction} from "../../shared/models/transaction/addTransaction";
-import {TransactionService} from "../transaction.service";
-import {Transaction} from "../../shared/models/transaction/transaction";
-import {UpdateTransaction} from "../../shared/models/transaction/updateTransaction";
-import {MAT_RADIO_DEFAULT_OPTIONS} from "@angular/material/radio";
-import {SharedService} from "../../shared/shared.service";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Account } from '../../shared/models/account/account';
+import { AddTransaction } from '../../shared/models/transaction/addTransaction';
+import { TransactionService } from '../transaction.service';
+import { Transaction } from '../../shared/models/transaction/transaction';
+import { UpdateTransaction } from '../../shared/models/transaction/updateTransaction';
+import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
+import { SharedService } from '../../shared/shared.service';
+import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS } from '@angular/material/slide-toggle';
 
 interface Category {
   value: number;
@@ -17,66 +18,146 @@ interface Category {
 @Component({
   selector: 'app-add-transaction',
   templateUrl: './add-transaction.component.html',
-  providers: [{
-    provide: MAT_RADIO_DEFAULT_OPTIONS,
-    useValue: { color: 'primary' },
-  }],
-  styleUrls: ['./add-transaction.component.scss']
+  providers: [
+    {
+      provide: MAT_RADIO_DEFAULT_OPTIONS,
+      useValue: { color: 'primary' },
+    },
+    {
+      provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS,
+      useValue: { color: 'primary' },
+    },
+  ],
+  styleUrls: ['./add-transaction.component.scss'],
 })
 export class AddTransactionComponent implements OnInit {
-  today:Date = new Date();
+  markerPosition: google.maps.LatLngLiteral | null = null;
+  mapCenter: google.maps.LatLngLiteral = { lat: 51.505, lng: -0.09 };
+  mapZoom = 15;
+
+  today: Date = new Date();
   categories: Category[] = [
-    {value: 0, viewValue: "Food and Drinks"},
-    {value: 1, viewValue: "Shopping"},
-    {value: 2, viewValue: "House"},
-    {value: 3, viewValue: "Transportation"},
-    {value: 4, viewValue: "Vehicle"},
-    {value: 5, viewValue: "Life and Entertainment"},
-    {value: 6, viewValue: "Communication and Pc"},
-    {value: 7, viewValue: "Financial Expenses"},
-    {value: 8, viewValue: "Investments"},
-    {value: 9, viewValue: "Income"},
-    {value: 10, viewValue: "Other"},
-  ]
+    { value: 0, viewValue: 'Food and Drinks' },
+    { value: 1, viewValue: 'Shopping' },
+    { value: 2, viewValue: 'House' },
+    { value: 3, viewValue: 'Transportation' },
+    { value: 4, viewValue: 'Vehicle' },
+    { value: 5, viewValue: 'Life and Entertainment' },
+    { value: 6, viewValue: 'Communication and Pc' },
+    { value: 7, viewValue: 'Financial Expenses' },
+    { value: 8, viewValue: 'Investments' },
+    { value: 9, viewValue: 'Income' },
+    { value: 10, viewValue: 'Other' },
+  ];
   public addTransactionForm: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder,
-              private transactionService: TransactionService,
-              private sharedService: SharedService,
-              private _dialogRef: MatDialogRef<AddTransactionComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: {
-                account: Account,
-                transaction: Transaction
-              }) {
+  constructor(
+    private fb: FormBuilder,
+    private transactionService: TransactionService,
+    private sharedService: SharedService,
+    private _dialogRef: MatDialogRef<AddTransactionComponent>,
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      account: Account;
+      transaction: Transaction;
+    }
+  ) {
     this.addTransactionForm = this.fb.group({
+      accountId: [this.data.account.name],
       description: ['', Validators.required],
       value: ['', Validators.required],
       type: ['', Validators.required],
       createdOnUtc: ['', Validators.required],
       category: ['', Validators.required],
       payee: ['', Validators.required],
-      accountId: [{value: this.data.account.name, disabled: true}, Validators.required]
-    })
+      enableLocation: [false],
+      location: [''],
+      isRecursive: [false],
+      recurrencePeriod: [{ value: '', disabled: true }],
+    });
+    this.addTransactionForm
+      .get('isRecursive')!
+      .valueChanges.subscribe((value) => {
+        if (value) {
+          this.addTransactionForm.get('recurrencePeriod')!.enable();
+          this.addTransactionForm
+            .get('recurrencePeriod')!
+            .setValidators([Validators.required, Validators.min(1)]);
+        } else {
+          this.addTransactionForm.get('recurrencePeriod')!.disable();
+          this.addTransactionForm.get('recurrencePeriod')!.clearValidators();
+        }
+        this.addTransactionForm
+          .get('recurrencePeriod')!
+          .updateValueAndValidity();
+      });
+  }
+
+  onMapClick(event: google.maps.MapMouseEvent) {
+    this.markerPosition = event.latLng!.toJSON();
+    this.getAddressFromLatLng(this.markerPosition.lat, this.markerPosition.lng);
   }
 
   ngOnInit(): void {
-    if(this.data.transaction != null) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.mapCenter = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        this.markerPosition = this.mapCenter;
+        this.getAddressFromLatLng(this.mapCenter.lat, this.mapCenter.lng);
+      });
+    }
+    if (this.data.transaction != null) {
+      if (
+        this.data.transaction.latitude != null &&
+        this.data.transaction.longitude != null
+      ) {
+        this.addTransactionForm.patchValue({
+          enableLocation: true,
+        });
+        this.markerPosition = {
+          lat: this.data.transaction.latitude,
+          lng: this.data.transaction.longitude,
+        };
+        this.mapCenter = this.markerPosition;
+        this.getAddressFromLatLng(
+          this.markerPosition.lat,
+          this.markerPosition.lng
+        );
+      }
       this.addTransactionForm.patchValue(this.data.transaction);
       this.addTransactionForm.patchValue({
-        type: this.data.transaction.type == 0 ? '0' : '1'
+        type: this.data.transaction.type == 0 ? '0' : '1',
       });
     }
   }
 
+  getAddressFromLatLng(lat: number, lng: number) {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === 'OK' && results![0]) {
+        this.addTransactionForm
+          .get('location')!
+          .setValue(results![0].formatted_address);
+      } else {
+        console.error('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+
   onFormSubmit() {
     if (this.addTransactionForm.valid) {
-      if(this.data.transaction != null) {
+      if (this.data.transaction != null) {
         // edit transaction
         const formValue = this.addTransactionForm.value;
         const updateTransaction: UpdateTransaction = {
           transactionId: this.data.transaction.id,
           description: formValue.description,
           payee: formValue.payee,
+          longitude: this.markerPosition ? this.markerPosition.lng : null,
+          latitude: this.markerPosition ? this.markerPosition.lat : null,
           type: Number(formValue.type),
           value: formValue.value,
           category: formValue.category,
@@ -86,10 +167,10 @@ export class AddTransactionComponent implements OnInit {
           next: () => {
             this._dialogRef.close(true);
           },
-          error: error => {
+          error: (error) => {
             this._dialogRef.close(false);
             console.log(error);
-          }
+          },
         });
       } else {
         // create new transaction
@@ -99,21 +180,35 @@ export class AddTransactionComponent implements OnInit {
           payee: formValue.payee,
           type: Number(formValue.type),
           value: formValue.value,
+          isRecursive: formValue.isRecursive,
+          recurrence: formValue.recurrencePeriod,
           category: formValue.category,
+          longitude: this.markerPosition ? this.markerPosition.lng : null,
+          latitude: this.markerPosition ? this.markerPosition.lat : null,
           createdOnUtc: formValue.createdOnUtc,
-          accountId: this.data.account.id
+          accountId: this.data.account.id,
         };
+        if (formValue.enableLocation === false) {
+          addTransactionReq.longitude = null;
+          addTransactionReq.latitude = null;
+        }
         this.transactionService.addTransaction(addTransactionReq).subscribe({
           next: () => {
             this._dialogRef.close(true);
           },
-          error: error => {
+          error: (error) => {
             this._dialogRef.close(false);
-            const errorMessage:string = error.error.detail;
-            const displayMessage:string = errorMessage.substring((errorMessage.indexOf('*') + 1)).trim();
-            this.sharedService.showNotification(false, 'Add Transaction', displayMessage);
+            const errorMessage: string = error.error.detail;
+            const displayMessage: string = errorMessage
+              .substring(errorMessage.indexOf('*') + 1)
+              .trim();
+            this.sharedService.showNotification(
+              false,
+              'Add Transaction',
+              displayMessage
+            );
             console.log(error);
-          }
+          },
         });
       }
     }

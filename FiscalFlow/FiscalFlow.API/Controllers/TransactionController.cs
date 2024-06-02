@@ -23,11 +23,15 @@ public class TransactionController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> AddTransaction(AddTransactionRequest payload)
+    public async Task<ActionResult<Transaction>> AddTransaction(AddTransactionRequest payload)
     {
         var id = ExtractUserIdFromClaims(User);
         if (!id.IsSuccess) return Unauthorized();
         var transaction = await _transactionService.AddTransaction(payload, id.Value);
+        if (transaction.IsSuccess)
+        {
+            return Created();
+        }
         return this.ToActionResult(transaction);
     }
 
@@ -40,7 +44,7 @@ public class TransactionController : ControllerBase
         if (!id.IsSuccess) return Unauthorized();
         return this.ToActionResult(await _transactionService.GetTransactionsFromAccountPeriodOfTime(id.Value, accountId, period));
     }
-    
+
     [HttpDelete("me/delete/{transactionId:guid}")]
     [Authorize]
     public async Task<IActionResult> DeleteTransaction(Guid transactionId)
@@ -50,7 +54,7 @@ public class TransactionController : ControllerBase
             return Unauthorized();
 
         var result = await Task.Run(() => _transactionService.DeleteTransaction(id.Value, transactionId));
-        
+
         return this.ToActionResult(result);
     }
 

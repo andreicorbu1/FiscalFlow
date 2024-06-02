@@ -4,30 +4,28 @@
 .row {
   display: flex;
   gap: 10px;
-
   mat-form-field {
     width: 100%;
   }
 }
-
 .action {
   padding: 0px 25px 20px;
   button {
     flex: 1;
   }
 }
-.row {
-  display: flex;
-  align-items: center; /* Align items vertically */
-  justify-content: center;
-}
-
 .value-field {
-  flex: 1; /* Allow the input field to grow */
-  margin-right: 10px; /* Adjust spacing between the field and currency */
+  flex: 1;
+  margin-right: 10px;
 }
-
 .currency {
-  font-size: 16px; /* Adjust font size as needed */
+  font-size: 16px;
 }
-
+mat-dialog-content {
+  max-height: 400px;
+  overflow: auto;
+}
+google-map {
+  display: block;
+  margin-top: 10px;
+}

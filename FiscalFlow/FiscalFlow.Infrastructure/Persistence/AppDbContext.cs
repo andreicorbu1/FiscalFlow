@@ -13,6 +13,7 @@ public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
 
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<RecursiveTransaction> RecursiveTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

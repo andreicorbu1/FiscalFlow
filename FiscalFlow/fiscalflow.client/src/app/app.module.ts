@@ -10,25 +10,34 @@ import { HomeComponent } from './home/home.component';
 import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
-import {AccountModule} from "./account/account.module";
+import { AccountModule } from './account/account.module';
 import { AddTransactionComponent } from './transaction/add-transaction/add-transaction.component';
-import {MatGridListModule} from "@angular/material/grid-list";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatInputModule} from "@angular/material/input";
-import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatRadioModule} from "@angular/material/radio";
-import {MatDialogModule} from "@angular/material/dialog";
-import {MatSelectModule} from "@angular/material/select";
-import {FormsModule} from "@angular/forms";
-import {MatButtonModule} from "@angular/material/button";
-import {MatNativeDateModule} from "@angular/material/core";
-import {MatTableModule} from "@angular/material/table";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TransactionsTabelComponent } from './transaction/transactions-tabel/transactions-tabel.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgChartsModule } from 'ng2-charts';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { GoogleMapsModule } from '@angular/google-maps';
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, FooterComponent, HomeComponent, AddTransactionComponent, DashboardComponent],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    FooterComponent,
+    HomeComponent,
+    AddTransactionComponent,
+    DashboardComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -37,6 +46,7 @@ import { NgChartsModule } from 'ng2-charts';
     TransactionsTabelComponent,
     AccountModule,
     MatGridListModule,
+    MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -48,12 +58,13 @@ import { NgChartsModule } from 'ng2-charts';
     MatButtonModule,
     MatTableModule,
     MatTooltipModule,
+    GoogleMapsModule,
     NgChartsModule,
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
-  exports: []
+  exports: [],
 })
 export class AppModule {}
