@@ -21,7 +21,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TransactionsTabelComponent } from './transaction/transactions-tabel/transactions-tabel.component';
@@ -47,6 +47,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     AccountModule,
     MatGridListModule,
     MatSlideToggleModule,
+    MatOptionModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,

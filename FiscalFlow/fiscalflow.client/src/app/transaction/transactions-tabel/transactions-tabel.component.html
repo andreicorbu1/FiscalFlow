@@ -40,12 +40,28 @@
           <mat-datepicker #endDatePicker></mat-datepicker>
         </mat-form-field>
       </div>
+      <div class="category-selector">
+        <mat-form-field appearance="outline" class="category-select">
+          <mat-select
+            placeholder="Select Categories"
+            [(ngModel)]="selectedCategories"
+            multiple
+          >
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category.value"
+            >
+              {{ category.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
       <button
         mat-raised-button
         color="primary"
         (click)="applyDateFilter()"
-        [disabled]="!startDate && !endDate"
+        [disabled]="!startDate && !endDate && !(selectedCategories.length > 0)"
         class="filter-button"
       >
         Apply Filter

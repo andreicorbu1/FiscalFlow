@@ -1,5 +1,7 @@
 .page-container {
   padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
 }
 
 .account-container {
@@ -27,7 +29,7 @@
 }
 
 .detail-box {
-  background-color: #fdfdfd;
+  background-color: #f7f7f7;
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -36,12 +38,14 @@
 
 .detail-label {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 5px;
+  color: #555;
 }
 
 .detail-value {
-  font-size: 14px;
+  font-size: 16px;
+  color: #333;
 }
 
 .button-row {
