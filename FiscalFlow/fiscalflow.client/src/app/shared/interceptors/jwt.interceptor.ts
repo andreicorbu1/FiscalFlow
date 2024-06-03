@@ -14,6 +14,9 @@ import {User} from "../models/user/user";
 export class JwtInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     let user: User = JSON.parse(localStorage.getItem(environment.userKey) || '""');
+    if(request.url.includes('openai')) {
+      return next.handle(request);
+    }
     request = request.clone({
       setHeaders: {
         Authorization: `Bearer ${user.token}`

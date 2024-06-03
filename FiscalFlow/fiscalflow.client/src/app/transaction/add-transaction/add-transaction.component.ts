@@ -34,7 +34,7 @@ export class AddTransactionComponent implements OnInit {
   markerPosition: google.maps.LatLngLiteral | null = null;
   mapCenter: google.maps.LatLngLiteral = { lat: 51.505, lng: -0.09 };
   mapZoom = 15;
-
+  suggestedCategory: string | null = null;
   today: Date = new Date();
   categories: Category[] = [
     { value: 0, viewValue: 'Food and Drinks' },
@@ -131,6 +131,30 @@ export class AddTransactionComponent implements OnInit {
       this.addTransactionForm.patchValue({
         type: this.data.transaction.type == 0 ? '0' : '1',
       });
+    }
+  }
+
+  onPayeeAndDescriptionChange($event: Event | boolean) {
+    const payee = this.addTransactionForm.get('payee')!.value;
+    const description = this.addTransactionForm.get('description')!.value;
+    const type = this.addTransactionForm.get('type')!.value;
+    console.log('payee', payee);
+    console.log('description', description);
+    console.log('type', type);
+    console.log('event', $event);
+    if (payee && description && $event === true) {
+      // this.transactionService
+      //   .getSuggestedCategories(payee, description)
+      //   .subscribe({
+      //     next: (response) => {
+      //       console.log(response);
+      //       //@ts-ignore
+      //       this.suggestedCategory = response.choices[0].message.content;
+      //     },
+      //     error: (error) => {
+      //       console.log(error);
+      //     },
+      //   });
     }
   }
 
