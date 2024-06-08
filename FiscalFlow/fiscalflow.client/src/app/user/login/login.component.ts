@@ -5,7 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/shared/models/user/user';
 import { take } from 'rxjs';
 import { ExternalAuth } from 'src/app/shared/models/user/externalAuth';
-
+import {
+  FacebookLoginProvider,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
+import { MatIcon } from '@angular/material/icon';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,6 +22,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string | null = null;
 
   constructor(
+    private authService: SocialAuthService,
     private userService: UserService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -51,6 +56,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then((value) => {
+      console.log(value);
+      const externalAuth: ExternalAuth = {
+        provider: 'Facebook',
+        idToken: value.response.id,
+        //@ts-ignore
+        AccessToken: value.response.authToken,
+        Email: value.email,
+        FirstName: value.firstName,
+        LastName: value.lastName,
+      };
+      this.userService.externalLogin(externalAuth);
+    });
+  }
+
   ngOnInit(): void {
     // @ts-ignore
     google.accounts.id.initialize({
@@ -64,7 +85,7 @@ export class LoginComponent implements OnInit {
     google.accounts.id.renderButton(
       // @ts-ignore
       document.getElementById('google-button'),
-      { theme: 'outline', size: 'large', width: '100%', shape: 'pill' }
+      { theme: 'outline', size: 'large', shape: 'pill', width: 250 }
     );
     // @ts-ignore
     google.accounts.id.prompt((notification: PromptMomentNotification) => {});

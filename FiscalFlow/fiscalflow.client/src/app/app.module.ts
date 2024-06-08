@@ -29,6 +29,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgChartsModule } from 'ng2-charts';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,6 +56,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     MatRadioModule,
     MatDialogModule,
     MatSelectModule,
+    MatIconModule,
     FormsModule,
     MatButtonModule,
     MatTableModule,

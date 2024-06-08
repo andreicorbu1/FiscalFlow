@@ -1,10 +1,11 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center min-vh-75">
   <div class="col-12 col-lg-5">
     <main class="form-signin">
       <form
         [formGroup]="registerForm"
         (ngSubmit)="register()"
         autocomplete="off"
+        class="p-4 rounded"
       >
         <div class="text-center mb-4">
           <h1 class="mb-3 font-weight-normal">
@@ -12,7 +13,7 @@
           </h1>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="firstName"
             type="text"
@@ -43,7 +44,7 @@
           </span>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="lastName"
             type="text"
@@ -74,7 +75,7 @@
           </span>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="email"
             type="text"
@@ -97,7 +98,7 @@
           </span>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="password"
             type="password"
@@ -128,7 +129,10 @@
           </span>
         </div>
 
-        <div class="form-floating" *ngIf="errorMessages.length > 0">
+        <div
+          class="form-floating position-relative"
+          *ngIf="errorMessages.length > 0"
+        >
           <app-validation-messages
             [errorMessages]="errorMessages"
           ></app-validation-messages>

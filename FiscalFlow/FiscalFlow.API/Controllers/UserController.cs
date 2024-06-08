@@ -10,6 +10,7 @@ using ResetPasswordRequest = FiscalFlow.Contracts.Authentication.ResetPasswordRe
 using RegisterRequest = FiscalFlow.Contracts.Authentication.RegisterRequest;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Primitives;
+using Google.Apis.Auth;
 
 namespace FiscalFlow.API.Controllers;
 
@@ -221,24 +222,48 @@ public class UserController : ControllerBase
     [HttpPost("external-login")]
     public async Task<IActionResult> ExternalLoginAsync([FromBody] ExternalAuthRequest externalAuth)
     {
-        var payload = await _jwtService.VerifyGoogleTokenAsync(externalAuth);
-
-        var info = new UserLoginInfo(externalAuth.Provider!, payload.Subject, externalAuth.Provider);
+        UserLoginInfo info;
+        dynamic payload = null;
+        if(externalAuth.Provider == "Facebook")
+        {
+            info = new UserLoginInfo(externalAuth.Provider, externalAuth.IdToken, externalAuth.Provider);
+            payload = externalAuth;
+        }
+        else
+        {
+            payload = await _jwtService.VerifyGoogleTokenAsync(externalAuth);
+            info = new UserLoginInfo(externalAuth.Provider!, payload!.Subject, externalAuth.Provider);
+        }
         var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
         if (user == null)
         {
             user = await _userManager.FindByEmailAsync(payload.Email);
             if (user == null)
             {
-                user = new AppUser
+                if(user is GoogleJsonWebSignature.Payload)
                 {
-                    Email = payload.Email,
-                    UserName = payload.Email,
-                    FirstName = payload.GivenName ?? string.Empty,
-                    LastName = payload.FamilyName ?? string.Empty,
-                    Provider = externalAuth.Provider,
-                    EmailConfirmed = true
-                };
+                    user = new AppUser
+                    {
+                        Email = payload.Email,
+                        UserName = payload.Email,
+                        FirstName = payload.GivenName ?? string.Empty,
+                        LastName = payload.FamilyName ?? string.Empty,
+                        Provider = externalAuth.Provider,
+                        EmailConfirmed = true
+                    };
+                }
+                else
+                {
+                    user = new AppUser
+                    {
+                        Email = payload.Email,
+                        UserName = payload.Email,
+                        FirstName = payload.FirstName ?? string.Empty,
+                        LastName = payload.LastName ?? string.Empty,
+                        Provider = externalAuth.Provider,
+                        EmailConfirmed = true
+                    };
+                }
                 await _userManager.CreateAsync(user);
             }
 

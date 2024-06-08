@@ -1,46 +1,63 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center min-vh-75">
   <div class="col-12 col-lg-5">
     <main class="form-signin">
-      <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="login()"
+        autocomplete="off"
+        class="p-4 rounded"
+      >
         <div class="text-center mb-4">
-          <h3 class="mb-3 font-weight-normal">Login</h3>
+          <h1 class="mb-3 font-weight-normal">
+            Hi welcome back! Let's <span class="text-success">login</span>!
+          </h1>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="email"
             type="text"
             placeholder="Email"
             class="form-control"
             [class.is-invalid]="submitted && loginForm.get('email')?.errors"
+            id="emailAddress"
           />
           <label for="emailAddress">Email</label>
-          <span
-            class="text-danger"
-            *ngIf="submitted && loginForm.get('email')?.hasError('required')"
-          >
-            Email Address is required!
-          </span>
+          <div class="invalid-feedback">
+            <span
+              *ngIf="submitted && loginForm.get('email')?.hasError('required')"
+              >Email Address is required!</span
+            >
+          </div>
+          <i
+            class="bi bi-envelope position-absolute top-50 end-0 translate-middle-y me-3"
+          ></i>
         </div>
 
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-3 position-relative">
           <input
             formControlName="password"
             type="password"
             placeholder="Password"
             class="form-control"
             [class.is-invalid]="submitted && loginForm.get('password')?.errors"
+            id="password"
           />
           <label for="password">Password</label>
-          <span
-            class="text-danger"
-            *ngIf="submitted && loginForm.get('password')?.hasError('required')"
-          >
-            Password is required!
-          </span>
+          <div class="invalid-feedback">
+            <span
+              *ngIf="
+                submitted && loginForm.get('password')?.hasError('required')
+              "
+              >Password is required!</span
+            >
+          </div>
+          <i
+            class="bi bi-lock position-absolute top-50 end-0 translate-middle-y me-3"
+          ></i>
         </div>
 
-        <div class="form-floating" *ngIf="errorMessages.length > 0">
+        <div class="form-floating mb-3" *ngIf="errorMessages.length > 0">
           <app-validation-messages
             [errorMessages]="errorMessages"
           ></app-validation-messages>
@@ -48,28 +65,39 @@
             class="btn btn-link"
             (click)="resendEmailConfirmationLink()"
             *ngIf="errorMessages[0].includes('Please confirm your email!')"
-            >Click here to resend email confirmation link.</a
           >
+            Click here to resend email confirmation link.
+          </a>
         </div>
 
-        <div class="d-grid mt-4 px-1">
+        <div class="d-grid mt-4">
           <button
             mat-flat-button
             color="primary"
-            style="background-color: #2b3b78; border-radius: 24px"
+            class="btn btn-primary rounded-pill"
             type="submit"
           >
             Log In
           </button>
         </div>
-      </form>
+        <div class="mt-4 text-center">
+          <a class="btn btn-link" routerLink="/user/send-email/forgot-password">
+            <h6>Forgot email or password?</h6>
+          </a>
+        </div>
 
-      <div class="mt-4 text-center">
-        <a class="btn btn-link" routerLink="/user/send-email/forgot-password">
-          <h6>Forgot email or password?</h6>
-        </a>
-      </div>
+        <div class="text-center mt-3">
+          <div id="google-button" class="mb-3 google-button"></div>
+          <button
+            mat-flat-button
+            class="btn btn-facebook rounded-pill"
+            (click)="signInWithFB()"
+          >
+            <mat-icon>facebook</mat-icon>
+            <span>Sign in with Facebook</span>
+          </button>
+        </div>
+      </form>
     </main>
   </div>
-  <div class="" id="google-button"></div>
 </div>
