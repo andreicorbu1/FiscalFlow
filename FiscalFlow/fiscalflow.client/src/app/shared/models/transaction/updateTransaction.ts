@@ -9,6 +9,7 @@ export interface UpdateTransaction {
   value: number;
   longitude: number | null;
   latitude: number | null;
+  imageUrl: string | null;
   category: Category;
   createdOnUtc: Date;
 }

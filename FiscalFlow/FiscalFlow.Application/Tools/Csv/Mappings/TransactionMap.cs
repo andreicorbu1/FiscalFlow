@@ -11,6 +11,7 @@ public class TransactionMap : ClassMap<Transaction>
         Map(m => m.MoneyCurrency).Name("Currency");
         Map(m => m.Description).Name("Description");
         Map(m => m.Payee).Name("Payee");
+        Map(m => m.ImagePublicId).Name("ImagePublicId");
         Map(m => m.Type).Name("Type");
         Map(m => m.Category).Name("Category");
         Map(m => m.CreatedOnUtc).Name("Created");

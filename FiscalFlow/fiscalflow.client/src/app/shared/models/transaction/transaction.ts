@@ -11,6 +11,7 @@ export interface Transaction {
   description: string;
   payee: string;
   type: TransactionType;
+  imageUrl: string | null;
   longitude: number;
   latitude: number;
   category: Category;

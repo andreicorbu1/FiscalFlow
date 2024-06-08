@@ -14,29 +14,39 @@ public class TransactionService : ITransactionService
     private readonly IRecursiveTransactionRepository _recursiveTransactionRepository;
     private readonly IAccountService _accountService;
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IImageService _imageService;
 
-    public TransactionService(ITransactionRepository transactionRepository, IAccountService accountService, IRecursiveTransactionRepository recursiveTransactionRepository)
+    public TransactionService(ITransactionRepository transactionRepository, IAccountService accountService, IRecursiveTransactionRepository recursiveTransactionRepository, IImageService imageService)
     {
         _transactionRepository = transactionRepository;
         _accountService = accountService;
         _recursiveTransactionRepository = recursiveTransactionRepository;
+        _imageService = imageService;
     }
 
     public async Task<Result<Transaction>> AddTransaction(AddTransactionRequest payload, string ownerId)
     {
         var account = await _accountService.GetAccountFromIdAsync(payload.AccountId, ownerId);
         if (!account.IsSuccess)
+        {
             switch (account.Status)
             {
                 case ResultStatus.NotFound:
-                    return Result.NotFound(account.Errors[0]);
+                    return Result.NotFound(account.Errors.ElementAt(0));
                 case ResultStatus.Forbidden:
                 case ResultStatus.Unauthorized:
                     return Result.Unauthorized();
                 default:
                     return Result.Error();
             }
-
+        }
+        string? imagePublicId = null, imageUrl = null;
+        if(!string.IsNullOrEmpty(payload.ImageBase64Encoded))
+            imagePublicId = await _imageService.UploadImageAsync(payload.ImageBase64Encoded);
+        if(!string.IsNullOrEmpty(imagePublicId))
+        {
+            imageUrl = await _imageService.GetImageAsync(imagePublicId);
+        }
         var accountValue = account.Value;
         var transaction = new Transaction
         {
@@ -45,6 +55,8 @@ public class TransactionService : ITransactionService
             MoneyValue = payload.Value,
             MoneyCurrency = accountValue.MoneyCurrency,
             Description = payload.Description,
+            ImagePublicId = imagePublicId,
+            ImageUrl = imageUrl,
             Payee = payload.Payee,
             Latitude = payload.Latitude,
             Longitude = payload.Longitude,
@@ -163,6 +175,8 @@ public class TransactionService : ITransactionService
             return Result.NotFound($"Transaction with id {transactionId} does not exist!");
         if (transaction.Account.OwnerId != ownerId)
             return Result.Unauthorized();
+        if(!string.IsNullOrEmpty(transaction.ImagePublicId))
+            Task.Run(() => _imageService.DeleteImageAsync(transaction.ImagePublicId));
         var account = transaction.Account;
         Money updatedBalance;
         if (transaction.Type == TransactionType.Income)

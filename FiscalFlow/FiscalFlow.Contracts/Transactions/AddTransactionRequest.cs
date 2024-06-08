@@ -13,6 +13,7 @@ public class AddTransactionRequest
     public Category Category { get; set; }
     public bool IsRecursive { get; set; } = false;
     public ushort? Recurrence { get; set; } = null;
+    public string? ImageBase64Encoded { get; set; } = null;
     public DateTime CreatedOnUtc { get; set; }
     public DateTime? DateModified { get; set; } = null;
     public double? Latitude { get; set; } = null;

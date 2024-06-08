@@ -7,9 +7,6 @@ public class RecursiveTransaction : BaseEntity
 {
     public ushort Recurrence { get; set; } = 12;
 
-    public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
-    public DateTime? ModifiedOnUtc { get; set; }
-
     public Guid TransactionId { get; set; }
     public Transaction? LastTransaction { get; set; }
     public string OwnerId { get; set; }

@@ -16,6 +16,7 @@ public static class TransactionExtensions
             Description = transaction.Description,
             Latitude = transaction.Latitude,
             Longitude = transaction.Longitude,
+            ImageUrl = transaction.ImageUrl,
             Payee = transaction.Payee,
             Type = transaction.Type,
             Value = transaction.Value.Amount,

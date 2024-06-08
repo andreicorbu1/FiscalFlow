@@ -23,6 +23,8 @@ public class Transaction : BaseEntity
 
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+    [JsonIgnore] public string? ImagePublicId { get; set; } = null;
+    public string? ImageUrl { get; set; } = null;
 
     [MaxLength(250)] public string Description { get; set; } = string.Empty;
 

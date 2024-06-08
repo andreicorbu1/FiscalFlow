@@ -11,6 +11,7 @@ export interface AddTransaction {
   latitude: number | null;
   isRecursive: boolean;
   recurrence: number | null;
+  imageUrl: string | null;
   createdOnUtc: Date;
   accountId: string;
 }

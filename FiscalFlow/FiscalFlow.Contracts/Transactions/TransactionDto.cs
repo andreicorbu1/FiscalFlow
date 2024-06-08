@@ -10,6 +10,7 @@ public class TransactionDto
     public decimal AccountValueBefore { get; set; }
     public decimal AccountValueAfter { get; set; }
     public string Description { get; set; }
+    public string? ImageUrl { get; set; }
     public string Payee { get; set; }
     public TransactionType Type { get; set; }
     public double? Latitude { get; set; }

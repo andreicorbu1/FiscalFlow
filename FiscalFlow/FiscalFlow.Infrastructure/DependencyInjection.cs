@@ -2,12 +2,14 @@
 using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Data;
 using FiscalFlow.Application.Core.Abstractions.Emails;
+using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Application.Services;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Repositories;
 using FiscalFlow.Infrastructure.Authentication;
 using FiscalFlow.Infrastructure.Persistence;
 using FiscalFlow.Infrastructure.Persistence.Repositories;
+using FiscalFlow.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +85,7 @@ public static class DependencyInjection
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IRecursiveTransactionRepository, RecursiveTransactionRepository>();
+        services.AddScoped<IImageService, ImageService>();
         return services;
     }
 }
