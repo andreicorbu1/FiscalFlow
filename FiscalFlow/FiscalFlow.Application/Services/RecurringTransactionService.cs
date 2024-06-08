@@ -56,7 +56,6 @@ public class RecurringTransactionService : BackgroundService
                 var newTr = await transactionService.AddTransaction(newTransaction, rt.OwnerId);
                 if(!newTr.IsSuccess)
                     continue;
-                rt.LastTransaction = newTr.Value;
                 rt.Recurrence--;
                 rt.ModifiedOnUtc = DateTime.UtcNow;
             }

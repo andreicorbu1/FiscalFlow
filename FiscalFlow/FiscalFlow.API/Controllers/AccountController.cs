@@ -72,14 +72,12 @@ public class AccountController : ControllerBase
     {
         var ownerId = ExtractUserIdFromClaims(User);
         if (!ownerId.IsSuccess) return Unauthorized();
-        await _accountService.ExportTransactionsAsCsvAsync(accountId, ownerId.Value);
+        var stream = await _accountService.ExportTransactionsAsCsvAsync(accountId, ownerId.Value);
+        if (!stream.IsSuccess)
+            return BadRequest();
         var fileName = $"{accountId}.csv";
-        var directoryPath =
-            "C:\\Users\\Andrei\\Dev\\licenta\\FiscalFlow\\FiscalFlow\\FiscalFlow.API\\CSV"; // This should be the directory where your CSV files are stored
-
         // Get the full path of the file
-        var filePath = Path.Combine(directoryPath, fileName);
-        return PhysicalFile(filePath, "text/csv", fileName);
+        return File(stream.Value, "text/csv", fileName);
     }
 
     [Authorize]

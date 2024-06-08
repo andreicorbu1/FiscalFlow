@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FiscalFlow.Infrastructure.Persistence;
 
-public class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
+internal sealed class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

@@ -107,15 +107,15 @@ public class AccountService : IAccountService
         return Result.Success();
     }
 
-    public async Task<Result> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId)
+    public async Task<Result<MemoryStream>> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId)
     {
         if (_accountRepository.CheckAccountExists(accountId))
         {
             if (_accountRepository.CheckIfIsAccountOwner(accountId, ownerId))
             {
                 var transactions = await _accountRepository.GetTransactionsAsync(accountId);
-                CsvExporter.ExportList(transactions, $"{accountId}");
-                return Result.Success();
+                var stream = CsvExporter.ExportList(transactions, $"{accountId}");
+                return Result.Success(stream);
             }
 
             return Result.Forbidden();

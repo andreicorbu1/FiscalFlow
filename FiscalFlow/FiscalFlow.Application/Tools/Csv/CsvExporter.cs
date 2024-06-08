@@ -1,16 +1,21 @@
-﻿using System.Globalization;
-using CsvHelper;
+﻿using CsvHelper;
 using FiscalFlow.Application.Tools.Csv.Mappings;
+using System.Globalization;
 
 namespace FiscalFlow.Application.Tools.Csv;
 
 public static class CsvExporter
 {
-    public static void ExportList<T>(IList<T> list, string fileName)
+    public static MemoryStream ExportList<T>(IList<T> list, string fileName)
     {
-        using var writer = new StreamWriter($"CSV\\{fileName}.csv");
-        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        csv.Context.RegisterClassMap<TransactionMap>();
-        csv.WriteRecords(list);
+        var memoryStream = new MemoryStream();
+        using (var writer = new StreamWriter(memoryStream, leaveOpen: true))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+            csv.Context.RegisterClassMap<TransactionMap>();
+            csv.WriteRecords(list);
+        }
+        memoryStream.Position = 0;
+        return memoryStream;
     }
 }

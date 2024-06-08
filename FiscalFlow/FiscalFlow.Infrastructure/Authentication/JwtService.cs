@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FiscalFlow.Infrastructure.Authentication;
 
-public class JwtService : IJwtService
+internal sealed class JwtService : IJwtService
 {
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _jwtKey;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FiscalFlow.Application.Services;
 
-public class EmailService : IEmailService
+internal sealed class EmailService : IEmailService
 {
     private readonly IConfiguration _config;
 
@@ -27,9 +27,8 @@ public class EmailService : IEmailService
             .Build();
 
         var response = await client.SendTransactionalEmailAsync(email);
-        if (response.Messages != null)
-            if (response.Messages[0].Status == "success")
-                return true;
+        if (response.Messages != null && response.Messages[0].Status == "success")
+            return true;
 
         return false;
     }

@@ -9,7 +9,7 @@ namespace FiscalFlow.Application.Core.Abstractions.Services;
 public interface IAccountService
 {
     Result CheckAccountExistsAndHasAccess(Guid accountId, string ownerId);
-    Task<Result> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId);
+    Task<Result<MemoryStream>> ExportTransactionsAsCsvAsync(Guid accountId, string ownerId);
     Task<Result> ImportTransactionsFromCsv(IList<Transaction> transactions, string ownerId, Guid accountId);
     Result CreateAccount(CreateAccountRequest payload);
     Task<Result<Dictionary<Category, decimal>>> GetCategoryReportsFromAllAccounts(string ownerId);
