@@ -50,12 +50,13 @@ public class RecurringTransactionService : BackgroundService
                     Recurrence = null,
                     Type = rt.LastTransaction.Type,
                     Category = rt.LastTransaction.Category,
-                    CreatedOnUtc = DateTime.UtcNow
+                    CreatedOnUtc = DateTime.UtcNow,
                 };
                 var transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
                 var newTr = await transactionService.AddTransaction(newTransaction, rt.OwnerId);
                 if(!newTr.IsSuccess)
                     continue;
+                newTr.Value.ReccursiveTransactionId = rt.Id;
                 rt.Recurrence--;
                 rt.ModifiedOnUtc = DateTime.UtcNow;
             }

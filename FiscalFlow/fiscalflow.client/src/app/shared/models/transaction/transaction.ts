@@ -12,8 +12,9 @@ export interface Transaction {
   payee: string;
   type: TransactionType;
   imageUrl: string | null;
-  longitude: number;
-  latitude: number;
+  longitude: number | null;
+  latitude: number | null;
+  reccurencePeriod: number | null;
   category: Category;
   createdOnUtc: Date;
   accountId: string;

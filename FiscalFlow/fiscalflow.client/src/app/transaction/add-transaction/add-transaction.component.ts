@@ -32,7 +32,7 @@ interface Category {
 })
 export class AddTransactionComponent implements OnInit {
   markerPosition: google.maps.LatLngLiteral | null = null;
-  mapCenter: google.maps.LatLngLiteral = { lat: 51.505, lng: -0.09 };
+  mapCenter: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
   mapZoom = 15;
   suggestedCategory: string | null = null;
   today: Date = new Date();
@@ -99,7 +99,7 @@ export class AddTransactionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (navigator.geolocation) {
+    if (navigator.geolocation && this.data.transaction == null) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.mapCenter = {
           lat: position.coords.latitude,
@@ -110,6 +110,15 @@ export class AddTransactionComponent implements OnInit {
       });
     }
     if (this.data.transaction != null) {
+      console.log(this.data.transaction);
+      if (this.data.transaction.reccurencePeriod != null) {
+        this.addTransactionForm.patchValue({
+          isRecursive: true,
+        });
+        this.addTransactionForm.patchValue({
+          recurrencePeriod: this.data.transaction.reccurencePeriod,
+        });
+      }
       if (
         this.data.transaction.latitude != null &&
         this.data.transaction.longitude != null

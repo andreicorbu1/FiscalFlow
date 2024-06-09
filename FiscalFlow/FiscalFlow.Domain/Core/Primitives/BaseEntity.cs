@@ -43,6 +43,6 @@ public abstract class BaseEntity : IAuditableEntity
         return (GetType().ToString() + Id).GetHashCode();
     }
 
-    public DateTime CreatedOnUtc { get; set; } = DateTime.Now;
+    public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
     public DateTime? ModifiedOnUtc { get; set; }
 }

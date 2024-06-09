@@ -24,6 +24,7 @@ import { FormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { TransactionDetailsComponent } from '../transaction-details/transaction-details.component';
 
 interface Category {
   value: number;
@@ -91,7 +92,20 @@ export class TransactionsTabelComponent implements OnChanges {
     this.filteredTransactions = [...this.transactions];
   }
 
+  onDetailsTransaction(transaction: Transaction) {
+    const dialogRef = this.dialog.open(TransactionDetailsComponent, {
+      data: transaction,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.modifiedTransactionEvent.emit(true);
+      }
+    });
+  }
+
   onEditTransaction(transaction: Transaction) {
+    console.log(transaction);
     const dialogRef = this.dialog.open(AddTransactionComponent, {
       data: {
         account: {
@@ -121,26 +135,24 @@ export class TransactionsTabelComponent implements OnChanges {
   }
 
   applyDateFilter() {
-    this.filteredTransactions = this.transactions.filter(
-      (transaction) => {
-        const transactionDate = new Date(transaction.createdOnUtc);
-        if (this.startDate && this.endDate) {
-          return (
-            transactionDate >= this.startDate && transactionDate <= this.endDate
-          );
-        }
-        if (!this.startDate && this.endDate) {
-          return transactionDate <= this.endDate;
-        }
-        if (this.startDate && !this.endDate) {
-          return transactionDate >= this.startDate;
-        }
-        if (this.selectedCategories.length > 0) {
-          return this.selectedCategories.includes(transaction.category);
-        }
-        return true;
+    this.filteredTransactions = this.transactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.createdOnUtc);
+      if (this.startDate && this.endDate) {
+        return (
+          transactionDate >= this.startDate && transactionDate <= this.endDate
+        );
       }
-    );
+      if (!this.startDate && this.endDate) {
+        return transactionDate <= this.endDate;
+      }
+      if (this.startDate && !this.endDate) {
+        return transactionDate >= this.startDate;
+      }
+      if (this.selectedCategories.length > 0) {
+        return this.selectedCategories.includes(transaction.category);
+      }
+      return true;
+    });
   }
 
   resetDateFilter() {

@@ -30,6 +30,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
+import { TransactionDetailsComponent } from './transaction/transaction-details/transaction-details.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,6 +39,7 @@ import { MatIconModule } from '@angular/material/icon';
     HomeComponent,
     AddTransactionComponent,
     DashboardComponent,
+    TransactionDetailsComponent,
   ],
   imports: [
     BrowserModule,

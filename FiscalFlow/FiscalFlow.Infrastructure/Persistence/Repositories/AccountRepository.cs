@@ -23,7 +23,8 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     public IList<Transaction> GetTransactions(Guid accountId)
     {
         return _context.Accounts
-            .Include(account => account.Transactions)
+            .Include(account => account.Transactions!)
+            .ThenInclude(tr => tr.RecursiveTransaction)
             .Single(account => account.Id.Equals(accountId))
             .Transactions?
             .OrderByDescending(tr => tr.CreatedOnUtc).ToList() ?? new List<Transaction>();
@@ -32,7 +33,8 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     public async Task<IList<Transaction>> GetTransactionsAsync(Guid accountId)
     {
         return (await _context.Accounts
-                .Include(account => account.Transactions)
+                .Include(account => account.Transactions!)
+                .ThenInclude(tr => tr.RecursiveTransaction)
                 .SingleOrDefaultAsync(account => account.Id.Equals(accountId)))?
             .Transactions?.OrderByDescending(tr => tr.CreatedOnUtc).ToList() ?? new List<Transaction>();
     }
@@ -40,7 +42,8 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     public async Task<IReadOnlyCollection<Account>> GetUserAccountsAsync(string userId)
     {
         return await _context.Accounts
-        .Include(acc => acc.Transactions)
+        .Include(acc => acc.Transactions!)
+        .ThenInclude(tr => tr.RecursiveTransaction)
         .Where(account => account.OwnerId == userId)
         .Select(account => new Account
         {
@@ -59,8 +62,10 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     {
         return await _context.Accounts
             .Where(account => account.OwnerId == userId)
-            .Include(ac => ac.Transactions!)
-            .ThenInclude(tr => tr.Account)
+            .Include(account => account.Transactions!)
+            .ThenInclude(transaction => transaction.Account)
+            .Include(account => account.Transactions!)
+            .ThenInclude(transaction => transaction.RecursiveTransaction)
             .SelectMany(ac => ac.Transactions!)
             .OrderByDescending(tr => tr.CreatedOnUtc)
             .Take(numberOfTransactions)

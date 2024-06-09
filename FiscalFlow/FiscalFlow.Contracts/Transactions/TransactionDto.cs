@@ -17,5 +17,6 @@ public class TransactionDto
     public double? Longitude { get; set; }
     public Category Category { get; set; }
     public DateTime CreatedOnUtc { get; set; }
+    public ushort? ReccurencePeriod { get; set; } = null;
     public string Account { get; set; }
 }

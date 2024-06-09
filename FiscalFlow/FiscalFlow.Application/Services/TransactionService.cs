@@ -75,7 +75,7 @@ public class TransactionService : ITransactionService
         }
         else
         {
-            if (accountValue.Balance - transaction.Value >= 0)
+            if (accountValue.Balance >= transaction.Value)
             {
                 updatedBalance = accountValue.Balance - transaction.Value;
             }
@@ -98,6 +98,8 @@ public class TransactionService : ITransactionService
                 OwnerId = ownerId
             };
             _recursiveTransactionRepository.Add(rt);
+            transaction.ReccursiveTransactionId = rt.Id;
+            _transactionRepository.Update(transaction);
         }
         return Result.Success(transaction);
     }

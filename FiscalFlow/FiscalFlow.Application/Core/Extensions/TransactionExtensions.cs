@@ -18,6 +18,7 @@ public static class TransactionExtensions
             Longitude = transaction.Longitude,
             ImageUrl = transaction.ImageUrl,
             Payee = transaction.Payee,
+            ReccurencePeriod = transaction.RecursiveTransaction?.Recurrence,
             Type = transaction.Type,
             Value = transaction.Value.Amount,
             CreatedOnUtc = transaction.CreatedOnUtc,

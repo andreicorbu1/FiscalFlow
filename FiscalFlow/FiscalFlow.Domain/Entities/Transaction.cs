@@ -34,4 +34,7 @@ public class Transaction : BaseEntity
 
     public Guid AccountId { get; set; }
     public virtual Account Account { get; set; } = null!;
+
+    public Guid? ReccursiveTransactionId { get; set; }
+    public virtual RecursiveTransaction? RecursiveTransaction { get; set; } = null!;
 }
