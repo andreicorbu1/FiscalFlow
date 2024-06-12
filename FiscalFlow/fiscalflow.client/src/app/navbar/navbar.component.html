@@ -1,96 +1,63 @@
-<header>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand">
-        <img src="./assets/images/logo.png" class="me-3" alt="Logo" />
+<mat-toolbar color="primary">
+  <button mat-icon-button aria-label="Menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span
+    ><a class="logo-name" style="text-decoration: none; color: inherit" href="/"
+      >Fiscal Flow</a
+    ></span
+  >
+  <span class="spacer"></span>
+  <ng-container *ngIf="user$ | async as user">
+    <a
+      class="nav-link"
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Home</a
+    >
+    <span class="spacer"></span>
+    <a
+      class="nav-link"
+      routerLink="/account/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Dashboard</a
+    >
+    <span class="spacer"></span>
+    <a
+      class="nav-link"
+      routerLink="/account/create-account"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Add Account</a
+    >
+  </ng-container>
+  <span class="spacer"></span>
+  <ng-container *ngIf="user$ | async as user">
+    <span matTooltip="Hi {{ user.firstName }}" class="user-info">
+      Hi {{ user.firstName | titlecase }}
+    </span>
+    <button mat-button (click)="logout()">Logout</button>
+  </ng-container>
+  <ng-container *ngIf="!(user$ | async)">
+    <button mat-button routerLink="/user/register">Create Account</button>
+    <button mat-button routerLink="/user/login">Login</button>
+  </ng-container>
+</mat-toolbar>
+<mat-sidenav-container autosize>
+  <mat-sidenav [opened]="true" mode="side">
+    <mat-nav-list>
+      <a mat-list-item>
+        <span class="entry">
+          <mat-icon>house</mat-icon>
+          <span>Dashboard</span>
+        </span>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              routerLink="/"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              >Home</a
-            >
-          </li>
-          <li class="nav-item" *ngIf="userService.user$ | async as user">
-            <a
-              class="nav-link"
-              routerLink="/account/dashboard"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              >Dashboard</a
-            >
-          </li>
-          <li class="nav-item" *ngIf="userService.user$ | async as user">
-            <a
-              class="nav-link"
-              routerLink="/account/create-account"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              >Add Account</a
-            >
-          </li>
-        </ul>
-        <ul class="navbar-nav" *ngIf="(userService.user$ | async) === null">
-          <li class="nav-item">
-            <a
-              mat-flat-button
-              style="border-radius: 24px; background-color: #2b3b78"
-              color="primary"
-              class="mx-2"
-              routerLink="/user/register"
-              routerLinkActive="active"
-            >
-              Create account
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              style="border-radius: 24px; background-color: #2b3b78"
-              mat-flat-button
-              color="primary"
-              routerLink="/user/login"
-              routerLinkActive="active"
-            >
-              Login
-            </a>
-          </li>
-        </ul>
-        <div
-          class="d-flex align-items-center"
-          *ngIf="userService.user$ | async as user"
-        >
-          <a class="text-white" style="text-decoration: none; cursor: pointer">
-            Hi
-            <span class="h3" style="color: #fdfdfd">{{
-              user.firstName | titlecase
-            }}</span>
-          </a>
-          <button
-            mat-flat-button
-            color="warn"
-            class="ms-3"
-            (click)="logout()"
-            style="border-radius: 25px"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
-</header>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <h2>Content</h2>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

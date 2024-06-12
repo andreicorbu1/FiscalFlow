@@ -31,6 +31,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { TransactionDetailsComponent } from './transaction/transaction-details/transaction-details.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +54,7 @@ import { TransactionDetailsComponent } from './transaction/transaction-details/t
     MatGridListModule,
     MatSlideToggleModule,
     MatOptionModule,
+    MatListModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
@@ -58,9 +62,11 @@ import { TransactionDetailsComponent } from './transaction/transaction-details/t
     MatRadioModule,
     MatDialogModule,
     MatSelectModule,
+    MatToolbarModule,
     MatIconModule,
     FormsModule,
     MatButtonModule,
+    MatSidenavModule,
     MatTableModule,
     MatTooltipModule,
     GoogleMapsModule,

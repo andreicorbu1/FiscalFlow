@@ -43,11 +43,10 @@ export class AddTransactionComponent implements OnInit {
     { value: 3, viewValue: 'Transportation' },
     { value: 4, viewValue: 'Vehicle' },
     { value: 5, viewValue: 'Life and Entertainment' },
-    { value: 6, viewValue: 'Communication and Pc' },
-    { value: 7, viewValue: 'Financial Expenses' },
-    { value: 8, viewValue: 'Investments' },
-    { value: 9, viewValue: 'Income' },
-    { value: 10, viewValue: 'Other' },
+    { value: 6, viewValue: 'Financial Expenses' },
+    { value: 7, viewValue: 'Investments' },
+    { value: 8, viewValue: 'Income' },
+    { value: 9, viewValue: 'Other' },
   ];
   public addTransactionForm: FormGroup = new FormGroup({});
 

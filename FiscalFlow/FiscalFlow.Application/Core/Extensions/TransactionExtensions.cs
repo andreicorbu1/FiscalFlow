@@ -18,7 +18,7 @@ public static class TransactionExtensions
             Longitude = transaction.Longitude,
             ImageUrl = transaction.ImageUrl,
             Payee = transaction.Payee,
-            ReccurencePeriod = transaction.RecursiveTransaction?.Recurrence,
+            ReccurencePeriod = (ushort?)CalculateOriginalRecurrence(transaction),
             Type = transaction.Type,
             Value = transaction.Value.Amount,
             CreatedOnUtc = transaction.CreatedOnUtc,
@@ -29,5 +29,25 @@ public static class TransactionExtensions
             transactionDto.Account = transaction.Account.Name!;
         }
         return transactionDto;
+    }
+
+    private static int? CalculateOriginalRecurrence(Transaction transaction)
+    {
+        if (transaction.RecursiveTransaction == null)
+        {
+            return null;
+        }
+
+        var recurrencePeriod = transaction.RecursiveTransaction.Recurrence;
+        var creationDate = transaction.CreatedOnUtc;
+        var now = DateTime.UtcNow;
+
+        // Calculate the number of months between the transaction creation date and now
+        int monthsElapsed = ((now.Year - creationDate.Year) * 12) + now.Month - creationDate.Month;
+
+        // Calculate remaining recurrence period
+        int originalRecurrence = recurrencePeriod + monthsElapsed;
+
+        return originalRecurrence >= 0 ? originalRecurrence : 0;
     }
 }

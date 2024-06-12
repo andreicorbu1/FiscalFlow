@@ -53,11 +53,10 @@ export class AccountDetailComponent implements OnInit {
   }
 
   downloadCsv() {
-    console.log('here 1');
     this.accountService
       .getTransactionsFromAccountAsCsv(this.account.id)
-      .subscribe(
-        (response: Blob) => {
+      .subscribe({
+        next: (response: Blob) => {
           const blob = new Blob([response], { type: 'text/csv' });
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -66,10 +65,10 @@ export class AccountDetailComponent implements OnInit {
           a.click();
           window.URL.revokeObjectURL(url);
         },
-        (error) => {
+        error: (error) => {
           console.log(error);
-        }
-      );
+        },
+      });
   }
 
   importTransactionsFromCSV() {
@@ -100,7 +99,7 @@ export class AccountDetailComponent implements OnInit {
   deleteAccount() {
     this.accountService.deleteAccount(this.account.id).subscribe({
       next: () => {
-        this.router.navigateByUrl('/');      
+        this.router.navigateByUrl('/');
       },
       error: (error) => {
         console.error('Delete failed', error);

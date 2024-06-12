@@ -19,10 +19,13 @@ export class CategorySpendingComponent implements OnInit {
   categoryExpensesData: ChartData<'pie', number[], string>;
   expensesIncomeLabels: string[] = ['Expenses', 'Income'];
   categoryExpensesLabels: string[];
+  showExpenseChart: boolean = false;
+  showIncomeChart: boolean = false;
   constructor(private accountService: AccountService) {}
   ngOnInit(): void {
     this.accountService.getCategoryExpenses().subscribe((data) => {
       this.categories = data;
+      console.log(data);
       const totalExpenses = Object.entries(this.categories)
         .filter(([key]) => key !== 'Income')
         .reduce((sum, [_, value]) => sum + (value as number), 0);
@@ -39,9 +42,9 @@ export class CategorySpendingComponent implements OnInit {
       };
 
       const categoryExpensesDataArray = Object.entries(this.categories)
-        .filter(([key]) => key !== 'Income')
+        .filter(([key, value]) => key !== 'Income' && value != 0)
         .map(([_, value]) => value as number);
-
+      this.showExpenseChart = categoryExpensesDataArray.length > 0;
       this.categoryExpensesLabels = Object.keys(this.categories).filter(
         (key) => key !== 'Income'
       );

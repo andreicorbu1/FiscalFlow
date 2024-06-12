@@ -92,11 +92,11 @@ public class TransactionService : ITransactionService
         {
             var rt = new RecursiveTransaction
             {
-                LastTransaction = transaction,
                 Recurrence = payload.Recurrence ?? 0,
-                TransactionId = id,
-                OwnerId = ownerId
+                OwnerId = ownerId,
+                CreatedOnUtc = transaction.CreatedOnUtc
             };
+            rt.Transactions.Add(transaction);
             _recursiveTransactionRepository.Add(rt);
             transaction.ReccursiveTransactionId = rt.Id;
             _transactionRepository.Update(transaction);
@@ -172,13 +172,14 @@ public class TransactionService : ITransactionService
 
     public Result DeleteTransaction(string ownerId, Guid transactionId)
     {
-        var transaction = _transactionRepository.GetByIdIncludingAccount(transactionId);
+        var transaction = _transactionRepository.GetByIdIncludingAccountReccursiveTransaction(transactionId);
         if (transaction is null)
             return Result.NotFound($"Transaction with id {transactionId} does not exist!");
         if (transaction.Account.OwnerId != ownerId)
             return Result.Unauthorized();
         if(!string.IsNullOrEmpty(transaction.ImagePublicId))
             Task.Run(() => _imageService.DeleteImageAsync(transaction.ImagePublicId));
+        var rt = transaction.RecursiveTransaction;
         var account = transaction.Account;
         Money updatedBalance;
         if (transaction.Type == TransactionType.Income)
@@ -193,6 +194,10 @@ public class TransactionService : ITransactionService
         account.MoneyBalance = updatedBalance.Amount;
         _accountService.UpdateAccount(account);
         _transactionRepository.Remove(transaction);
+        if (rt.Transactions.Count == 0)
+        {
+            _recursiveTransactionRepository.Remove(rt);
+        }
         return Result.Success();
     }
 }

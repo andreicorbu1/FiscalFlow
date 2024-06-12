@@ -56,7 +56,20 @@ public class AccountService : IAccountService
     public async Task<Result<Dictionary<Category, decimal>>> GetCategoryReportsFromAllAccounts(string ownerId)
     {
         var accounts = await _accountRepository.GetUserAccountsAsync(ownerId);
-        var dict = new Dictionary<Category, decimal>();
+        var dict = new Dictionary<Category, decimal>()
+        {
+            [Category.FoodAndDrinks] = 0,
+            [Category.Shopping] = 0,
+            [Category.LifeAndEntertainment] = 0,
+            [Category.Transportation] = 0,
+            [Category.Vehicle] = 0,
+            [Category.House] = 0,
+            [Category.Others] = 0,
+            [Category.FinancialExpenses] = 0,
+            [Category.Investments] = 0,
+            [Category.Income] = 0
+
+        };
         foreach (var account in accounts)
         {
             foreach (var transaction in account.Transactions!)
@@ -64,10 +77,6 @@ public class AccountService : IAccountService
                 if (dict.TryGetValue(transaction.Category, out var oldValue))
                 {
                     dict[transaction.Category] = oldValue + transaction.MoneyValue;
-                }
-                else
-                {
-                    dict.Add(transaction.Category, transaction.MoneyValue);
                 }
             }
         }

@@ -5,10 +5,9 @@ namespace FiscalFlow.Domain.Entities;
 
 public class RecursiveTransaction : BaseEntity
 {
-    public ushort Recurrence { get; set; } = 12;
+    public ushort Recurrence { get; set; }
 
-    public Guid TransactionId { get; set; }
-    public Transaction? LastTransaction { get; set; }
+    public IList<Transaction> Transactions { get; set; } = new List<Transaction>();
     public string OwnerId { get; set; }
     public AppUser? Owner { get; set; }
 }

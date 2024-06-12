@@ -44,5 +44,5 @@ public abstract class BaseEntity : IAuditableEntity
     }
 
     public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
-    public DateTime? ModifiedOnUtc { get; set; }
+    public DateTime? ModifiedOnUtc { get; set; } = DateTime.UtcNow;
 }

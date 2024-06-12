@@ -3,6 +3,7 @@ using System;
 using FiscalFlow.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiscalFlow.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240609190955_NotWorkingDbAnymore")]
+    partial class NotWorkingDbAnymore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,9 +169,15 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<int>("Recurrence")
                         .HasColumnType("integer");
 
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
 
                     b.ToTable("RecursiveTransactions");
                 });
@@ -234,9 +243,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("ReccursiveTransactionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("RecursiveTransactionId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
@@ -244,8 +250,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("RecursiveTransactionId");
 
                     b.ToTable("Transactions");
                 });
@@ -401,6 +405,14 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FiscalFlow.Domain.Entities.Transaction", "LastTransaction")
+                        .WithOne("RecursiveTransaction")
+                        .HasForeignKey("FiscalFlow.Domain.Entities.RecursiveTransaction", "TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LastTransaction");
+
                     b.Navigation("Owner");
                 });
 
@@ -412,13 +424,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiscalFlow.Domain.Entities.RecursiveTransaction", "RecursiveTransaction")
-                        .WithMany("Transactions")
-                        .HasForeignKey("RecursiveTransactionId");
-
                     b.Navigation("Account");
-
-                    b.Navigation("RecursiveTransaction");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -482,9 +488,9 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Navigation("Accounts");
                 });
 
-            modelBuilder.Entity("FiscalFlow.Domain.Entities.RecursiveTransaction", b =>
+            modelBuilder.Entity("FiscalFlow.Domain.Entities.Transaction", b =>
                 {
-                    b.Navigation("Transactions");
+                    b.Navigation("RecursiveTransaction");
                 });
 #pragma warning restore 612, 618
         }

@@ -22,6 +22,13 @@ internal sealed class TransactionRepository : GenericRepository<Transaction>, IT
             .FirstOrDefaultAsync(transaction => transaction.Id.Equals(transactionId));
     }
 
+    public Transaction? GetByIdIncludingAccountReccursiveTransaction(Guid transactionId)
+    {
+        return _context.Transactions.Include(tr => tr.Account)
+            .Include(tr => tr.RecursiveTransaction).ThenInclude(rt => rt.Transactions)
+            .FirstOrDefault(transaction => transaction.Id.Equals(transactionId));
+    }
+
     public async Task<IList<Transaction>> GetTransactionsFromAccountInPeriodOfTime(Guid accountId,
         DateTime startTime, DateTime endTime)
     {

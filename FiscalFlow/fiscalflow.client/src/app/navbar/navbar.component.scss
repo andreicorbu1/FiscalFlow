@@ -1,6 +1,7 @@
-/* Navbar styles */
-.navbar {
-  background-color: #4758b8;
+.mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #4758b8; /* Match navbar color */
   height: 100px;
 }
 
@@ -8,36 +9,103 @@
   margin-right: 10px;
 }
 
-.navbar-nav .nav-link,
-.navbar-nav .active {
-  color: #ffffff;
+.spacer {
+  flex: 1 1 auto;
 }
 
-.navbar-nav .nav-link:hover {
+.user-info {
   color: #ffffff;
+  margin-right: 10px;
 }
 
-/* Button styles */
-.mat-flat-button {
+.mat-toolbar button,
+.mat-toolbar .mat-button {
+  color: #ffffff;
   background-color: #4758b8; /* Match navbar color */
-  color: #ffffff;
   border: solid 1px #4758b8;
   border-radius: 15px;
-  margin: 0 8px; /* Adjust as needed */
+  margin: 0 8px;
   cursor: pointer;
 }
 
-.mat-flat-button:hover {
+.mat-toolbar button:hover,
+.mat-toolbar .mat-button:hover {
   background-color: #3a4870; /* Darker shade on hover */
 }
 
-.mat-flat-button .text-white {
-  color: #ffffff;
+.sidenav-container {
+  height: 100%;
 }
 
-/* Remove underline and change cursor for links */
-.navbar-nav .nav-link,
-.mat-button {
-  text-decoration: none;
-  cursor: pointer;
+.mat-tree-node-children {
+  margin-left: 20px;
+}
+
+.mat-sidenav {
+  width: 250px;
+}
+
+.mat-sidenav mat-nav-list {
+  padding-top: 20px;
+}
+
+.mat-sidenav mat-divider {
+  margin: 20px 0;
+}
+
+.mat-nav-list h4 {
+  margin: 0 0 10px 16px;
+  color: #4758b8; /* Match navbar color */
+}
+
+.mat-nav-list .mat-list-item {
+  color: #4758b8;
+}
+
+.mat-nav-list .mat-list-item:hover {
+  background-color: #f1f1f1;
+}
+
+.mat-nav-list .mat-tree-node {
+  padding-left: 16px;
+}
+h1 {
+  padding: 0 1rem;
+}
+
+h2 {
+  padding: 1rem;
+}
+
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  z-index: 2;
+}
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+// Move the content down so that it won't be hidden by the toolbar
+mat-sidenav {
+  padding-top: 3.5rem;
+  @media screen and (min-width: 600px) {
+    padding-top: 4rem;
+  }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+// Move the content down so that it won't be hidden by the toolbar
+mat-sidenav-content {
+  padding-top: 3.5rem;
+  @media screen and (min-width: 600px) {
+    padding-top: 4rem;
+  }
 }

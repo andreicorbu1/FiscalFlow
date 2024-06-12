@@ -1,5 +1,5 @@
 <div class="grid-container">
-  <mat-grid-list cols="6" rowHeight="100px" gutterSize="16px">
+  <mat-grid-list cols="5" rowHeight="100px" gutterSize="16px">
     <mat-grid-tile
       class="category-container"
       *ngFor="let category of categories | keyvalue"
@@ -22,7 +22,7 @@
       ></canvas>
     </div>
 
-    <div class="chart-wrapper">
+    <div class="chart-wrapper" *ngIf="showExpenseChart">
       <h3>Category Expenses</h3>
       <canvas baseChart [data]="categoryExpensesData" [type]="'pie'"></canvas>
     </div>
