@@ -5,7 +5,9 @@ import { AccountType } from '../../shared/models/account/enums/accountType';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { SharedService } from '../../shared/shared.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Account } from 'src/app/shared/models/account/account';
+import { UpdateAccount } from 'src/app/shared/models/account/updateAccount';
 
 @Component({
   selector: 'app-add-account',
@@ -14,6 +16,8 @@ import { Router } from '@angular/router';
 })
 export class AddAccountComponent implements OnInit {
   accountForm: FormGroup = new FormGroup({});
+  isEditMode: boolean;
+
   currencyValues = Object.values(CurrencyEnum).slice(0, 173); // Get the values of CurrencyEnum enum
   currencyIdMapping: { [key: string]: CurrencyEnum } = {
     AED: CurrencyEnum.AED,
@@ -195,7 +199,8 @@ export class AddAccountComponent implements OnInit {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private sharedService: SharedService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
   ngOnInit() {
     this.accountForm = this.formBuilder.group({
@@ -204,33 +209,83 @@ export class AddAccountComponent implements OnInit {
       currency: ['', Validators.required],
       accountType: ['Cash', Validators.required],
     });
+    this.route.params.subscribe((params) => {
+      if (params['id']) {
+        this.isEditMode = true;
+        this.accountService.getAccountId(params['id']).subscribe({
+          next: (account: Account) => {
+            console.log('Account:', account);
+            this.accountForm.patchValue({
+              name: account.name,
+              balance: account.balance,
+              currency: account.currency,
+              accountType:
+                //@ts-ignore
+                account.type === 'Bank' ? '1' : '0',
+            });
+          },
+        });
+      }
+    });
   }
   onSubmit() {
     if (this.accountForm.valid) {
-      let formData: CreateAccountRequest = this.accountForm.value;
-      formData.accountType = Number(formData.accountType);
-      console.log('Form submitted with data:', formData);
-      this.accountService.addAccount(formData).subscribe({
-        next: (response: any) => {
-          this.sharedService.showNotification(
-            true,
-            'Account creation',
-            'Account was created with success!'
-          );
-          this.router.navigateByUrl('/');
-        },
-        error: (response: any) => {
-          const errorMessage: string = response.error.detail;
-          const displayMessage: string = errorMessage
-            .substring(errorMessage.indexOf('*') + 1)
-            .trim();
-          this.sharedService.showNotification(
-            false,
-            'Account creation',
-            displayMessage
-          );
-        },
-      });
+      if (this.isEditMode) {
+        const formData: UpdateAccount = {
+          name: this.accountForm.value.name,
+          moneyCurrency: this.currencyIdMapping[this.accountForm.value.currency],
+          moneyBalance: Number(this.accountForm.value.balance),
+          accountType: Number(this.accountForm.value.accountType),
+        };
+        console.log(formData);
+        this.accountService
+          .updateAccount(this.route.snapshot.params['id'], formData)
+          .subscribe({
+            next: (response: any) => {
+              this.sharedService.showNotification(
+                true,
+                'Account update',
+                'Account was updated with success!'
+              );
+              this.router.navigateByUrl('/');
+            },
+            error: (response: any) => {
+              const errorMessage: string = response.error.detail;
+              const displayMessage: string = errorMessage
+                .substring(errorMessage.indexOf('*') + 1)
+                .trim();
+              this.sharedService.showNotification(
+                false,
+                'Account update',
+                displayMessage
+              );
+            },
+          });
+      } else {
+        let formData: CreateAccountRequest = this.accountForm.value;
+        formData.accountType = Number(formData.accountType);
+        this.accountService.addAccount(formData).subscribe({
+          next: (response: any) => {
+            this.sharedService.showNotification(
+              true,
+              'Account creation',
+              'Account was created with success!'
+            );
+            this.router.navigateByUrl('/');
+          },
+          error: (response: any) => {
+            const errorMessage: string = response.error.detail;
+            const displayMessage: string = errorMessage
+              .substring(errorMessage.indexOf('*') + 1)
+              .trim();
+            this.sharedService.showNotification(
+              false,
+              'Account creation',
+              displayMessage
+            );
+          },
+        });
+      }
     }
   }
 }

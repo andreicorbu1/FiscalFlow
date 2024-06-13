@@ -33,7 +33,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TransactionDetailsComponent } from './transaction/transaction-details/transaction-details.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 @NgModule({
   declarations: [
     AppComponent,

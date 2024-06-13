@@ -59,7 +59,7 @@
       type="submit"
       [disabled]="accountForm.invalid"
     >
-      Create Account
+      {{ isEditMode ? "Update Account" : "Create Account" }}
     </button>
   </div>
 </form>

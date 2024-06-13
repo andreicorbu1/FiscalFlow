@@ -25,6 +25,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { TransactionDetailsComponent } from '../transaction-details/transaction-details.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 interface Category {
   value: number;
@@ -38,6 +39,7 @@ interface Category {
   imports: [
     MatTableModule,
     DatePipe,
+    MatTabsModule,
     MatButtonModule,
     MatTooltipModule,
     NgIf,

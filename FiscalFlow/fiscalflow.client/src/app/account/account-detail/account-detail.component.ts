@@ -108,6 +108,6 @@ export class AccountDetailComponent implements OnInit {
   }
 
   editAccount() {
-    throw new Error('Method not implemented.');
+    this.router.navigateByUrl(`/account/edit/${this.account.id}`);
   }
 }
