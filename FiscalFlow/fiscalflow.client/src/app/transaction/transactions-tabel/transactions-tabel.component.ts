@@ -26,6 +26,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { TransactionDetailsComponent } from '../transaction-details/transaction-details.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { Subscription } from 'src/app/shared/models/transaction/subscription';
 
 interface Category {
   value: number;
@@ -56,7 +57,8 @@ interface Category {
   ],
   styleUrls: ['./transactions-tabel.component.scss'],
 })
-export class TransactionsTabelComponent implements OnChanges {
+export class TransactionsTabelComponent implements OnChanges, OnInit {
+  @Input() accountId: string | null;
   @Input() transactions: Transaction[];
   filteredTransactions: Transaction[];
   @Output() modifiedTransactionEvent = new EventEmitter();
@@ -65,6 +67,15 @@ export class TransactionsTabelComponent implements OnChanges {
     'Account',
     'Payee',
     'Value',
+    'Actions',
+  ];
+  displayedColumns2ndTable: string[] = [
+    'Account',
+    'Payee',
+    'Value',
+    'FirstPayment',
+    'LastPayment',
+    'RemainingPayments',
     'Actions',
   ];
   selectedCategories: number[] = [];
@@ -90,8 +101,35 @@ export class TransactionsTabelComponent implements OnChanges {
     private transactionService: TransactionService
   ) {}
 
+  subscriptions: Subscription[];
+  filteredSubscriptions: Subscription[];
+
   ngOnChanges(changes: SimpleChanges): void {
     this.filteredTransactions = [...this.transactions];
+    this.filteredSubscriptions = [...this.subscriptions];
+    this.transactionService.getSubscriptions(this.accountId).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.subscriptions = data;
+        this.filteredSubscriptions = [...this.subscriptions];
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  ngOnInit(): void {
+    this.transactionService.getSubscriptions(this.accountId).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.subscriptions = data;
+        this.filteredSubscriptions = [...this.subscriptions];
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
 
   onDetailsTransaction(transaction: Transaction) {
@@ -127,6 +165,17 @@ export class TransactionsTabelComponent implements OnChanges {
 
   onDeleteTransaction(transaction: Transaction) {
     this.transactionService.deleteTransaction(transaction.id).subscribe({
+      next: (data) => {
+        this.modifiedTransactionEvent.emit(true);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  onDeleteSubscription(subscription: Subscription) {
+    this.transactionService.deleteSubscriptions(subscription.id).subscribe({
       next: (data) => {
         this.modifiedTransactionEvent.emit(true);
       },

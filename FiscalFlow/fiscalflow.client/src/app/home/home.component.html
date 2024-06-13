@@ -12,6 +12,7 @@
     <div class="row transaction-table">
       <app-transactions-tabel
         [transactions]="transactions"
+        [accountId]="null"
         (modifiedTransactionEvent)="refreshAccounts($event)"
       ></app-transactions-tabel>
     </div>

@@ -27,6 +27,7 @@
     <div class="transaction-table" tabindex="0" aria-label="Transaction Table">
       <app-transactions-tabel
         [transactions]="account.transactions"
+        [accountId]="account.id"
         (modifiedTransactionEvent)="refreshAccount($event)"
       ></app-transactions-tabel>
     </div>

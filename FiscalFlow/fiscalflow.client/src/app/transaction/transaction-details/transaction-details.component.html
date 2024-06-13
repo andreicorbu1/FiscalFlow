@@ -52,7 +52,7 @@
     </li>
     <li class="list-group-item">
       <strong>Created On:</strong>
-      {{ transaction.createdOnUtc | date : "medium" }}
+      {{ transaction.createdOnUtc | date : "longDate" }}
     </li>
     <li *ngIf="transaction.reccurencePeriod" class="list-group-item">
       <strong>Reccurence Period:</strong>

@@ -151,7 +151,80 @@
         >
         </mat-paginator>
       </mat-tab>
-      <mat-tab label="Subscriptions"> </mat-tab>
+      <mat-tab label="Subscriptions">
+        <table
+          class="table-mat-class"
+          mat-table
+          [dataSource]="
+            filteredSubscriptions
+              | slice
+                : pag.pageIndex * pag.pageSize
+                : (pag.pageIndex + 1) * pag.pageSize
+          "
+        >
+          <ng-container matColumnDef="Account">
+            <th mat-header-cell *matHeaderCellDef>Account</th>
+            <td mat-cell *matCellDef="let element">{{ element.account }}</td>
+          </ng-container>
+          <ng-container matColumnDef="Payee">
+            <th mat-header-cell *matHeaderCellDef>Payee</th>
+            <td mat-cell *matCellDef="let element">{{ element.payee }}</td>
+          </ng-container>
+          <ng-container matColumnDef="Value">
+            <th mat-header-cell *matHeaderCellDef>Value</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.value >= 0 ? "+" : "" }}{{ element.value }}
+              {{ element.currency }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="FirstPayment">
+            <th mat-header-cell *matHeaderCellDef>First Payment</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.firstPayment | date : "longDate" }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LastPayment">
+            <th mat-header-cell *matHeaderCellDef>Last Payment</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.lastPayment | date : "longDate" }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="RemainingPayments">
+            <th mat-header-cell *matHeaderCellDef>Remaining Payments</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.remainingPayments }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+              <button
+                style="margin: 0 5px 0 5px; border-radius: 25px"
+                mat-raised-button
+                matTooltip="Edit Subscription"
+                color="primary"
+                (click)="onEditTransaction(row)"
+              >
+                Edit
+              </button>
+              <button
+                mat-raised-button
+                style="margin: 0 5px 0 5px; border-radius: 25px"
+                matTooltip="Delete Subscription"
+                color="warn"
+                (click)="onDeleteSubscription(row)"
+              >
+                Delete
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns2ndTable"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns2ndTable"
+          ></tr>
+        </table>
+      </mat-tab>
     </mat-tab-group>
   </div>
 </div>

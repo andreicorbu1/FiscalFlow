@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Application.Services;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
@@ -19,6 +20,26 @@ public class TransactionController : ControllerBase
     public TransactionController(ITransactionService transactionService)
     {
         _transactionService = transactionService;
+    }
+
+    [Authorize]
+    [HttpGet("me/subscriptions/{accountId?}")]
+    public async Task<ActionResult<IList<RecursiveTransactionDto>>> GetSubscriptions(Guid? accountId)
+    {
+        var id = ExtractUserIdFromClaims(User);
+        if (!id.IsSuccess) return Unauthorized();
+        var result = await _transactionService.GetSubscriptions(id, accountId);
+        return this.ToActionResult(result);
+    }
+
+    [Authorize]
+    [HttpDelete("me/subscriptions/{recursiveTransactionId}")]
+    public async Task<IActionResult> DeleteRecursiveTransaction(Guid recursiveTransactionId)
+    {
+        var id = ExtractUserIdFromClaims(User);
+        if (!id.IsSuccess) return Unauthorized();
+        var result = _transactionService.DeleteRecursiveTransaction(id.Value, recursiveTransactionId);
+        return this.ToActionResult(result);
     }
 
     [HttpPost]

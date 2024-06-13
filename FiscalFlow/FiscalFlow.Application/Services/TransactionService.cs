@@ -200,4 +200,48 @@ public class TransactionService : ITransactionService
         }
         return Result.Success();
     }
+
+    public async Task<Result<IList<RecursiveTransactionDto>>> GetSubscriptions(string ownerId, Guid? accountId = null)
+    {
+        IList<RecursiveTransactionDto> transactions = new List<RecursiveTransactionDto>();
+        var rt = await _recursiveTransactionRepository.GetRecursiveTransactions(ownerId, accountId);
+        if(rt.Count == 0 || rt is null)
+        {
+            return Result.Error("You don't have any subscriptions");
+        }
+        foreach(var tr in rt)
+        {
+            var transactionsList = tr.Transactions.OrderBy(tr => tr.CreatedOnUtc);
+
+            var trDto = new RecursiveTransactionDto
+            {
+                Id = tr.Id,
+                Account = transactionsList.First().Account.Name,
+                Currency = transactionsList.First().MoneyCurrency.ToString(),
+                FirstPayment = tr.CreatedOnUtc,
+                LastPayment = transactionsList.Last().CreatedOnUtc,
+                Payee = transactionsList.First().Payee,
+                RemainingPayments = tr.Recurrence,
+                Value = transactionsList.First().Type == TransactionType.Income ? transactionsList.First().MoneyValue : -transactionsList.First().MoneyValue
+            };
+            transactions.Add(trDto);
+        }
+        return Result.Success(transactions);
+    }
+
+    public Result DeleteRecursiveTransaction(string ownerId, Guid recursiveTransactionId)
+    {
+        var rt = _recursiveTransactionRepository.GetByIdIncludingTransaction(recursiveTransactionId);
+        if(rt.OwnerId != ownerId)
+        {
+            return Result.Forbidden();
+        }
+        foreach (var tr in rt.Transactions)
+        {
+            tr.ReccursiveTransactionId = null;
+            _transactionRepository.Update(tr);
+        }
+        _recursiveTransactionRepository.Remove(rt);
+        return Result.Success();
+    }
 }

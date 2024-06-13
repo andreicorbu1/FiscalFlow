@@ -4,6 +4,7 @@ using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
+using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
