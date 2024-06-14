@@ -4,11 +4,10 @@ import { UserService } from './user/user.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit{
-
-constructor(private userService: UserService){}
+export class AppComponent implements OnInit {
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.refreshUser();
@@ -16,13 +15,8 @@ constructor(private userService: UserService){}
 
   private refreshUser() {
     const jwt = this.userService.getJwt();
-    if(jwt) {
-      this.userService.refreshUser(jwt).subscribe({
-        next: _ => {},
-        error: _ => {
-          this.userService.logout();
-        }
-      });
+    if (jwt) {
+      this.userService.setUser(jwt);
     } else {
       this.userService.refreshUser(null).subscribe();
     }

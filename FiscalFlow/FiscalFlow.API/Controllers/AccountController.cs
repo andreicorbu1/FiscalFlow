@@ -77,7 +77,6 @@ public class AccountController : ControllerBase
         if (!stream.IsSuccess)
             return BadRequest();
         var fileName = $"{accountId}.csv";
-        // Get the full path of the file
         return File(stream.Value, "text/csv", fileName);
     }
 

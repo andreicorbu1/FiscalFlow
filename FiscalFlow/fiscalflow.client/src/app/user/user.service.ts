@@ -90,7 +90,7 @@ export class UserService {
     const key = localStorage.getItem(environment.userKey);
     if (key) {
       const user: User = JSON.parse(key);
-      return user.token;
+      return user;
     }
     return null;
   }
@@ -109,7 +109,7 @@ export class UserService {
     );
   }
 
-  private setUser(user: User) {
+  setUser(user: User) {
     localStorage.setItem(environment.userKey, JSON.stringify(user));
     this.userSource.next(user);
   }
