@@ -1,6 +1,4 @@
-﻿using FiscalFlow.Domain.Enums;
-
-namespace FiscalFlow.Contracts.Transactions;
+﻿namespace FiscalFlow.Contracts.Transactions;
 
 public class RecursiveTransactionDto
 {

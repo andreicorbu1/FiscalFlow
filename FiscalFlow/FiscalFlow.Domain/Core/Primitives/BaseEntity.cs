@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FiscalFlow.Domain.Core.Abstractions;
+﻿using FiscalFlow.Domain.Core.Abstractions;
 
 namespace FiscalFlow.Domain.Core.Primitives;
 

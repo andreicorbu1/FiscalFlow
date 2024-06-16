@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FiscalFlow.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using FiscalFlow.Domain.Enums;
 
 namespace FiscalFlow.Contracts.Accounts;
 

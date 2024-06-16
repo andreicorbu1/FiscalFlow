@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Contracts.Authentication;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace FiscalFlow.Application.Services;
 

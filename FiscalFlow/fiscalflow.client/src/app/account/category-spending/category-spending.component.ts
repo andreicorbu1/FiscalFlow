@@ -71,8 +71,8 @@ export class CategorySpendingComponent implements OnInit {
         return 'Food-and-Drinks';
       case 'LifeAndEntertainment':
         return 'Life-and-Entertainment';
-      case 'FinancialExpenses':
-        return 'Financial-Expenses';
+      case 'HealthAndPersonalCare':
+        return 'Health-and-Personal-Care';
       default:
         return category.toLowerCase();
     }

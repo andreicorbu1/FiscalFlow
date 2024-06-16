@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using FiscalFlow.Domain.Core.Primitives;
+﻿using FiscalFlow.Domain.Core.Primitives;
+using System.Linq.Expressions;
 
 namespace FiscalFlow.Domain.Repositories;
 

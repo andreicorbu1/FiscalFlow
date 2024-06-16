@@ -51,14 +51,17 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("OwnerId")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("Name", "UserId")
+                        .IsUnique();
 
                     b.ToTable("Accounts");
                 });
@@ -119,9 +122,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Provider")
-                        .HasColumnType("text");
-
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
@@ -159,16 +159,16 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedOnUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("Recurrence")
                         .HasColumnType("integer");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("RecursiveTransactions");
                 });
@@ -230,9 +230,6 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<Guid?>("ReccursiveTransactionId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("RecursiveTransactionId")
                         .HasColumnType("uuid");
@@ -384,24 +381,24 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.Account", b =>
                 {
-                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "Owner")
+                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "User")
                         .WithMany("Accounts")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.RecursiveTransaction", b =>
                 {
-                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "Owner")
+                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.Transaction", b =>

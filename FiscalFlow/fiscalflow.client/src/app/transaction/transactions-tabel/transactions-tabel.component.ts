@@ -87,8 +87,8 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
     { value: 4, viewValue: 'Vehicle' },
     { value: 5, viewValue: 'Life and Entertainment' },
     { value: 6, viewValue: 'Communication and Pc' },
-    { value: 7, viewValue: 'Financial Expenses' },
-    { value: 8, viewValue: 'Investments' },
+    { value: 7, viewValue: 'Finance' },
+    { value: 8, viewValue: 'HealthAndPersonalCare' },
     { value: 9, viewValue: 'Income' },
     { value: 10, viewValue: 'Other' },
   ];

@@ -31,7 +31,7 @@ export class TransactionService {
     );
   }
 
-  deleteSubscriptions(transactionId:string) {
+  deleteSubscriptions(transactionId: string) {
     return this.httpClient.delete(
       `${environment.appUrl}/api/v1/transaction/me/subscriptions/${transactionId}`
     );
@@ -61,7 +61,7 @@ export class TransactionService {
       "messages": [
           {
               "role": "user",
-              "content": "Based on this Payee: ${payee}; and this description: ${description}; select one of the following categories that you think is the best suited: FoodAndDrinks, Shopping, House, Transportation, Vehicle, LifeAndEntertainment, FinancialExpenses, Investments, Income, Others? Answer only with the category!"
+              "content": "Based on this Payee: ${payee}; and this description: ${description}; select one of the following categories that you think is the best suited: FoodAndDrinks, Shopping, House, Transportation, Vehicle, LifeAndEntertainment, Finance, HealthAndPersonalCare, Income, Others? Answer only with the category!"
           }
       ]
   }`;

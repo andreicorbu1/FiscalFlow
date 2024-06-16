@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using FiscalFlow.Domain.Core.Abstractions;
-using FiscalFlow.Domain.Core.Primitives;
+﻿using FiscalFlow.Domain.Core.Primitives;
 using FiscalFlow.Domain.Enums;
 using NodaMoney;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using MyCurrency = FiscalFlow.Domain.Enums.MyCurrency;
 
 namespace FiscalFlow.Domain.Entities;
@@ -12,8 +11,8 @@ namespace FiscalFlow.Domain.Entities;
 public class Transaction : BaseEntity
 {
     [NotMapped] public Money Value => new(MoneyValue, MoneyCurrency.ToString());
-    [JsonIgnore] [Column("Value")] public decimal MoneyValue { get; set; }
-    [JsonIgnore] [Column("Currency")] public MyCurrency MoneyCurrency { get; set; }
+    [JsonIgnore][Column("Value")] public decimal MoneyValue { get; set; }
+    [JsonIgnore][Column("Currency")] public MyCurrency MoneyCurrency { get; set; }
 
     [Column("AccountValueBeforeTransaction")]
     public decimal AccountValueBefore { get; set; }
@@ -35,6 +34,6 @@ public class Transaction : BaseEntity
     public Guid AccountId { get; set; }
     public virtual Account Account { get; set; } = null!;
 
-    public Guid? ReccursiveTransactionId { get; set; }
+    public Guid? RecursiveTransactionId { get; set; }
     public virtual RecursiveTransaction? RecursiveTransaction { get; set; } = null!;
 }

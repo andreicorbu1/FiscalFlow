@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using Ardalis.Result;
+﻿using Ardalis.Result;
+using System.Security.Claims;
 
 namespace FiscalFlow.API.Utils;
 

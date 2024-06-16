@@ -5,7 +5,6 @@ using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
-using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Enums;
 using FiscalFlow.Domain.Repositories;
@@ -43,7 +42,7 @@ public class AccountService : IAccountService
                 AccountType = payload.AccountType,
                 MoneyBalance = payload.Balance,
                 MoneyCurrency = Enum.Parse<MyCurrency>(payload.Currency),
-                OwnerId = payload.OwnerId,
+                UserId = payload.OwnerId,
                 CreatedOnUtc = DateTime.UtcNow
             };
             _accountRepository.Add(account);
@@ -65,8 +64,8 @@ public class AccountService : IAccountService
             [Category.Vehicle] = 0,
             [Category.House] = 0,
             [Category.Others] = 0,
-            [Category.FinancialExpenses] = 0,
-            [Category.Investments] = 0,
+            [Category.Finance] = 0,
+            [Category.HealthAndPersonalCare] = 0,
             [Category.Income] = 0
 
         };
@@ -100,7 +99,7 @@ public class AccountService : IAccountService
         var account = _accountRepository.GetById(accountId);
         if (account is null) return Result.NotFound($"Account with id {accountId} does not exist");
 
-        if (account.OwnerId != ownerId) return Result.Forbidden();
+        if (account.UserId != ownerId) return Result.Forbidden();
 
         _accountRepository.Remove(account);
         return Result.Success();
@@ -139,7 +138,7 @@ public class AccountService : IAccountService
         if (account is null)
             return Result.NotFound($"Account with id {accountId} does not exist");
         account.Transactions = await _accountRepository.GetTransactionsAsync(accountId);
-        return account.OwnerId != ownerId ? Result.Forbidden() : Result.Success(account);
+        return account.UserId != ownerId ? Result.Forbidden() : Result.Success(account);
     }
 
     public Result UpdateAccount(Account account)
@@ -168,7 +167,7 @@ public class AccountService : IAccountService
 
         if (existingAccount is null) return Result.NotFound($"Account with id {account.AccountId} does not exist!");
 
-        if (existingAccount.OwnerId != ownerId) return Result.Forbidden();
+        if (existingAccount.UserId != ownerId) return Result.Forbidden();
 
         existingAccount.Name = account.Name;
         if (existingAccount.MoneyCurrency != account.MoneyCurrency && account.MoneyBalance is null)
@@ -194,7 +193,7 @@ public class AccountService : IAccountService
     public async Task<Result> ImportTransactionsFromCsv(IList<Transaction> transactions, string ownerId, Guid accountId)
     {
         var account = await _accountRepository.GetByIdAsync(accountId);
-        if(account == null)
+        if (account == null)
         {
             return Result.NotFound($"Account with id {accountId} does not exist!");
         }
@@ -202,7 +201,7 @@ public class AccountService : IAccountService
         {
             transaction.AccountId = accountId;
             transaction.AccountValueBefore = account.MoneyBalance;
-            if(transaction.Type == TransactionType.Income)
+            if (transaction.Type == TransactionType.Income)
             {
                 account.MoneyBalance += transaction.MoneyValue;
                 transaction.AccountValueAfter = account.MoneyBalance;
@@ -218,5 +217,15 @@ public class AccountService : IAccountService
         _transactionRepository.AddRange(transactions);
         _accountRepository.Update(account);
         return Result.Success();
+    }
+
+    public async Task<Result<Account>> GetAccountFromNameAndOwner(string ownerId, string accountName)
+    {
+        var account = await _accountRepository.GetAccountFromAccountNameAnDOwnerId(accountName: accountName, ownerId: ownerId);
+        if (account is null)
+        { 
+            return Result.NotFound($"The user with id: {ownerId} does not have an account with the name {accountName}"); 
+        }
+        return Result.Success(account);
     }
 }

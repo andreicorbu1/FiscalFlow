@@ -11,7 +11,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "OwnerId",
+                name: "UserId",
                 table: "RecursiveTransactions",
                 type: "text",
                 nullable: false,
@@ -20,12 +20,12 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RecursiveTransactions_OwnerId",
                 table: "RecursiveTransactions",
-                column: "OwnerId");
+                column: "UserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RecursiveTransactions_AspNetUsers_OwnerId",
                 table: "RecursiveTransactions",
-                column: "OwnerId",
+                column: "UserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -43,7 +43,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                 table: "RecursiveTransactions");
 
             migrationBuilder.DropColumn(
-                name: "OwnerId",
+                name: "UserId",
                 table: "RecursiveTransactions");
         }
     }

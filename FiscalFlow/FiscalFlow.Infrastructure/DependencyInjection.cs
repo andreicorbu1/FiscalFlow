@@ -1,5 +1,4 @@
-﻿using System.Text;
-using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Data;
 using FiscalFlow.Application.Core.Abstractions.Emails;
 using FiscalFlow.Application.Core.Abstractions.Services;
@@ -17,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 public static class DependencyInjection
 {

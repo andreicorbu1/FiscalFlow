@@ -54,14 +54,14 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("OwnerId")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("character varying(36)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
                 });
@@ -347,13 +347,13 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.Account", b =>
                 {
-                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "Owner")
+                    b.HasOne("FiscalFlow.Domain.Entities.AppUser", "User")
                         .WithMany("Accounts")
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FiscalFlow.Domain.Entities.Transaction", b =>

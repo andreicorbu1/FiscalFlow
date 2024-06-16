@@ -1,12 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace FiscalFlow.Infrastructure.Authentication;
 

@@ -1,16 +1,16 @@
-﻿using System.Security.Claims;
-using FiscalFlow.Application.Core.Abstractions.Authentication;
+﻿using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using ResetPasswordRequest = FiscalFlow.Contracts.Authentication.ResetPasswordRequest;
-using RegisterRequest = FiscalFlow.Contracts.Authentication.RegisterRequest;
-using System.Security.Cryptography;
 using Microsoft.Extensions.Primitives;
-using Google.Apis.Auth;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using RegisterRequest = FiscalFlow.Contracts.Authentication.RegisterRequest;
+using ResetPasswordRequest = FiscalFlow.Contracts.Authentication.ResetPasswordRequest;
 
 namespace FiscalFlow.API.Controllers;
 
@@ -54,11 +54,11 @@ public class UserController : ControllerBase
         var principal = _jwtService.GetPrincipalFromExpiredToken(token);
         var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)!.Value;
         var savedRefreshToken = await _accountService.GetSavedRefreshToken(email);
-        if(!savedRefreshToken.IsSuccess)
+        if (!savedRefreshToken.IsSuccess)
         {
             return Unauthorized("Please login again!");
         }
-        if(savedRefreshToken != refreshToken)
+        if (savedRefreshToken != refreshToken)
         {
             return Unauthorized("Please login again!");
         }
@@ -224,7 +224,7 @@ public class UserController : ControllerBase
     {
         UserLoginInfo info;
         dynamic payload = null;
-        if(externalAuth.Provider == "Facebook")
+        if (externalAuth.Provider == "Facebook")
         {
             info = new UserLoginInfo(externalAuth.Provider, externalAuth.IdToken, externalAuth.Provider);
             payload = externalAuth;
@@ -240,7 +240,7 @@ public class UserController : ControllerBase
             user = await _userManager.FindByEmailAsync(payload.Email);
             if (user == null)
             {
-                if(user is GoogleJsonWebSignature.Payload)
+                if (payload is GoogleJsonWebSignature.Payload)
                 {
                     user = new AppUser
                     {
@@ -248,7 +248,6 @@ public class UserController : ControllerBase
                         UserName = payload.Email,
                         FirstName = payload.GivenName ?? string.Empty,
                         LastName = payload.FamilyName ?? string.Empty,
-                        Provider = externalAuth.Provider,
                         EmailConfirmed = true
                     };
                 }
@@ -260,7 +259,6 @@ public class UserController : ControllerBase
                         UserName = payload.Email,
                         FirstName = payload.FirstName ?? string.Empty,
                         LastName = payload.LastName ?? string.Empty,
-                        Provider = externalAuth.Provider,
                         EmailConfirmed = true
                     };
                 }

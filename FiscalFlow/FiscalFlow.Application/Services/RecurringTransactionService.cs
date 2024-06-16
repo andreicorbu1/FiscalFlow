@@ -35,11 +35,6 @@ public class RecurringTransactionService : BackgroundService
                     .ThenInclude(t => t.Account)
                 .Where(rt => rt.Recurrence > 0 && rt.Transactions.OrderByDescending(t => t.CreatedOnUtc).FirstOrDefault().CreatedOnUtc.AddMonths(1) <= now)
                 .ToListAsync();
-            //var transactions = await dbContext.RecursiveTransactions
-            //    .Include(rt => rt.Transactions)
-            //        .ThenInclude(tr => tr.Account)
-            //    .ToListAsync();
-            //transactions = transactions.Where(rt => rt.Recurrence > 0 && rt.Transactions[-1].CreatedOnUtc.AddMonths(1) <= now).ToList();
             foreach (var rt in transactions)
             {
                 var lastTransaction = rt.Transactions[0];
@@ -58,10 +53,10 @@ public class RecurringTransactionService : BackgroundService
                     CreatedOnUtc = DateTime.UtcNow,
                 };
                 var transactionService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
-                var newTr = await transactionService.AddTransaction(newTransaction, rt.OwnerId);
+                var newTr = await transactionService.AddTransaction(newTransaction, rt.UserId);
                 if (!newTr.IsSuccess)
                     continue;
-                newTr.Value.ReccursiveTransactionId = rt.Id;
+                newTr.Value.RecursiveTransactionId = rt.Id;
                 rt.Transactions.Add(newTr.Value);
                 rt.Recurrence--;
                 rt.ModifiedOnUtc = DateTime.UtcNow;

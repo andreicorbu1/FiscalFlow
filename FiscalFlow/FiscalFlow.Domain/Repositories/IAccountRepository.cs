@@ -4,6 +4,7 @@ namespace FiscalFlow.Domain.Repositories;
 
 public interface IAccountRepository : IGenericRepository<Account>
 {
+    Task<Account?> GetAccountFromAccountNameAnDOwnerId(string accountName, string ownerId);
     bool CheckAccountExists(Guid accountId);
     bool CheckIfIsAccountOwner(Guid accountId, string ownerId);
     IList<Transaction> GetTransactions(Guid accountId);

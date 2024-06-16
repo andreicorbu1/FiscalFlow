@@ -1,7 +1,7 @@
-﻿using System.Linq.Expressions;
-using FiscalFlow.Domain.Core.Primitives;
+﻿using FiscalFlow.Domain.Core.Primitives;
 using FiscalFlow.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FiscalFlow.Infrastructure.Persistence.Repositories;
 

@@ -43,8 +43,8 @@ export class AddTransactionComponent implements OnInit {
     { value: 3, viewValue: 'Transportation' },
     { value: 4, viewValue: 'Vehicle' },
     { value: 5, viewValue: 'Life and Entertainment' },
-    { value: 6, viewValue: 'Financial Expenses' },
-    { value: 7, viewValue: 'Investments' },
+    { value: 6, viewValue: 'Finance' },
+    { value: 7, viewValue: 'HealthAndPersonalCare' },
     { value: 8, viewValue: 'Income' },
     { value: 9, viewValue: 'Other' },
   ];

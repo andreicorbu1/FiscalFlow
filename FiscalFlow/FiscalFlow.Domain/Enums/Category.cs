@@ -8,8 +8,8 @@ public enum Category
     Transportation,
     Vehicle,
     LifeAndEntertainment,
-    FinancialExpenses,
-    Investments,
+    Finance,
+    HealthAndPersonalCare,
     Income,
     Others
 }

@@ -17,7 +17,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
 
     public bool CheckIfIsAccountOwner(Guid accountId, string ownerId)
     {
-        return Any(acc => acc.Id.Equals(accountId) && acc.OwnerId.Equals(ownerId));
+        return Any(acc => acc.Id.Equals(accountId) && acc.UserId.Equals(ownerId));
     }
 
     public IList<Transaction> GetTransactions(Guid accountId)
@@ -44,11 +44,11 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
         return await _context.Accounts
         .Include(acc => acc.Transactions!)
         .ThenInclude(tr => tr.RecursiveTransaction)
-        .Where(account => account.OwnerId == userId)
+        .Where(account => account.UserId == userId)
         .Select(account => new Account
         {
             Id = account.Id,
-            OwnerId = account.OwnerId,
+            UserId = account.UserId,
             Name = account.Name,
             MoneyBalance = account.MoneyBalance,
             MoneyCurrency = account.MoneyCurrency,
@@ -61,7 +61,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
     public async Task<IList<Transaction>> GetLastTransactionsAsync(string userId, int numberOfTransactions)
     {
         return await _context.Accounts
-            .Where(account => account.OwnerId == userId)
+            .Where(account => account.UserId == userId)
             .Include(account => account.Transactions!)
             .ThenInclude(transaction => transaction.Account)
             .Include(account => account.Transactions!)
@@ -74,6 +74,11 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
 
     public bool CheckAccountWithSameName(string ownerId, string accoutName)
     {
-        return _context.Accounts.Any(ac => ac.Name == accoutName && ac.OwnerId == ownerId);
+        return _context.Accounts.Any(ac => ac.Name == accoutName && ac.UserId == ownerId);
+    }
+
+    public async Task<Account?> GetAccountFromAccountNameAnDOwnerId(string accountName, string ownerId)
+    {
+        return await _context.Accounts.FirstOrDefaultAsync(ac => ac.Name == accountName && ac.UserId == ownerId);
     }
 }

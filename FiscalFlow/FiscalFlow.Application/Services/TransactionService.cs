@@ -27,6 +27,7 @@ public class TransactionService : ITransactionService
     public async Task<Result<Transaction>> AddTransaction(AddTransactionRequest payload, string ownerId)
     {
         var account = await _accountService.GetAccountFromIdAsync(payload.AccountId, ownerId);
+        var secondAccount = await _accountService.GetAccountFromNameAndOwner(ownerId, payload.Payee);
         if (!account.IsSuccess)
         {
             switch (account.Status)
@@ -41,9 +42,9 @@ public class TransactionService : ITransactionService
             }
         }
         string? imagePublicId = null, imageUrl = null;
-        if(!string.IsNullOrEmpty(payload.ImageBase64Encoded))
+        if (!string.IsNullOrEmpty(payload.ImageBase64Encoded))
             imagePublicId = await _imageService.UploadImageAsync(payload.ImageBase64Encoded);
-        if(!string.IsNullOrEmpty(imagePublicId))
+        if (!string.IsNullOrEmpty(imagePublicId))
         {
             imageUrl = await _imageService.GetImageAsync(imagePublicId);
         }
@@ -71,13 +72,72 @@ public class TransactionService : ITransactionService
         Money updatedBalance;
         if (transaction.Type == TransactionType.Income)
         {
-            updatedBalance = accountValue.Balance + transaction.Value;
+            if(!secondAccount.IsSuccess)
+                updatedBalance = accountValue.Balance + transaction.Value;
+            else
+            {
+                var second = secondAccount.Value;
+                if(second.MoneyBalance < transaction.MoneyValue)
+                {
+                    return Result.Error("Could not transfer money from second account because the balance is lower than current transaction!");
+                }
+                updatedBalance = second.Balance - transaction.Value;
+                var tr = new Transaction
+                {
+                    Account = second,
+                    AccountId = second.Id,
+                    AccountValueAfter = updatedBalance.Amount,
+                    AccountValueBefore = second.MoneyBalance,
+                    Category = Category.Finance,
+                    CreatedOnUtc = DateTime.UtcNow,
+                    ModifiedOnUtc = DateTime.UtcNow,
+                    Description = $"Transfer to {accountValue.Name}",
+                    MoneyValue = transaction.MoneyValue,
+                    MoneyCurrency = transaction.MoneyCurrency,
+                    Latitude = transaction.Latitude,
+                    Longitude=transaction.Longitude,
+                    ImagePublicId = transaction.ImagePublicId,
+                    ImageUrl = transaction.ImageUrl,
+                    Payee = accountValue.Name,
+                    Type = TransactionType.Expense,
+                };
+                _transactionRepository.Add(tr);
+                second.MoneyBalance = updatedBalance.Amount;
+                _accountService.UpdateAccount(second);
+            }
         }
         else
         {
             if (accountValue.Balance >= transaction.Value)
             {
                 updatedBalance = accountValue.Balance - transaction.Value;
+                if(secondAccount.IsSuccess)
+                {
+                    var second = secondAccount.Value;
+                    var updatedBalance2 = second.Balance + transaction.Value;
+                    var tr = new Transaction
+                    {
+                        Account = second,
+                        AccountId = second.Id,
+                        AccountValueAfter = updatedBalance2.Amount,
+                        AccountValueBefore = second.MoneyBalance,
+                        Category = Category.Income,
+                        CreatedOnUtc = DateTime.UtcNow,
+                        ModifiedOnUtc = DateTime.UtcNow,
+                        Description = $"Transfer from {accountValue.Name}",
+                        MoneyValue = transaction.MoneyValue,
+                        MoneyCurrency = transaction.MoneyCurrency,
+                        Latitude = transaction.Latitude,
+                        Longitude = transaction.Longitude,
+                        ImagePublicId = transaction.ImagePublicId,
+                        ImageUrl = transaction.ImageUrl,
+                        Payee = accountValue.Name,
+                        Type = TransactionType.Income,
+                    };
+                    _transactionRepository.Add(tr);
+                    second.MoneyBalance = updatedBalance2.Amount;
+                    _accountService.UpdateAccount(second);
+                }
             }
             else
             {
@@ -93,12 +153,12 @@ public class TransactionService : ITransactionService
             var rt = new RecursiveTransaction
             {
                 Recurrence = payload.Recurrence ?? 0,
-                OwnerId = ownerId,
+                UserId = ownerId,
                 CreatedOnUtc = transaction.CreatedOnUtc
             };
             rt.Transactions.Add(transaction);
             _recursiveTransactionRepository.Add(rt);
-            transaction.ReccursiveTransactionId = rt.Id;
+            transaction.RecursiveTransactionId = rt.Id;
             _transactionRepository.Update(transaction);
         }
         return Result.Success(transaction);
@@ -113,7 +173,7 @@ public class TransactionService : ITransactionService
         }
 
         var account = oldTransaction.Account;
-        if (account.OwnerId != ownerId)
+        if (account.UserId != ownerId)
         {
             return Result.Unauthorized();
         }
@@ -175,9 +235,9 @@ public class TransactionService : ITransactionService
         var transaction = _transactionRepository.GetByIdIncludingAccountReccursiveTransaction(transactionId);
         if (transaction is null)
             return Result.NotFound($"Transaction with id {transactionId} does not exist!");
-        if (transaction.Account.OwnerId != ownerId)
+        if (transaction.Account.UserId != ownerId)
             return Result.Unauthorized();
-        if(!string.IsNullOrEmpty(transaction.ImagePublicId))
+        if (!string.IsNullOrEmpty(transaction.ImagePublicId))
             Task.Run(() => _imageService.DeleteImageAsync(transaction.ImagePublicId));
         var rt = transaction.RecursiveTransaction;
         var account = transaction.Account;
@@ -194,7 +254,7 @@ public class TransactionService : ITransactionService
         account.MoneyBalance = updatedBalance.Amount;
         _accountService.UpdateAccount(account);
         _transactionRepository.Remove(transaction);
-        if (rt.Transactions.Count == 0)
+        if (rt is not null && rt.Transactions.Count == 0)
         {
             _recursiveTransactionRepository.Remove(rt);
         }
@@ -205,11 +265,11 @@ public class TransactionService : ITransactionService
     {
         IList<RecursiveTransactionDto> transactions = new List<RecursiveTransactionDto>();
         var rt = await _recursiveTransactionRepository.GetRecursiveTransactions(ownerId, accountId);
-        if(rt.Count == 0 || rt is null)
+        if (rt.Count == 0 || rt is null)
         {
             return Result.Error("You don't have any subscriptions");
         }
-        foreach(var tr in rt)
+        foreach (var tr in rt)
         {
             var transactionsList = tr.Transactions.OrderBy(tr => tr.CreatedOnUtc);
 
@@ -232,13 +292,13 @@ public class TransactionService : ITransactionService
     public Result DeleteRecursiveTransaction(string ownerId, Guid recursiveTransactionId)
     {
         var rt = _recursiveTransactionRepository.GetByIdIncludingTransaction(recursiveTransactionId);
-        if(rt.OwnerId != ownerId)
+        if (rt.UserId != ownerId)
         {
             return Result.Forbidden();
         }
         foreach (var tr in rt.Transactions)
         {
-            tr.ReccursiveTransactionId = null;
+            tr.RecursiveTransactionId = null;
             _transactionRepository.Update(tr);
         }
         _recursiveTransactionRepository.Remove(rt);

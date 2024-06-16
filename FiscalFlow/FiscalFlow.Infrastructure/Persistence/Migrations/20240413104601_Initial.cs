@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -218,7 +217,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_OwnerId",
                 table: "Accounts",
-                column: "OwnerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

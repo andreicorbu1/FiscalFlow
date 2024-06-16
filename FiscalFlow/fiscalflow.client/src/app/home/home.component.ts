@@ -43,6 +43,6 @@ export class HomeComponent implements OnInit {
     }
   }
   navigateToRegister() {
-    this.router.navigate(['/user/register']); // Adjust the path to your registration page
+    this.router.navigate(['/user/register']);
   }
 }

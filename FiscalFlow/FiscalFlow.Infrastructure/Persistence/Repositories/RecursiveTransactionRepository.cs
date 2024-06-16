@@ -20,12 +20,12 @@ internal sealed class RecursiveTransactionRepository : GenericRepository<Recursi
         {
             return await _context.RecursiveTransactions.Include(rt => rt.Transactions)
                 .ThenInclude(rt => rt.Account)
-                .Where(rt => rt.Recurrence > 0 && rt.OwnerId == ownerId)
+                .Where(rt => rt.Recurrence > 0 && rt.UserId == ownerId)
                 .ToListAsync();
         }
         return await _context.RecursiveTransactions.Include(rt => rt.Transactions)
                 .ThenInclude(tr => tr.Account)
-                .Where(rt => rt.Recurrence > 0 && rt.OwnerId == ownerId && rt.Transactions.First().AccountId == accountId)
+                .Where(rt => rt.Recurrence > 0 && rt.UserId == ownerId && rt.Transactions.First().AccountId == accountId)
                 .ToListAsync();
     }
 }

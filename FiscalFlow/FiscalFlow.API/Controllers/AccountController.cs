@@ -4,7 +4,6 @@ using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
-using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
 using FiscalFlow.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
@@ -84,7 +83,7 @@ public class AccountController : ControllerBase
     [HttpPost("me/csv/import/{accountId}")]
     public async Task<IActionResult> ImportTransactionsFromCsv(Guid accountId, IFormFile file)
     {
-        if(file == null || file.Length == 0)
+        if (file == null || file.Length == 0)
         {
             return BadRequest("File is empty!");
         }

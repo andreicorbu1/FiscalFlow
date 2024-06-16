@@ -20,8 +20,8 @@ internal sealed class AppDbContext : IdentityDbContext<AppUser>, IAppDbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<AppUser>()
             .HasMany(e => e.Accounts)
-            .WithOne(e => e.Owner)
-            .HasForeignKey(e => e.OwnerId)
+            .WithOne(e => e.User)
+            .HasForeignKey(e => e.UserId)
             .IsRequired();
         modelBuilder.Entity<Account>()
             .HasMany(e => e.Transactions)

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -16,7 +15,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                 table: "RecursiveTransactions");
 
             migrationBuilder.AddColumn<Guid>(
-                name: "ReccursiveTransactionId",
+                name: "RecursiveTransactionId",
                 table: "Transactions",
                 type: "uuid",
                 nullable: true);
@@ -36,7 +35,7 @@ namespace FiscalFlow.Infrastructure.Persistence.Migrations
                 table: "RecursiveTransactions");
 
             migrationBuilder.DropColumn(
-                name: "ReccursiveTransactionId",
+                name: "RecursiveTransactionId",
                 table: "Transactions");
 
             migrationBuilder.CreateIndex(

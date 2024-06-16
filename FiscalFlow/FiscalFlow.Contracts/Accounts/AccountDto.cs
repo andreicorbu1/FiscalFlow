@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using FiscalFlow.Domain.Enums;
 
 namespace FiscalFlow.Contracts.Accounts;
 
