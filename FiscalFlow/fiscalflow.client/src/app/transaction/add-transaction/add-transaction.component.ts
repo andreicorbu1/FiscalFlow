@@ -146,10 +146,6 @@ export class AddTransactionComponent implements OnInit {
     const payee = this.addTransactionForm.get('payee')!.value;
     const description = this.addTransactionForm.get('description')!.value;
     const type = this.addTransactionForm.get('type')!.value;
-    console.log('payee', payee);
-    console.log('description', description);
-    console.log('type', type);
-    console.log('event', $event);
     if (payee && description && $event === true) {
       // this.transactionService
       //   .getSuggestedCategories(payee, description)

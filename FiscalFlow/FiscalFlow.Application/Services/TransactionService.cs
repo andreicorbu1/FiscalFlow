@@ -253,11 +253,19 @@ public class TransactionService : ITransactionService
 
         account.MoneyBalance = updatedBalance.Amount;
         _accountService.UpdateAccount(account);
-        _transactionRepository.Remove(transaction);
-        if (rt is not null && rt.Transactions.Count == 0)
+        if(rt is not null)
         {
-            _recursiveTransactionRepository.Remove(rt);
+            if(rt.Transactions.Count <= 1)
+            {
+                _recursiveTransactionRepository.Remove(rt);
+            }
+            else
+            {
+                rt.Recurrence++;
+                _recursiveTransactionRepository.Update(rt);
+            }
         }
+        _transactionRepository.Remove(transaction);
         return Result.Success();
     }
 

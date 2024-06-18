@@ -106,7 +106,6 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.filteredTransactions = [...this.transactions];
-    this.filteredSubscriptions = [...this.subscriptions];
     this.transactionService.getSubscriptions(this.accountId).subscribe({
       next: (data) => {
         console.log(data);
@@ -117,6 +116,7 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
         console.log(error);
       },
     });
+    this.filteredSubscriptions = [...this.subscriptions];
   }
 
   ngOnInit(): void {

@@ -55,6 +55,7 @@ internal sealed class AccountRepository : GenericRepository<Account>, IAccountRe
             AccountType = account.AccountType,
             Transactions = account.Transactions!.OrderByDescending(t => t.CreatedOnUtc).ToList()
         })
+        .OrderBy(acc => acc.Name)
         .ToListAsync();
     }
 
