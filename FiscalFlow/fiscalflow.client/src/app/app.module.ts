@@ -34,6 +34,8 @@ import { TransactionDetailsComponent } from './transaction/transaction-details/t
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { ChatComponent } from './chat/chat.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,6 +45,7 @@ import { MatListModule } from '@angular/material/list';
     AddTransactionComponent,
     DashboardComponent,
     TransactionDetailsComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +73,7 @@ import { MatListModule } from '@angular/material/list';
     MatTableModule,
     MatTooltipModule,
     GoogleMapsModule,
+    MatProgressSpinnerModule,
     NgChartsModule,
   ],
   providers: [

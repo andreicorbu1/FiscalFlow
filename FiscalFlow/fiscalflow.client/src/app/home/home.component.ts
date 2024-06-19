@@ -7,6 +7,7 @@ import { TransactionService } from '../transaction/transaction.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTransactionComponent } from '../transaction/add-transaction/add-transaction.component';
 import { Router } from '@angular/router';
+import { ChatComponent } from '../chat/chat.component';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +24,8 @@ export class HomeComponent implements OnInit {
     public userService: UserService,
     private router: Router,
     private accountService: AccountService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +38,6 @@ export class HomeComponent implements OnInit {
         this.transactions = transactions;
       });
   }
-
   refreshAccounts($event: boolean) {
     if ($event) {
       this.ngOnInit();

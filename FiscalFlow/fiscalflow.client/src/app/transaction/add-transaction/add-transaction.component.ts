@@ -9,6 +9,7 @@ import { UpdateTransaction } from '../../shared/models/transaction/updateTransac
 import { MAT_RADIO_DEFAULT_OPTIONS } from '@angular/material/radio';
 import { SharedService } from '../../shared/shared.service';
 import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS } from '@angular/material/slide-toggle';
+import { OpenaiService } from 'src/app/openai.service';
 
 interface Category {
   value: number;
@@ -53,6 +54,7 @@ export class AddTransactionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private transactionService: TransactionService,
+    private openaiService: OpenaiService,
     private sharedService: SharedService,
     private _dialogRef: MatDialogRef<AddTransactionComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -148,7 +150,7 @@ export class AddTransactionComponent implements OnInit {
     const type = this.addTransactionForm.get('type')!.value;
     if (payee && description && $event === true) {
       // this.transactionService
-      //   .getSuggestedCategories(payee, description)
+      //   .openaiService(payee, description)
       //   .subscribe({
       //     next: (response) => {
       //       console.log(response);

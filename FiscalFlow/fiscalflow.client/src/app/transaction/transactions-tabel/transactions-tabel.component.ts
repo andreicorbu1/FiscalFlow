@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TransactionDetailsComponent } from '../transaction-details/transaction-details.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Subscription } from 'src/app/shared/models/transaction/subscription';
+import { ChatComponent } from 'src/app/chat/chat.component';
 
 interface Category {
   value: number;
@@ -182,6 +183,17 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
       },
       error: (error) => {
         console.log(error);
+      },
+    });
+  }
+
+  openChat(): void {
+    this.dialog.open(ChatComponent, {
+      width: '500px',
+      height: '600px',
+      panelClass: 'borderless-dialog',
+      data: {
+        transactions: this.transactions,
       },
     });
   }
