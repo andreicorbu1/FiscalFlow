@@ -81,9 +81,13 @@ export class UserService {
   }
 
   logout() {
-    localStorage.removeItem(environment.userKey);
-    this.userSource.next(null);
-    this.router.navigateByUrl('/');
+    this.httpClient
+      .put(`${environment.appUrl}/api/v1/user/revoke-refresh-token`, {})
+      .subscribe(() => {
+        localStorage.removeItem(environment.userKey);
+        this.userSource.next(null);
+        this.router.navigateByUrl('/');
+      });
   }
 
   getJwt() {

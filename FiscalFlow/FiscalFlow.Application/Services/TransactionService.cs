@@ -72,12 +72,12 @@ public class TransactionService : ITransactionService
         Money updatedBalance;
         if (transaction.Type == TransactionType.Income)
         {
-            if(!secondAccount.IsSuccess)
+            if (!secondAccount.IsSuccess)
                 updatedBalance = accountValue.Balance + transaction.Value;
             else
             {
                 var second = secondAccount.Value;
-                if(second.MoneyBalance < transaction.MoneyValue)
+                if (second.MoneyBalance < transaction.MoneyValue)
                 {
                     return Result.Error("Could not transfer money from second account because the balance is lower than current transaction!");
                 }
@@ -95,7 +95,7 @@ public class TransactionService : ITransactionService
                     MoneyValue = transaction.MoneyValue,
                     MoneyCurrency = transaction.MoneyCurrency,
                     Latitude = transaction.Latitude,
-                    Longitude=transaction.Longitude,
+                    Longitude = transaction.Longitude,
                     ImagePublicId = transaction.ImagePublicId,
                     ImageUrl = transaction.ImageUrl,
                     Payee = accountValue.Name,
@@ -111,7 +111,7 @@ public class TransactionService : ITransactionService
             if (accountValue.Balance >= transaction.Value)
             {
                 updatedBalance = accountValue.Balance - transaction.Value;
-                if(secondAccount.IsSuccess)
+                if (secondAccount.IsSuccess)
                 {
                     var second = secondAccount.Value;
                     var updatedBalance2 = second.Balance + transaction.Value;
@@ -152,7 +152,7 @@ public class TransactionService : ITransactionService
         {
             var rt = new RecursiveTransaction
             {
-                Recurrence = payload.Recurrence ?? 0,
+                Recurrence = (ushort)((payload.Recurrence - 1) ?? 0),
                 UserId = ownerId,
                 CreatedOnUtc = transaction.CreatedOnUtc
             };
@@ -166,7 +166,7 @@ public class TransactionService : ITransactionService
 
     public async Task<Result> UpdateTransaction(UpdateTransaction payload, string ownerId)
     {
-        var oldTransaction = await _transactionRepository.GetByIdIncludingAccountAsync(payload.TransactionId);
+        var oldTransaction = await _transactionRepository.GetByIdIncludingAccountReccursiveTransactionAsync(payload.TransactionId);
         if (oldTransaction is null)
         {
             return Result.NotFound($"Transaction with id {payload.TransactionId} does not exist!");
@@ -189,7 +189,26 @@ public class TransactionService : ITransactionService
         }
 
         account.MoneyBalance = updatedBalance.Amount;
-
+        if (payload.Recurrence is not null)
+        {
+            var rt = oldTransaction.RecursiveTransaction;
+            if (rt is null)
+            {
+                rt = new RecursiveTransaction
+                {
+                    Recurrence = payload.Recurrence.Value,
+                    UserId = ownerId
+                };
+                _recursiveTransactionRepository.Add(rt);
+                oldTransaction.RecursiveTransactionId = rt.Id;
+            }
+            else if (rt is not null && payload.Recurrence.Value != rt.Recurrence)
+            {
+                rt.Recurrence = payload.Recurrence.Value;
+                _recursiveTransactionRepository.Update(rt);
+                oldTransaction.RecursiveTransactionId = rt.Id;
+            }
+        }
         oldTransaction.AccountValueBefore = updatedBalance.Amount;
         oldTransaction.AccountId = account.Id;
         oldTransaction.Category = payload.Category;
@@ -253,9 +272,9 @@ public class TransactionService : ITransactionService
 
         account.MoneyBalance = updatedBalance.Amount;
         _accountService.UpdateAccount(account);
-        if(rt is not null)
+        if (rt is not null)
         {
-            if(rt.Transactions.Count <= 1)
+            if (rt.Transactions.Count <= 1)
             {
                 _recursiveTransactionRepository.Remove(rt);
             }
@@ -286,7 +305,7 @@ public class TransactionService : ITransactionService
                 Id = tr.Id,
                 Account = transactionsList.First().Account.Name,
                 Currency = transactionsList.First().MoneyCurrency.ToString(),
-                FirstPayment = tr.CreatedOnUtc,
+                FirstPayment = transactionsList.First().CreatedOnUtc,
                 LastPayment = transactionsList.Last().CreatedOnUtc,
                 Payee = transactionsList.First().Payee,
                 RemainingPayments = tr.Recurrence,
@@ -303,11 +322,6 @@ public class TransactionService : ITransactionService
         if (rt.UserId != ownerId)
         {
             return Result.Forbidden();
-        }
-        foreach (var tr in rt.Transactions)
-        {
-            tr.RecursiveTransactionId = null;
-            _transactionRepository.Update(tr);
         }
         _recursiveTransactionRepository.Remove(rt);
         return Result.Success();

@@ -6,6 +6,7 @@ public interface ITransactionRepository : IGenericRepository<Transaction>
 {
     Transaction? GetByIdIncludingAccount(Guid transactionId);
     Transaction? GetByIdIncludingAccountReccursiveTransaction(Guid transactionId);
+    Task<Transaction?> GetByIdIncludingAccountReccursiveTransactionAsync(Guid transactionId);
 
     Task<Transaction?> GetByIdIncludingAccountAsync(Guid transactionId);
 

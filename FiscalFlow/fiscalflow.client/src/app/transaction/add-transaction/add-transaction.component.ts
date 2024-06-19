@@ -180,6 +180,18 @@ export class AddTransactionComponent implements OnInit {
       if (this.data.transaction != null) {
         // edit transaction
         const formValue = this.addTransactionForm.value;
+        console.log(formValue);
+        let reccurencePeriod: number | null = null;
+        if (
+          this.data.transaction.reccurencePeriod != null &&
+          formValue.isRecursive === false
+        ) {
+          reccurencePeriod = 0;
+        } else if (
+          this.data.transaction.reccurencePeriod !== formValue.recurrencePeriod
+        ) {
+          reccurencePeriod = formValue.recurrencePeriod;
+        }
         const updateTransaction: UpdateTransaction = {
           transactionId: this.data.transaction.id,
           description: formValue.description,
@@ -187,6 +199,7 @@ export class AddTransactionComponent implements OnInit {
           imageUrl: null,
           longitude: this.markerPosition ? this.markerPosition.lng : null,
           latitude: this.markerPosition ? this.markerPosition.lat : null,
+          recurrence: reccurencePeriod,
           type: Number(formValue.type),
           value: formValue.value,
           category: formValue.category,
@@ -198,6 +211,16 @@ export class AddTransactionComponent implements OnInit {
           },
           error: (error) => {
             this._dialogRef.close(false);
+            const errorMessage: string = error.error.detail;
+            const displayMessage: string = errorMessage
+              .substring(errorMessage.indexOf('*') + 1)
+              .trim();
+            this.sharedService.showNotification(
+              false,
+              'Edit transaction',
+              displayMessage
+            );
+            console.log(error);
             console.log(error);
           },
         });

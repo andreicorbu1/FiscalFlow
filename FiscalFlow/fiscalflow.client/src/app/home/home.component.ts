@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
       this.accounts = accounts;
     });
     this.transactionService
-      .getLastTransactions(10)
+      .getLastTransactions(20)
       .subscribe((transactions) => {
         this.transactions = transactions;
       });

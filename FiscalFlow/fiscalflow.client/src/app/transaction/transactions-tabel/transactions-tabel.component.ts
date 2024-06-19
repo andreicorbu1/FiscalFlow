@@ -94,6 +94,7 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
   ];
   startDate: Date;
   endDate: Date;
+  searchPayee: string | null = '';
   @ViewChild(MatPaginator, { static: true }) pag!: MatPaginator;
 
   constructor(
@@ -185,7 +186,7 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
     });
   }
 
-  applyDateFilter() {
+  applyFilter() {
     this.filteredTransactions = this.transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.createdOnUtc);
       if (this.startDate && this.endDate) {
@@ -199,6 +200,13 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
       if (this.startDate && !this.endDate) {
         return transactionDate >= this.startDate;
       }
+      if (this.searchPayee) {
+        console.log(this.searchPayee);
+        //@ts-ignore
+        return transaction.payee
+          .toLowerCase()
+          .includes(this.searchPayee.toLowerCase());
+      }
       if (this.selectedCategories.length > 0) {
         return this.selectedCategories.includes(transaction.category);
       }
@@ -211,6 +219,7 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
     this.startDate = '';
     // @ts-ignore
     this.endDate = '';
+    this.searchPayee = null;
     this.filteredTransactions = this.transactions;
     this.selectedCategories = [];
   }

@@ -20,7 +20,7 @@ public class RecurringTransactionService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await ProcessRecurringTransactions();
-            await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
         }
     }
 

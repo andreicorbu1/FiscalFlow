@@ -1,5 +1,6 @@
 export interface User {
-    firstName: string;
-    lastName: string;
-    token: string;
+  firstName: string;
+  lastName: string;
+  token: string;
+  refreshToken: string;
 }

@@ -42,7 +42,7 @@ export class CategorySpendingComponent implements OnInit {
       };
 
       const categoryExpensesDataArray = Object.entries(this.categories)
-        .filter(([key, value]) => key !== 'Income' && value != 0)
+        .filter(([key, value]) => key !== 'Income')
         .map(([_, value]) => value as number);
       this.showExpenseChart = categoryExpensesDataArray.length > 0;
       this.categoryExpensesLabels = Object.keys(this.categories).filter(

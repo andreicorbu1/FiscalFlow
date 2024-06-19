@@ -13,6 +13,22 @@
   align-items: center;
 }
 
+.category-filter {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.payee-search {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .filter-container {
   align-items: center;
   display: flex;
@@ -31,12 +47,16 @@
   border-radius: 4px;
 }
 
-.no-transactions {
+.no-transactions .no-subscriptions {
   margin-left: 10px;
   margin-top: 10px;
 }
 
 .no-transactions h1 {
+  color: #000000;
+  font-size: 25px;
+}
+.no-subscriptions h1 {
   color: #000000;
   font-size: 25px;
 }
@@ -47,7 +67,7 @@
 }
 @media screen and (max-width: 600px) {
   .filter-container {
-    flex-direction: column; 
+    flex-direction: column;
     align-items: flex-start;
   }
 

@@ -43,7 +43,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("refresh-user-token")]
-    public async Task<IActionResult> RefreshTokenAsync(string refreshToken)
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] string refreshToken)
     {
         Request.Headers.TryGetValue("Authorization", out StringValues headerValues);
         string? token = headerValues.FirstOrDefault()?.Substring(7);

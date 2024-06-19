@@ -1,83 +1,90 @@
 <div class="table-container">
   <div
-    *ngIf="
-      transactions != null &&
-        transactions.length > 0 &&
-        filteredTransactions != null &&
-        filteredTransactions.length > 0;
-      else noTransactions
-    "
+    *ngIf="transactions != null && transactions.length > 0; else noTransactions"
   >
-    <div class="filter-container">
-      <div class="datepicker">
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [matDatepicker]="startDatePicker"
-            placeholder="Start Date"
-            [(ngModel)]="startDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="startDatePicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #startDatePicker></mat-datepicker>
-        </mat-form-field>
-      </div>
-
-      <div class="datepicker">
-        <mat-form-field appearance="outline">
-          <input
-            matInput
-            [matDatepicker]="endDatePicker"
-            placeholder="End Date"
-            [(ngModel)]="endDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="endDatePicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #endDatePicker></mat-datepicker>
-        </mat-form-field>
-      </div>
-      <div class="category-selector">
-        <mat-form-field appearance="outline" class="category-select">
-          <mat-select
-            placeholder="Select Categories"
-            [(ngModel)]="selectedCategories"
-            multiple
-          >
-            <mat-option
-              *ngFor="let category of categories"
-              [value]="category.value"
-            >
-              {{ category.viewValue }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="applyDateFilter()"
-        [disabled]="!startDate && !endDate && !(selectedCategories.length > 0)"
-        class="filter-button"
-      >
-        Apply Filter
-      </button>
-      <button
-        mat-raised-button
-        color="warn"
-        (click)="resetDateFilter()"
-        class="filter-button"
-      >
-        Reset Filter
-      </button>
-    </div>
     <mat-tab-group>
-      <mat-tab label="Transactions"
-        ><table
+      <mat-tab label="Transactions">
+        <div class="filter-container" style="margin-top: 20px">
+          <div class="datepicker">
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="startDatePicker"
+                placeholder="Start Date"
+                [(ngModel)]="startDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="startDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="datepicker">
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                [matDatepicker]="endDatePicker"
+                placeholder="End Date"
+                [(ngModel)]="endDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="endDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="category-selector category-filter">
+            <mat-form-field appearance="outline" class="category-select">
+              <mat-select
+                placeholder="Select Categories"
+                [(ngModel)]="selectedCategories"
+                multiple
+              >
+                <mat-option
+                  *ngFor="let category of categories"
+                  [value]="category.value"
+                >
+                  {{ category.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="payee-search">
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                placeholder="Search Payee"
+                [(ngModel)]="searchPayee"
+              />
+            </mat-form-field>
+          </div>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="applyFilter()"
+            [disabled]="
+              !startDate &&
+              !endDate &&
+              !(selectedCategories.length > 0) &&
+              !searchPayee
+            "
+            class="filter-button"
+          >
+            Apply Filter
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="resetDateFilter()"
+            class="filter-button"
+          >
+            Reset Filter
+          </button>
+        </div>
+        <table
           class="table-mat-class"
           mat-table
           [dataSource]="
@@ -153,6 +160,13 @@
       </mat-tab>
       <mat-tab label="Subscriptions">
         <table
+          *ngIf="
+            subscriptions != null &&
+              subscriptions.length > 0 &&
+              filteredSubscriptions != null &&
+              filteredSubscriptions.length > 0;
+            else noSubscriptions
+          "
           class="table-mat-class"
           mat-table
           [dataSource]="
@@ -234,6 +248,16 @@
       <strong style="color: #000000; font-size: 25px; text-align: center"
         >You currently have not added any transactions to this account. After
         you will add some transactions they will appear here.</strong
+      >
+    </h1>
+  </div>
+</ng-template>
+<ng-template #noSubscriptions>
+  <div style="margin-left: 10px; margin-top: 10px">
+    <h1>
+      <strong style="color: #000000; font-size: 25px; text-align: center"
+        >You currently have not added any subscriptions to this account. After
+        you will add some subscriptions they will appear here.</strong
       >
     </h1>
   </div>
