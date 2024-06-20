@@ -1,6 +1,6 @@
 export interface UpdateAccount {
   name: string;
-  moneyBalance: number;
+  moneyBalance: number | null;
   moneyCurrency: number;
   accountType: number;
 }

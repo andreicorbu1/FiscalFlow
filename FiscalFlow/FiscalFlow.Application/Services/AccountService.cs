@@ -3,6 +3,7 @@ using FiscalFlow.Application.Core.Abstractions.Authentication;
 using FiscalFlow.Application.Core.Abstractions.Services;
 using FiscalFlow.Application.Core.Extensions;
 using FiscalFlow.Application.Tools.Csv;
+using FiscalFlow.Application.Tools.MoneyConverter;
 using FiscalFlow.Contracts;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Domain.Entities;
@@ -161,6 +162,8 @@ public class AccountService : IAccountService
 
     public async Task<Result> UpdateAccount(string ownerId, UpdateAccountRequest account)
     {
+        decimal conversionValue = 1;
+        bool foundConversion = false;
         var existingAccount = await _accountRepository.GetAllAsQuery()
             .Include(acc => acc.Transactions)
             .FirstOrDefaultAsync(acc => acc.Id.Equals(account.AccountId));
@@ -170,9 +173,20 @@ public class AccountService : IAccountService
         if (existingAccount.UserId != ownerId) return Result.Forbidden();
 
         existingAccount.Name = account.Name;
-        if (existingAccount.MoneyCurrency != account.MoneyCurrency && account.MoneyBalance is null)
+        if (existingAccount.MoneyCurrency != account.MoneyCurrency)
         {
-            /* existingAccount.MoneyBalance = existingAccount.MoneyBalance / Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
+            if (!account.MoneyBalance.HasValue)
+            {
+                foundConversion = MoneyConversionUtils.Conversions.TryGetValue($"{existingAccount.MoneyCurrency}-{account.MoneyCurrency}", out conversionValue);
+                if (foundConversion)
+                {
+                    existingAccount.MoneyBalance = existingAccount.MoneyBalance * conversionValue;
+                }
+            }
+            else
+            {
+                existingAccount.MoneyBalance = account.MoneyBalance.Value;
+            }
         }
         else if (account.MoneyBalance.HasValue)
         {
@@ -184,8 +198,11 @@ public class AccountService : IAccountService
 
         if (existingAccount.Transactions is not null && existingAccount.Transactions.Count > 0)
             foreach (var transaction in existingAccount.Transactions)
+            {
+                if (foundConversion)
+                    transaction.MoneyValue *= conversionValue;
                 transaction.MoneyCurrency = existingAccount.MoneyCurrency;
-        /* transaction.MoneyValue /= Utils.GetConversionRate(existingAccount.MoneyCurrency ,account.MoneyCurrency);*/
+            }
         _accountRepository.Update(existingAccount);
         return Result.Success();
     }
@@ -223,8 +240,8 @@ public class AccountService : IAccountService
     {
         var account = await _accountRepository.GetAccountFromAccountNameAnDOwnerId(accountName: accountName, ownerId: ownerId);
         if (account is null)
-        { 
-            return Result.NotFound($"The user with id: {ownerId} does not have an account with the name {accountName}"); 
+        {
+            return Result.NotFound($"The user with id: {ownerId} does not have an account with the name {accountName}");
         }
         return Result.Success(account);
     }

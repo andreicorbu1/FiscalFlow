@@ -92,10 +92,6 @@ export class LoginComponent implements OnInit {
     this.initializeForm();
   }
 
-  testAuthorize() {
-    this.userService.checkAuthorized();
-  }
-
   initializeForm() {
     this.loginForm = this.formBuilder.group({
       email: [
