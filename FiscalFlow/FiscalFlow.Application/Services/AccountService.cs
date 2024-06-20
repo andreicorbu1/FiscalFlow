@@ -76,7 +76,12 @@ public class AccountService : IAccountService
             {
                 if (dict.TryGetValue(transaction.Category, out var oldValue))
                 {
-                    dict[transaction.Category] = oldValue + transaction.MoneyValue;
+                    decimal value = 1;
+                    if (transaction.MoneyCurrency != MyCurrency.RON)
+                    {
+                        MoneyConversionUtils.Conversions.TryGetValue($"{transaction.MoneyCurrency}-RON", out value);
+                    }
+                    dict[transaction.Category] = oldValue + value * transaction.MoneyValue;
                 }
             }
         }
