@@ -25,7 +25,6 @@ export class CategorySpendingComponent implements OnInit {
   ngOnInit(): void {
     this.accountService.getCategoryExpenses().subscribe((data) => {
       this.categories = data;
-      console.log(data);
       const totalExpenses = Object.entries(this.categories)
         .filter(([key]) => key !== 'Income')
         .reduce((sum, [_, value]) => sum + (value as number), 0);

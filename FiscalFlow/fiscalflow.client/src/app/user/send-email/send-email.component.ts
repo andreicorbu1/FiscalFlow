@@ -33,7 +33,6 @@ export class SendEmailComponent implements OnInit {
           const mode = this.activatedRoute.snapshot.paramMap.get('mode');
           if (mode) {
             this.mode = mode;
-            console.log(this.mode);
             this.initializeForm();
           }
         }

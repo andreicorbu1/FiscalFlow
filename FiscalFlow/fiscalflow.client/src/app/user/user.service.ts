@@ -99,14 +99,7 @@ export class UserService {
     return null;
   }
 
-  checkAuthorized() {
-    this.httpClient
-      .get(`${environment.appUrl}/api/v1/user/check-authorized`)
-      .subscribe((response) => console.log(response));
-  }
-
   confirmEmail(model: ConfirmEmail) {
-    console.log('here');
     return this.httpClient.put(
       `${environment.appUrl}/api/v1/user/confirm-email`,
       model

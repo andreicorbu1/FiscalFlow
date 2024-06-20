@@ -17,8 +17,9 @@ import { UpdateAccount } from 'src/app/shared/models/account/updateAccount';
 export class AddAccountComponent implements OnInit {
   accountForm: FormGroup = new FormGroup({});
   isEditMode: boolean;
-  oldBalance: number | null=  0;
+
   currencyValues = Object.values(CurrencyEnum).slice(0, 173);
+  oldBalance: number | null=  0;
   currencyIdMapping: { [key: string]: CurrencyEnum } = {
     AED: CurrencyEnum.AED,
     AFN: CurrencyEnum.AFN,
@@ -214,7 +215,6 @@ export class AddAccountComponent implements OnInit {
         this.isEditMode = true;
         this.accountService.getAccountId(params['id']).subscribe({
           next: (account: Account) => {
-            console.log('Account:', account);
             this.oldBalance = account.balance;
             this.accountForm.patchValue({
               name: account.name,
@@ -234,11 +234,11 @@ export class AddAccountComponent implements OnInit {
       if (this.isEditMode) {
         const formData: UpdateAccount = {
           name: this.accountForm.value.name,
-          moneyCurrency: this.currencyIdMapping[this.accountForm.value.currency],
+          moneyCurrency:
+            this.currencyIdMapping[this.accountForm.value.currency],
           moneyBalance: Number(this.accountForm.value.balance) === this.oldBalance ? null : Number(this.accountForm.value.balance),
           accountType: Number(this.accountForm.value.accountType),
         };
-        console.log(formData);
         this.accountService
           .updateAccount(this.route.snapshot.params['id'], formData)
           .subscribe({

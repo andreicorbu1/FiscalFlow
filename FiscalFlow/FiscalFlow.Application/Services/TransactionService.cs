@@ -67,7 +67,7 @@ public class TransactionService : ITransactionService
             AccountValueBefore = accountValue.MoneyBalance
         };
 
-        // Add option to Convert from one MyCurrency to the account currency
+        // TODO: Add option to Convert from one MyCurrency to the account currency
         // Add option get the conversion rate from some 3rd party API
         Money updatedBalance;
         if (transaction.Type == TransactionType.Income)

@@ -7,7 +7,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { SendEmailComponent } from './send-email/send-email.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import {
   FacebookLoginProvider,
   SocialAuthServiceConfig,
@@ -15,7 +15,6 @@ import {
 } from '@abacritt/angularx-social-login';
 import { environment } from 'src/environments/environment.development';
 import { MatIconModule } from '@angular/material/icon';
-// import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [

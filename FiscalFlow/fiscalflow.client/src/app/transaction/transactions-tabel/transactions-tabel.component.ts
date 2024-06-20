@@ -110,7 +110,6 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
     this.filteredTransactions = [...this.transactions];
     this.transactionService.getSubscriptions(this.accountId).subscribe({
       next: (data) => {
-        console.log(data);
         this.subscriptions = data;
         this.filteredSubscriptions = [...this.subscriptions];
       },
@@ -124,7 +123,6 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
   ngOnInit(): void {
     this.transactionService.getSubscriptions(this.accountId).subscribe({
       next: (data) => {
-        console.log(data);
         this.subscriptions = data;
         this.filteredSubscriptions = [...this.subscriptions];
       },
@@ -147,7 +145,6 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
   }
 
   onEditTransaction(transaction: Transaction) {
-    console.log(transaction);
     const dialogRef = this.dialog.open(AddTransactionComponent, {
       data: {
         account: {
@@ -213,7 +210,6 @@ export class TransactionsTabelComponent implements OnChanges, OnInit {
         return transactionDate >= this.startDate;
       }
       if (this.searchPayee) {
-        console.log(this.searchPayee);
         //@ts-ignore
         return transaction.payee
           .toLowerCase()

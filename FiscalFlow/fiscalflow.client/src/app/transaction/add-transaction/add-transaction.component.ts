@@ -111,7 +111,6 @@ export class AddTransactionComponent implements OnInit {
       });
     }
     if (this.data.transaction != null) {
-      console.log(this.data.transaction);
       if (this.data.transaction.reccurencePeriod != null) {
         this.addTransactionForm.patchValue({
           isRecursive: true,
@@ -149,18 +148,15 @@ export class AddTransactionComponent implements OnInit {
     const description = this.addTransactionForm.get('description')!.value;
     const type = this.addTransactionForm.get('type')!.value;
     if (payee && description && $event === true) {
-      // this.transactionService
-      //   .openaiService(payee, description)
-      //   .subscribe({
-      //     next: (response) => {
-      //       console.log(response);
-      //       //@ts-ignore
-      //       this.suggestedCategory = response.choices[0].message.content;
-      //     },
-      //     error: (error) => {
-      //       console.log(error);
-      //     },
-      //   });
+      this.openaiService.getSuggestedCategories(payee, description).subscribe({
+        next: (response) => {
+          //@ts-ignore
+          this.suggestedCategory = response.choices[0].message.content;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
     }
   }
 
@@ -182,7 +178,6 @@ export class AddTransactionComponent implements OnInit {
       if (this.data.transaction != null) {
         // edit transaction
         const formValue = this.addTransactionForm.value;
-        console.log(formValue);
         let reccurencePeriod: number | null = null;
         if (
           this.data.transaction.reccurencePeriod != null &&
