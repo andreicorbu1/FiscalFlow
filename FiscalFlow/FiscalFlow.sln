@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalFlow.API", "FiscalFlow.API\FiscalFlow.API.csproj", "{744ED7BE-D004-402B-AD28-9E4E9DE84FF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalFlow.API", "FiscalFlow.API\FiscalFlow.API.csproj", "{744ED7BE-D004-402B-AD28-9E4E9DE84FF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalFlow.Domain", "FiscalFlow.Domain\FiscalFlow.Domain.csproj", "{02A5CA9C-6D81-4F73-8A74-EFAFF92D1691}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalFlow.Domain", "FiscalFlow.Domain\FiscalFlow.Domain.csproj", "{02A5CA9C-6D81-4F73-8A74-EFAFF92D1691}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalFlow.Application", "FiscalFlow.Application\FiscalFlow.Application.csproj", "{EE498945-886B-44CA-B410-0C21E38DDF8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalFlow.Application", "FiscalFlow.Application\FiscalFlow.Application.csproj", "{EE498945-886B-44CA-B410-0C21E38DDF8F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalFlow.Infrastructure", "FiscalFlow.Infrastructure\FiscalFlow.Infrastructure.csproj", "{A161935F-7918-46E8-853A-217C343EE3E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalFlow.Infrastructure", "FiscalFlow.Infrastructure\FiscalFlow.Infrastructure.csproj", "{A161935F-7918-46E8-853A-217C343EE3E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiscalFlow.Contracts", "FiscalFlow.Contracts\FiscalFlow.Contracts.csproj", "{D82C7F98-2250-46D6-8589-2A132004FE3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiscalFlow.Contracts", "FiscalFlow.Contracts\FiscalFlow.Contracts.csproj", "{D82C7F98-2250-46D6-8589-2A132004FE3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
