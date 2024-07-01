@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using FiscalFlow.Application.Core.Abstractions.Services;
+using FiscalFlow.Application.Tools.MoneyConverter;
 using FiscalFlow.Contracts.Accounts;
 using FiscalFlow.Contracts.Transactions;
 using FiscalFlow.Domain.Entities;
@@ -77,33 +78,75 @@ public class TransactionService : ITransactionService
             else
             {
                 var second = secondAccount.Value;
-                if (second.MoneyBalance < transaction.MoneyValue)
+                decimal value = default;
+                if (second.MoneyCurrency != transaction.MoneyCurrency)
                 {
-                    return Result.Error("Could not transfer money from second account because the balance is lower than current transaction!");
+                    bool foundConversion = MoneyConversionUtils.Conversions.TryGetValue($"{transaction.MoneyCurrency}-{second.MoneyCurrency}", out value);
+                    if (!foundConversion)
+                    {
+                        updatedBalance = accountValue.Balance - transaction.Value;
+                    }
+                    else
+                    {
+                        if (second.MoneyBalance < transaction.MoneyValue * value)
+                        {
+                            return Result.Error("Could not transfer money from second account because the balance is lower than current transaction!");
+                        }
+                        updatedBalance = second.Balance - (transaction.Value * value).Amount;
+                        var tr = new Transaction
+                        {
+                            Account = second,
+                            AccountId = second.Id,
+                            AccountValueAfter = updatedBalance.Amount,
+                            AccountValueBefore = second.MoneyBalance,
+                            Category = Category.Finance,
+                            CreatedOnUtc = transaction.CreatedOnUtc,
+                            ModifiedOnUtc = DateTime.UtcNow,
+                            Description = $"Transfer to {accountValue.Name}",
+                            MoneyValue = transaction.MoneyValue * value,
+                            MoneyCurrency = second.MoneyCurrency,
+                            Latitude = transaction.Latitude,
+                            Longitude = transaction.Longitude,
+                            ImagePublicId = transaction.ImagePublicId,
+                            ImageUrl = transaction.ImageUrl,
+                            Payee = accountValue.Name,
+                            Type = TransactionType.Expense,
+                        };
+                        _transactionRepository.Add(tr);
+                        second.MoneyBalance = updatedBalance.Amount;
+                        _accountService.UpdateAccount(second);
+                    }
                 }
-                updatedBalance = second.Balance - transaction.Value;
-                var tr = new Transaction
+                else
                 {
-                    Account = second,
-                    AccountId = second.Id,
-                    AccountValueAfter = updatedBalance.Amount,
-                    AccountValueBefore = second.MoneyBalance,
-                    Category = Category.Finance,
-                    CreatedOnUtc = DateTime.UtcNow,
-                    ModifiedOnUtc = DateTime.UtcNow,
-                    Description = $"Transfer to {accountValue.Name}",
-                    MoneyValue = transaction.MoneyValue,
-                    MoneyCurrency = transaction.MoneyCurrency,
-                    Latitude = transaction.Latitude,
-                    Longitude = transaction.Longitude,
-                    ImagePublicId = transaction.ImagePublicId,
-                    ImageUrl = transaction.ImageUrl,
-                    Payee = accountValue.Name,
-                    Type = TransactionType.Expense,
-                };
-                _transactionRepository.Add(tr);
-                second.MoneyBalance = updatedBalance.Amount;
-                _accountService.UpdateAccount(second);
+                    if (second.MoneyBalance < transaction.MoneyValue)
+                    {
+                        return Result.Error("Could not transfer money from second account because the balance is lower than current transaction!");
+                    }
+                    updatedBalance = second.Balance - transaction.Value;
+                    var tr = new Transaction
+                    {
+                        Account = second,
+                        AccountId = second.Id,
+                        AccountValueAfter = updatedBalance.Amount,
+                        AccountValueBefore = second.MoneyBalance,
+                        Category = Category.Finance,
+                        CreatedOnUtc = DateTime.UtcNow,
+                        ModifiedOnUtc = DateTime.UtcNow,
+                        Description = $"Transfer to {accountValue.Name}",
+                        MoneyValue = transaction.MoneyValue,
+                        MoneyCurrency = transaction.MoneyCurrency,
+                        Latitude = transaction.Latitude,
+                        Longitude = transaction.Longitude,
+                        ImagePublicId = transaction.ImagePublicId,
+                        ImageUrl = transaction.ImageUrl,
+                        Payee = accountValue.Name,
+                        Type = TransactionType.Expense,
+                    };
+                    _transactionRepository.Add(tr);
+                    second.MoneyBalance = updatedBalance.Amount;
+                    _accountService.UpdateAccount(second);
+                }
             }
         }
         else
@@ -111,10 +154,27 @@ public class TransactionService : ITransactionService
             if (accountValue.Balance >= transaction.Value)
             {
                 updatedBalance = accountValue.Balance - transaction.Value;
+                Money updatedBalance2;
                 if (secondAccount.IsSuccess)
                 {
                     var second = secondAccount.Value;
-                    var updatedBalance2 = second.Balance + transaction.Value;
+                    decimal value = 1;
+                    if (second.MoneyCurrency != accountValue.MoneyCurrency)
+                    {
+                        bool foundConversion = MoneyConversionUtils.Conversions.TryGetValue($"{accountValue.MoneyCurrency}-{second.MoneyCurrency}", out value);
+                        if (!foundConversion)
+                        {
+                            updatedBalance2 = accountValue.Balance + transaction.MoneyValue;
+                        }
+                        else
+                        {
+                            updatedBalance2 = accountValue.Balance + transaction.MoneyValue * value;
+                        }
+                    }
+                    else
+                    {
+                        updatedBalance2 = accountValue.Balance + transaction.MoneyValue;
+                    }
                     var tr = new Transaction
                     {
                         Account = second,
@@ -122,11 +182,11 @@ public class TransactionService : ITransactionService
                         AccountValueAfter = updatedBalance2.Amount,
                         AccountValueBefore = second.MoneyBalance,
                         Category = Category.Income,
-                        CreatedOnUtc = DateTime.UtcNow,
+                        CreatedOnUtc = transaction.CreatedOnUtc,
                         ModifiedOnUtc = DateTime.UtcNow,
                         Description = $"Transfer from {accountValue.Name}",
-                        MoneyValue = transaction.MoneyValue,
-                        MoneyCurrency = transaction.MoneyCurrency,
+                        MoneyValue = transaction.MoneyValue * value,
+                        MoneyCurrency = second.MoneyCurrency,
                         Latitude = transaction.Latitude,
                         Longitude = transaction.Longitude,
                         ImagePublicId = transaction.ImagePublicId,

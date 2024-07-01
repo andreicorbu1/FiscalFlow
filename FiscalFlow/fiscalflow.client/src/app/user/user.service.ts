@@ -4,7 +4,7 @@ import { Register } from '../shared/models/user/register';
 import { environment } from 'src/environments/environment.development';
 import { Login } from '../shared/models/user/login';
 import { User } from '../shared/models/user/user';
-import { ReplaySubject, map, of } from 'rxjs';
+import { ReplaySubject, map, of, switchMap, take } from 'rxjs';
 import { Router } from '@angular/router';
 import { ConfirmEmail } from '../shared/models/user/confirmEmail';
 import { ResetPassword } from '../shared/models/user/resetPassword';
@@ -81,14 +81,26 @@ export class UserService {
   }
 
   logout() {
-    this.httpClient
-      .put(`${environment.appUrl}/api/v1/user/revoke-refresh-token`, {})
-      .subscribe(() => {
-        localStorage.removeItem(environment.userKey);
-        this.userSource.next(null);
-        this.router.navigateByUrl('/');
+      this.user$.pipe(
+        take(1),
+        switchMap((user: User | null) => {
+          if (user && user.token) {
+            return of(user.token);
+          }
+          return of(undefined);
+        })
+      ).subscribe((token: string | undefined) => {
+        if (token) {
+          this.httpClient
+            .put(`${environment.appUrl}/api/v1/user/revoke-refresh-token?token=${token}`, {})
+            .subscribe(() => {
+              localStorage.removeItem(environment.userKey);
+              this.userSource.next(null);
+              this.router.navigateByUrl('/');
+            });
+        }
       });
-  }
+    }
 
   getJwt() {
     const key = localStorage.getItem(environment.userKey);

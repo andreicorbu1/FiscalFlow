@@ -24,7 +24,7 @@ export class OpenaiService {
       "messages": [
           {
               "role": "user",
-              "content": "Based on this Payee: ${payee}; and this description: ${description}; select one of the following categories that you think is the best suited: FoodAndDrinks, Shopping, House, Transportation, Vehicle, LifeAndEntertainment, Finance, HealthAndPersonalCare, Income, Others? Answer only with the category!"
+              "content": "Based on this Payee: ${payee}; and this description: ${description}; select one of the following categories that you think is the best suited: FoodAndDrinks, Shopping, House, Transportation, Vehicle, LifeAndEntertainment, Finance, HealthAndPersonalCare, Income, Others? Answer only with the category and choose only a category from the ones i gave you!"
           }
       ]
   }`;

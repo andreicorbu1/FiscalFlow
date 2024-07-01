@@ -2,7 +2,6 @@
 using FiscalFlow.Contracts.Authentication;
 using FiscalFlow.Domain.Entities;
 using Google.Apis.Auth;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -32,10 +31,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("revoke-refresh-token")]
-    [Authorize]
-    public async Task<IActionResult> RevokeTokenAsync()
+    public async Task<IActionResult> RevokeTokenAsync(string token)
     {
-        var userId = Utils.Utils.ExtractUserIdFromClaims(User);
+        var userId = Utils.Utils.ExtractUserIdFromClaims(_jwtService.GetPrincipalFromExpiredToken(token));
         var user = await _userManager.FindByIdAsync(userId);
         user!.RefreshToken = null;
         await _userManager.UpdateAsync(user);
